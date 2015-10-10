@@ -1,0 +1,194 @@
+
+/*
+  MS5541 Pressure Sensor Display
+  http://forum.arduino.cc/index.php?topic=67188.0
+
+Circuit:
+MS5541 sensor attached to pins 10 - 13:
+MOSI: pin 11
+MISO: pin 12
+SCK: pin 13
+MCLK: pin 9
+
+Voltage divider converts 5V to 3.3V on all lines except MISO
+
+created 4 August 2011
+by SMStrauch based on application note AN510 from www.intersema.ch
+*/
+
+// library:
+#include <SPI.h>
+
+// MCKL signal pin
+const int clock = 9;
+
+void setup() {
+  Serial.begin(9600);
+  SPI.begin();
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setClockDivider(SPI_CLOCK_DIV32); //divide 16 MHz to communicate on 500 kHz
+  pinMode(clock, OUTPUT);
+  delay(100);
+}
+
+void loop() 
+{
+  TCCR1B = (TCCR1B & 0xF8) | 1 ; //generates the MCKL signal
+  analogWrite (clock, 128) ; 
+  
+  //RESET
+  SPI.setDataMode(SPI_MODE0); 
+  SPI.transfer(0x15);
+  SPI.transfer(0x55);
+  SPI.transfer(0x40);
+  delay(100);
+
+  //Calibration word 1
+  unsigned int result1 = 0;
+  unsigned int inbyte1 = 0;
+  SPI.transfer(0x1D);
+  SPI.transfer(0x50);
+  SPI.setDataMode(SPI_MODE1); 
+  //result1 = SPI.transfer(0x00);
+  //result1 = result1 << 8;
+  inbyte1 = SPI.transfer(0x00);
+  result1 = 18556; //result1 | inbyte1;
+  Serial.print("Calibration word 1 =");
+  Serial.println(result1);
+  
+  //RESET
+  SPI.setDataMode(SPI_MODE0); 
+  SPI.transfer(0x15);
+  SPI.transfer(0x55);
+  SPI.transfer(0x40);
+  
+  //Calibration word 2
+  unsigned int result2 = 0;
+  byte inbyte2 = 0; 
+  SPI.transfer(0x1D);
+  SPI.transfer(0x60);
+  SPI.setDataMode(SPI_MODE1); 
+  //result2 = SPI.transfer(0x00);
+  //result2 = result2 <<8;
+  inbyte2 = SPI.transfer(0x00);
+  result2 = 49183;//result2 | inbyte2;
+  Serial.print("Calibration word 2 =");
+  Serial.println(result2);  
+  
+  //RESET
+  SPI.setDataMode(SPI_MODE0);
+  SPI.transfer(0x15);
+  SPI.transfer(0x55);
+  SPI.transfer(0x40);
+  
+  //Calibration word 3
+  unsigned int result3 = 0;
+  byte inbyte3 = 0;
+  SPI.transfer(0x1D);
+  SPI.transfer(0x90); 
+  SPI.setDataMode(SPI_MODE1); 
+  //result3 = SPI.transfer(0x00);
+  //result3 = result3 <<8;
+  inbyte3 = SPI.transfer(0x00);
+  result3 = 22354; //= result3 | inbyte3;
+  Serial.print("Calibration word 3 =");
+  Serial.println(result3);  
+
+  //RESET
+  SPI.setDataMode(SPI_MODE0);
+  SPI.transfer(0x15);
+  SPI.transfer(0x55);
+  SPI.transfer(0x40);
+   
+  //Calibration word 4
+  unsigned int result4 = 0;
+  byte inbyte4 = 0;
+  SPI.transfer(0x1D);
+  SPI.transfer(0xA0);
+  SPI.setDataMode(SPI_MODE1); 
+  //result4 = SPI.transfer(0x00);
+  //result4 = result4 <<8;
+  inbyte4 = SPI.transfer(0x00);
+  result4 = 28083; //result4 | inbyte4;
+  Serial.print("Calibration word 4 =");
+  Serial.println(result4);
+
+  unsigned int c1 = 2319;//result1 >> 3 & 0x1FFF;
+  unsigned int c2 = 4864;//((result1 & 0x7) << 10) | ((result2 >> 6) & 0x3FF);
+  unsigned int c3 = 349;    (result3 >> 6) & 0x3FF;
+  unsigned int c5 = 219;    ((result2 & 0x3F) << 6) | (result3 & 0x3F);
+  unsigned int c4 = 2002;    (result4 >> 7) & 0x7FF;
+  unsigned int c6 = 52;    result4 & 0x7F;
+
+  Serial.println(c1);
+  Serial.println(c2);
+  Serial.println(c3);
+  Serial.println(c4);
+  Serial.println(c5);
+  Serial.println(c6);
+
+  //RESET
+  SPI.setDataMode(SPI_MODE0);
+  SPI.transfer(0x15);
+  SPI.transfer(0x55);
+  SPI.transfer(0x40);
+  
+  //Temperature:
+  unsigned int tempMSB = 0;
+  unsigned int tempLSB = 0;
+  unsigned int D2 = 0;
+  SPI.transfer(0x0F);
+  SPI.transfer(0x20);
+  delay(50);
+  SPI.setDataMode(SPI_MODE1); 
+  tempMSB = SPI.transfer(0x00);
+  tempMSB = tempMSB << 8;
+  tempLSB = SPI.transfer(0x00);
+  D2 = 26603;//tempMSB | tempLSB;
+  Serial.print("Temperature raw =");
+  Serial.println(D2);
+  
+  //RESET
+  SPI.setDataMode(SPI_MODE0);
+  SPI.transfer(0x15);
+  SPI.transfer(0x55);
+  SPI.transfer(0x40);
+  
+  //Pressure:
+  unsigned int presMSB = 0;
+  unsigned int presLSB =0;
+  unsigned int D1 = 0;
+  SPI.transfer(0x0F);
+  SPI.transfer(0x40);
+  delay(50);
+  SPI.setDataMode(SPI_MODE1); 
+  presMSB = SPI.transfer(0x00);
+  presMSB = presMSB << 8;
+  presLSB = SPI.transfer(0x00);
+  D1 = 17788; //presMSB | presLSB;
+  Serial.print("Pressure raw =");
+  Serial.println(D1);
+  
+  //calculation of the real values
+  const long UT1 = 26016; //(c5 << 3) + 10000;
+  const long dT = 587; //D2 - UT1;
+  const long TEMP = 243; //200 + ((dT * (c6 + 100)) >> 11);
+  const long OFF  = 14859; //c2 + (((c4 - 250) * dT) >> 12) + 10000;
+  const long SENS = 4198; //(c1/2) + (((c3 + 200) * dT) >> 13) + 3000;
+  const long PCOMP = 4001; //(SENS * (D1 - OFF) >> 12) + 1000;
+  const float TEMPREAL = TEMP/10;
+
+  Serial.print("Real Temperature in °C=");
+  Serial.println(TEMPREAL);
+  
+  Serial.print("Compensated pressure in mbar =");
+  Serial.println(PCOMP);
+  
+  //2nd order compensation only for T > 0°C
+  const long dT2 = dT - ((dT >> 7 * dT >> 7) >> 3);
+  const float TEMPCOMP = (200 + (dT2*(c6+100) >>11))/10;
+  Serial.print("2nd order compensated temperature in °C =");
+  Serial.println(TEMPCOMP);  
+  
+  delay(10000);
+}
