@@ -73,10 +73,9 @@ void loop() {
         //waitForStart();
         Input i = readBuffer();
         
-        // debugging purposses, set the hex value to the matching hex button code in the python code to check for it
-        processInput(i);
+        processInput(i);//gives the inputs to the motors
         
-        //the following is for debugging, prints all input back out on serial 1
+        //the following is for debugging, prints all input back out on the serial used for programming the arduino
         /*
         Serial.print("buttons: ");
         Serial.print(i.buttons2);
