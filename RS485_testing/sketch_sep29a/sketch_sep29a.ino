@@ -22,8 +22,18 @@ void wait(){
 //except for input such as SSTR, that will be skipped. There should be multiple characters to 
 //prevent random bytes getting past
 void waitForStart(){
-  while(!('S' == Serial3.read() && 'T' == Serial3.read() && 'R' == Serial3.read()))
+  while(true){
     wait();
+    if('S' == mySerial.read()){
+      wait();
+      if('T' == mySerial.read()){
+        wait();
+        if('R' == mySerial.read()){
+          break;
+        }
+      }
+    }
+  }
 }
 
 Input readBuffer() {  
@@ -70,7 +80,7 @@ void processInput(Input i){
 
 void loop() {  
     if (Serial3.available()) {
-        //waitForStart();
+        waitForStart();
         Input i = readBuffer();
         
         processInput(i);//gives the inputs to the motors
