@@ -14,10 +14,11 @@ class ControllerTest(unittest.TestCase):
     def test_2_buttonsWorking(self):
         notDone = True
         print "starting button test"
-        buttons = [False, False, False, False, False, False, False, False, False, False]
+        buttons = [False] * cont.getNumButtons()
+        print "NumButtons", cont.getNumButtons()
         while notDone:
             cont.update()
-            for x in range(0, 10):
+            for x in range(0, cont.getNumButtons()):
                 if cont.getButton(x) and buttons[x] == False:
                     print "button ", x
                     buttons[x] = True

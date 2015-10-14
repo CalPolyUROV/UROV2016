@@ -1,6 +1,11 @@
 __author__ = 'johnathan'
 
 from sfml.window import Joystick
+from sys import platform
+
+joystick = 0;
+if platform == "linux" or platform == "linux2":
+    joystick = 1
 
 deadZone = 15
 minValue = 0
@@ -18,6 +23,11 @@ START = 7
 L_JOYSTICK_CLICK = 8
 R_JOYSTICK_CLICK = 9
 
+if platform == "linux" or platform == "linux2":
+    L_JOYSTICK_CLICK = 9
+    R_JOYSTICK_CLICK = 10
+    WIN_BUTTON = 8
+
 # These are their values in the signal sent to the arduino
 A_HEX = 0x1
 B_HEX = 0x2
@@ -31,6 +41,10 @@ START_HEX = 0x100
 L_JOYSTICK_CLICK_HEX = 0x200
 R_JOYSTICK_CLICK_HEX = 0x400
 
+if platform == "linux" or platform == "linux2":
+    L_JOYSTICK_CLICK = 9
+    R_JOYSTICK_CLICK = 10
+    WIN_BUTTON = 8
 
 # used inside the class, not necissary to call from outside this class, use the other calls
 def getAxis(joyStickNumber, axis):
@@ -38,28 +52,34 @@ def getAxis(joyStickNumber, axis):
     return ((applyDeadZone(Joystick.get_axis_position(joyStickNumber, axis))/(100.0-deadZone)) * size) - minValue
 
 def getPrimaryX():
-    return getAxis(0, Joystick.X)
+    return getAxis(joystick, Joystick.X)
 
 def getPrimaryY():
-    return -getAxis(0, Joystick.Y)
+    return -getAxis(joystick, Joystick.Y)
 
 def getSecondaryX():
-    return getAxis(0, Joystick.U)
+    return getAxis(joystick, Joystick.U)
 
 def getSecondaryY():
-    return -getAxis(0, Joystick.R)
+    if platform == "linux" or platform == "linux2":
+        return -getAxis(joystick, Joystick.V)
+    return -getAxis(joystick, Joystick.R)
 
 def getTriggers():
-    return getAxis(0, Joystick.Z)
+    if(platform == "linux" or platform == "linux2"):
+        value = getAxis(joystick, Joystick.Z)/2 - getAxis(joystick, Joystick.R)/2
+    else:
+        value = getAxis(joystick, Joystick.Z)
+    return value
 
 def isConnected():
-    return Joystick.is_connected(0)
+    return Joystick.is_connected(joystick)
 
 def getButton(button):
-    return Joystick.is_button_pressed(0, button)
+    return Joystick.is_button_pressed(joystick, button)
 
 def getNumButtons():
-    return Joystick.get_button_count(0)
+    return Joystick.get_button_count(joystick)
 
 def update():
     Joystick.update()
@@ -67,6 +87,20 @@ def update():
 def setDeadZone(value):
     global deadZone
     deadZone = value
+
+def getValueForButton(button):
+    return {
+        A:A_HEX,
+        B:B_HEX,
+        X: X_HEX,
+        Y: Y_HEX,
+        L_TRIGGER: L_TRIGGER_HEX,
+        R_TRIGGER: R_TRIGGER_HEX,
+        BACK: BACK_HEX,
+        START: START_HEX,
+        L_JOYSTICK_CLICK: L_JOYSTICK_CLICK_HEX,
+        R_JOYSTICK_CLICK: R_JOYSTICK_CLICK_HEX
+    }.get(button, 0)
 
 # This creates a dead zone to prevent situations where you are unable to stop the motors because of touchy input
 def applyDeadZone(value):

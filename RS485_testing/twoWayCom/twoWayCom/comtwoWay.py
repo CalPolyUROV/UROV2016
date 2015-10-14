@@ -54,8 +54,17 @@ while 1:
     outbound.write(" ")
     outbound.write(str(int(cont.getTriggers())))
     outbound.write(" ")
-    time.sleep(0.1)                                    # allows for chirps of information rather than a stream
+                                       # allows for chirps of information rather than a stream
+    print "HERE"
+    while True:
+        if 'S' == outbound.read(1):
+            if 'T' == outbound.read(1):
+                if 'R' == outbound.read(1):
+                    break
 
-
+    linesToRead = int(outbound.read(3))                 # allows for up to 999 bytes to be read
+    for i in range(0, linesToRead):
+        print outbound.readline(),
+    time.sleep(0.1)
 
 
