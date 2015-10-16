@@ -86,11 +86,12 @@ Input readBuffer() {
 //  }
 //}
 
-void writeToCommand(){
+void writeToCommand(Input i){
   mySerial.print("STR");
-  mySerial.print("002"); //print the number of lines of input the python program can read in three digits
-  mySerial.println("Hello this is a test line");
-  mySerial.println("This is also a test line");
+  mySerial.print("001"); //print the number of lines of input the python program can read in three digits
+  mySerial.print(i.buttons1);
+  mySerial.print(" ");
+  mySerial.println(i.buttons2);
 }
 
 void loop() { 
@@ -100,13 +101,13 @@ void loop() {
         Input i = readBuffer();
 
         digitalWrite(writingPin, HIGH);
-        writeToCommand(); //this is where the code to write back to topside goes.
+        writeToCommand(i); //this is where the code to write back to topside goes.
         digitalWrite(writingPin, LOW);
         
         //processInput(i);//gives the inputs to the motors
         
         //the following is for debugging, prints all input back out on the serial used for programming the arduino
-        
+        /*
         Serial.print("buttons: ");
         Serial.print(i.buttons2);
         Serial.print(" ");
@@ -121,7 +122,7 @@ void loop() {
         Serial.print(i.secondaryY);
         Serial.print(" Trig: ");
         Serial.println(i.triggers);
-        
+        */
         
     }
 }

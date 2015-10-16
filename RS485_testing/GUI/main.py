@@ -1,24 +1,93 @@
 import Tkinter as tk
+import serial
+import time
+import controller as cont
+from sys import platform
+import serial.tools.list_ports
+import serial_finder
 
-counter = 0 
-def counter_label(label):
-  counter = 0
-  def count():
-    global counter
-    counter += 1
-    label.config(text=str(counter))
-    label.after(1000, hello)
-    print "one"
-  def hello():
-    label.config(text="hello")
-  count()
- 
- 
+
+__author__ = 'johna'
+
+ports = serial_finder.serial_ports()
+port = serial_finder.find_port(ports)
+
+outbound = serial.Serial(
+    port=port,
+    baudrate=9600,
+    parity=serial.PARITY_NONE,   # parity is error checking, odd means the message should have an odd number of 1 bits
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS,   # eight bits of information per pulse/packet
+    timeout=0.1
+)
+
+cont.update()
+if not cont.isConnected():
+    print "connect the controller"
+cont.update()
+while not cont.isConnected():
+    cont.update()
+print "controller connected"
+
 root = tk.Tk()
-root.title("Counting Seconds")
-label = tk.Label(root, fg="dark green")
-label.pack()
-counter_label(label)
+root.title("Cal Poly Control Center")
+outputLabel = tk.Label(root, fg="black")
+waitingLabel = tk.Label(root, fg="red", text="waiting")
+
+
+def update():
+    global outputLabel
+    global waitingLabel
+    cont.update()
+    buttons1 = 0x0
+    buttons2 = 0x0
+    # going to eight would include the start button; however, it seems that when 0x80 (only the start button) is sent
+    # the arduino lags for a second or two and reports false values for buttons
+    for i in range(0, cont.getNumButtons()):
+        if(cont.getButton(i)):
+            if(cont.getValueForButton(i) <= 0xFF):
+                buttons1 += cont.getValueForButton(i)
+            else:
+                buttons2 += cont.getValueForButton(i) >> 8
+
+    outbound.write("STR")                               #  sends a signal to tell that this is the start of data
+    outbound.write(chr(buttons1))                       # writes the buttons first
+    outbound.write(chr(buttons2))
+    outbound.write(str(int(cont.getPrimaryX())))        # casts the floats to ints, then to strings for simple parsing
+    outbound.write(" ")
+    outbound.write(str(int(cont.getPrimaryY())))
+    outbound.write(" ")
+    outbound.write(str(int(cont.getSecondaryX())))
+    outbound.write(" ")
+    outbound.write(str(int(cont.getSecondaryY())))
+    outbound.write(" ")
+    outbound.write(str(int(cont.getTriggers())))
+    outbound.write(" ")
+    waitingLabel['text'] = "waiting"
+    counter = 10
+    proceed = False;
+    while True and counter > 0:
+        counter -= 1
+        if 'S' == outbound.read(1):
+            if 'T' == outbound.read(1):
+                if 'R' == outbound.read(1):
+                    proceed = True
+                    break
+
+    waitingLabel['text'] = "not waiting"
+    if(proceed):
+        linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
+        for i in range(0, linesToRead):
+            outputLabel['text'] = outbound.readline()
+    outputLabel.after(100, update)
+
+
+waitingLabel.pack()
+outputLabel.pack()
+outputLabel.after(1000, update)
 button = tk.Button(root, text='Stop', width=25, command=root.destroy)
 button.pack()
 root.mainloop()
+
+
+

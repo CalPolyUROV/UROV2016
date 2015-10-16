@@ -3,9 +3,8 @@ __author__ = 'johnathan'
 from sfml.window import Joystick
 from sys import platform
 
-joystick = 0;
-if platform == "linux" or platform == "linux2":
-    joystick = 1
+
+
 
 deadZone = 15
 minValue = 0
@@ -46,7 +45,22 @@ if platform == "linux" or platform == "linux2":
     R_JOYSTICK_CLICK = 10
     WIN_BUTTON = 8
 
-# used inside the class, not necissary to call from outside this class, use the other calls
+#loop to find the correct controller
+joystick = 0;
+foundController = False
+print "looking for controller, press A to chose the controller"
+while not foundController:
+    for i in range(0,5):
+        Joystick.update()
+        if Joystick.is_connected(i):
+            Joystick.update()
+            if Joystick.is_button_pressed(i, A):
+                foundController = True
+                joystick = i
+
+print "found controller ", i
+print "buttons: ", Joystick.get_button_count(i)
+# used inside the class, not necessary to call from outside this class, use the other calls
 def getAxis(joyStickNumber, axis):
     size = maxValue - minValue
     return ((applyDeadZone(Joystick.get_axis_position(joyStickNumber, axis))/(100.0-deadZone)) * size) - minValue

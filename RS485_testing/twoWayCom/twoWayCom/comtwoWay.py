@@ -2,6 +2,8 @@ import serial
 import time
 import controller as cont
 from sys import platform
+import serial.tools.list_ports
+import sys
 import math
 __author__ = 'johna'
 p = 0
@@ -27,6 +29,7 @@ cont.update()
 while not cont.isConnected():
     cont.update()
 print "controller connected"
+
 # this is the main loop of the program that updates the controller then sends that modified input to the arduino
 while 1:
     cont.update()
@@ -54,8 +57,7 @@ while 1:
     outbound.write(" ")
     outbound.write(str(int(cont.getTriggers())))
     outbound.write(" ")
-                                       # allows for chirps of information rather than a stream
-    print "HERE"
+
     while True:
         if 'S' == outbound.read(1):
             if 'T' == outbound.read(1):
