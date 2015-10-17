@@ -24,6 +24,7 @@ def serial_ports():
 
     result = []
     for port in ports:
+        s = 0
         try:
             s = serial.Serial(port)
             s.close()
@@ -47,3 +48,5 @@ def find_port(ports):
         for p in ports:
             print p
         return p
+
+            

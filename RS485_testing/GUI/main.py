@@ -11,14 +11,14 @@ __author__ = 'johna'
 
 ports = serial_finder.serial_ports()
 port = serial_finder.find_port(ports)
-
+print port
 outbound = serial.Serial(
     port=port,
     baudrate=9600,
     parity=serial.PARITY_NONE,   # parity is error checking, odd means the message should have an odd number of 1 bits
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS,   # eight bits of information per pulse/packet
-    timeout=0.1
+    timeout=0.5
 )
 
 cont.update()
@@ -68,14 +68,15 @@ def update():
     proceed = False;
     while True and counter > 0:
         counter -= 1
-        if 'S' == outbound.read(1):
-            if 'T' == outbound.read(1):
-                if 'R' == outbound.read(1):
-                    proceed = True
-                    break
-
-    waitingLabel['text'] = "not waiting"
+        if outbound.readable():
+            if 'S' == outbound.read(1):
+                if 'T' == outbound.read(1):
+                    if 'R' == outbound.read(1):
+                        proceed = True
+                        break
     if(proceed):
+        waitingLabel['text'] = "not waiting"
+
         linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
         for i in range(0, linesToRead):
             outputLabel['text'] = outbound.readline()

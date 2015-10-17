@@ -7,10 +7,10 @@
 //this is temparary because I was working on an arduino UNO with one hardware serial port
 //QuadMotorShields md;
 
-SoftwareSerial mySerial = SoftwareSerial(2,3); //rx, tx
+SoftwareSerial mySerial(51,50);
 
 int led = 13;
-int writingPin = 7; //this is the pin to control whether it is recieving or sending
+int writingPin = 4; //this is the pin to control whether it is recieving or sending
 void setup() {  
     mySerial.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
     Serial.begin(9600);     //it does not seem to work at lower baud rates 
@@ -95,8 +95,7 @@ void writeToCommand(Input i){
 }
 
 void loop() { 
-     
-    if (mySerial.available()) {
+     if (mySerial.available()) {
         waitForStart();
         Input i = readBuffer();
 
@@ -107,7 +106,7 @@ void loop() {
         //processInput(i);//gives the inputs to the motors
         
         //the following is for debugging, prints all input back out on the serial used for programming the arduino
-        /*
+        
         Serial.print("buttons: ");
         Serial.print(i.buttons2);
         Serial.print(" ");
@@ -122,7 +121,7 @@ void loop() {
         Serial.print(i.secondaryY);
         Serial.print(" Trig: ");
         Serial.println(i.triggers);
-        */
+        
         
     }
 }
