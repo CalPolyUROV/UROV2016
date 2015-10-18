@@ -18,7 +18,7 @@ outbound = serial.Serial(
     parity=serial.PARITY_NONE,   # parity is error checking, odd means the message should have an odd number of 1 bits
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS,   # eight bits of information per pulse/packet
-    timeout=0.5
+    timeout=0.1
 )
 
 cont.update()

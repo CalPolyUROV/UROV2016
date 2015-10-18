@@ -2,22 +2,22 @@
 #include "dataStruc.h"
 //#include "QuadMotorShields.h"
 #include <SoftwareSerial.h>
+#include <SPI.h>
+#include "pressure.h"
 
 
 //this is temparary because I was working on an arduino UNO with one hardware serial port
 //QuadMotorShields md;
 
-SoftwareSerial mySerial(51,50);
+SoftwareSerial mySerial(14, 15);
 
-int led = 13;
 int writingPin = 4; //this is the pin to control whether it is recieving or sending
 void setup() {  
     mySerial.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
     Serial.begin(9600);     //it does not seem to work at lower baud rates 
-    pinMode(led, OUTPUT);     //debugging purposes
-    digitalWrite(led, LOW);  //debugging purposes
     pinMode(writingPin, OUTPUT);
     digitalWrite(writingPin, LOW);
+    pressureSetup();
 }
 
 //looks cleaner than the empty while loop being everywhere in the code
@@ -89,9 +89,7 @@ Input readBuffer() {
 void writeToCommand(Input i){
   mySerial.print("STR");
   mySerial.print("001"); //print the number of lines of input the python program can read in three digits
-  mySerial.print(i.buttons1);
-  mySerial.print(" ");
-  mySerial.println(i.buttons2);
+  mySerial.println(updatePressure());
 }
 
 void loop() { 

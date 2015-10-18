@@ -47,7 +47,9 @@ if platform == "linux" or platform == "linux2":
 
 #loop to find the correct controller
 joystick = 0;
+
 foundController = False
+
 print "looking for controller, press A to chose the controller"
 while not foundController:
     for i in range(0,5):
@@ -59,7 +61,9 @@ while not foundController:
                 joystick = i
 
 print "found controller ", i
+
 print "buttons: ", Joystick.get_button_count(i)
+
 # used inside the class, not necessary to call from outside this class, use the other calls
 def getAxis(joyStickNumber, axis):
     size = maxValue - minValue
