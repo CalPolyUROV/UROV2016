@@ -1,28 +1,40 @@
 
 #include "dataStruc.h"
-//#include "QuadMotorShields.h"
+#include "QuadMotorShields.h"
 #include <SoftwareSerial.h>
 #include <SPI.h>
 #include "pressure.h"
 
+//all pins used must be lised here! either as a variable to change quickly later or as a comment if it is in another file
 
-//this is temparary because I was working on an arduino UNO with one hardware serial port
-//QuadMotorShields md;
+int serialWritePin = 2; //this is the pin to control whether it is recieving or sending
 
-SoftwareSerial mySerial(14, 15);
+///// Pins used by Quad Motor Shields //////
+//
+//31, 33, 29, A0, 25, 27, 23, A1, 
+//42, 44, 40, 24, 26, 22
+//
+//////////////////////////////////
 
-int writingPin = 4; //this is the pin to control whether it is recieving or sending
+//End of pin listings
+
+
+QuadMotorShields md;
+
+
+
+//SoftwareSerial Serial3(14, 15);
 void setup() {  
-    mySerial.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
+    Serial3.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
     Serial.begin(9600);     //it does not seem to work at lower baud rates 
-    pinMode(writingPin, OUTPUT);
-    digitalWrite(writingPin, LOW);
+    pinMode(serialWritePin, OUTPUT);
+    digitalWrite(serialWritePin, LOW);
     pressureSetup();
 }
 
 //looks cleaner than the empty while loop being everywhere in the code
 void wait(){
-  while(!mySerial.available())
+  while(!Serial3.available())
     ;
 }
 
@@ -32,11 +44,11 @@ void wait(){
 void waitForStart(){
   while(true){
     wait();
-    if('S' == mySerial.read()){
+    if('S' == Serial3.read()){
       wait();
-      if('T' == mySerial.read()){
+      if('T' == Serial3.read()){
         wait();
-        if('R' == mySerial.read()){
+        if('R' == Serial3.read()){
           break;
         }
       }
@@ -47,61 +59,64 @@ void waitForStart(){
 Input readBuffer() {  
         Input input;
         wait();//makes sure that a byte of data is not missed 
-        input.buttons1 = mySerial.read();
+        input.buttons1 = Serial3.read();
         wait();
-        input.buttons2 = mySerial.read();
+        input.buttons2 = Serial3.read();
         wait();
-        input.primaryX = mySerial.parseInt();
-        mySerial.read();
+        input.primaryX = Serial3.parseInt();
+        Serial3.read();
         wait();
-        input.primaryY = mySerial.parseInt();
-        mySerial.read();
+        input.primaryY = Serial3.parseInt();
+        Serial3.read();
         wait();
-        input.secondaryX = mySerial.parseInt();
-        mySerial.read();
+        input.secondaryX = Serial3.parseInt();
+        Serial3.read();
         wait();
-        input.secondaryY = mySerial.parseInt();
-        mySerial.read();
+        input.secondaryY = Serial3.parseInt();
+        Serial3.read();
         wait();
-        input.triggers = mySerial.parseInt();
-        mySerial.read();
+        input.triggers = Serial3.parseInt();
+        Serial3.read();
         return input;
 }
-//void processInput(Input i){
-//  int forward = i.primaryY;
-//  int right = i.primaryX;
-//  
-//  md.setM1Speed(forward/2 + right/2);
-//  md.setM2Speed(forward/2 - right/2);
-//  if(i.buttons1 & 0x2){
-//    md.setM3Speed(100);
-//    md.setM4Speed(100);
-//  }
-//  else if(i.buttons1 & 0x1){
-//    md.setM3Speed(-100);
-//    md.setM4Speed(-100);
-//  } else {
-//    md.setM3Speed(0);
-//    md.setM4Speed(0);
-//  }
-//}
+void processInput(Input i){
+  int forward = i.primaryY;
+  int right = i.primaryX;
+  
+  md.setM1Speed(forward/2 + right/2);
+  md.setM2Speed(forward/2 - right/2);
+  if(i.buttons1 & 0x2){
+    md.setM3Speed(100);
+    md.setM4Speed(100);
+  }
+  else if(i.buttons1 & 0x1){
+    md.setM3Speed(-100);
+    md.setM4Speed(-100);
+  } else {
+    md.setM3Speed(0);
+    md.setM4Speed(0);
+  }
+}
 
 void writeToCommand(Input i){
-  mySerial.print("STR");
-  mySerial.print("001"); //print the number of lines of input the python program can read in three digits
-  mySerial.println(updatePressure());
+  Serial3.print("STR");
+  Serial3.print("002"); //print the number of lines of input the python program can read in three digits
+  Serial3.println(i.buttons1);
+  Serial3.println("Pressure");
+  //Serial3.println(updatePressure());
 }
 
 void loop() { 
-     if (mySerial.available()) {
+     if (Serial3.available()) {
         waitForStart();
         Input i = readBuffer();
 
-        digitalWrite(writingPin, HIGH);
+        digitalWrite(serialWritePin, HIGH);
         writeToCommand(i); //this is where the code to write back to topside goes.
-        digitalWrite(writingPin, LOW);
+        delay(50);         //this delay allows for hardware serial to work with rs485
+        digitalWrite(serialWritePin, LOW);
         
-        //processInput(i);//gives the inputs to the motors
+        processInput(i);//gives the inputs to the motors
         
         //the following is for debugging, prints all input back out on the serial used for programming the arduino
         

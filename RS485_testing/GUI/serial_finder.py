@@ -45,6 +45,7 @@ def find_port(ports):
     elif platform == "darwin":
         p = ""
     elif platform == "win32":
+        p = ""
         for p in ports:
             print p
         return p

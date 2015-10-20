@@ -11,7 +11,7 @@ __author__ = 'johna'
 
 ports = serial_finder.serial_ports()
 port = serial_finder.find_port(ports)
-print port
+print "Using: ", port
 outbound = serial.Serial(
     port=port,
     baudrate=9600,
