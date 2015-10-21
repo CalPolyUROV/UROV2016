@@ -1,24 +1,23 @@
-import Tkinter as tk
 import serial
 import time
 import controller as cont
 from sys import platform
-import serial.tools.list_ports
-import serial_finder
-
-
+import math
 __author__ = 'johna'
+p = 0
 
-ports = serial_finder.serial_ports()
-port = serial_finder.find_port(ports)
-print "Using: ", port
+if platform == "linux" or platform == "linux2":
+    p = "/dev/ttyUSB0"
+elif platform == "darwin":
+    p = ""
+elif platform == "win32":
+    p = "3"
 outbound = serial.Serial(
-    port=port,
+    port=p,
     baudrate=9600,
     parity=serial.PARITY_NONE,   # parity is error checking, odd means the message should have an odd number of 1 bits
     stopbits=serial.STOPBITS_ONE,
-    bytesize=serial.EIGHTBITS,   # eight bits of information per pulse/packet
-    timeout=0.1
+    bytesize=serial.EIGHTBITS   # eight bits of information per pulse/packet
 )
 
 cont.update()
@@ -28,16 +27,8 @@ cont.update()
 while not cont.isConnected():
     cont.update()
 print "controller connected"
-
-root = tk.Tk()
-root.title("Cal Poly Control Center")
-outputLabel = tk.Label(root, fg="black")
-waitingLabel = tk.Label(root, fg="red", text="waiting")
-
-
-def update():
-    global outputLabel
-    global waitingLabel
+# this is the main loop of the program that updates the controller then sends that modified input to the arduino
+while 1:
     cont.update()
     buttons1 = 0x0
     buttons2 = 0x0
@@ -63,32 +54,8 @@ def update():
     outbound.write(" ")
     outbound.write(str(int(cont.getTriggers())))
     outbound.write(" ")
-    waitingLabel['text'] = "waiting"
-    counter = 10
-    proceed = False;
-    while True and counter > 0:
-        counter -= 1
-        if outbound.readable():
-            if 'S' == outbound.read(1):
-                if 'T' == outbound.read(1):
-                    if 'R' == outbound.read(1):
-                        proceed = True
-                        break
-    if(proceed):
-        waitingLabel['text'] = "not waiting"
+    time.sleep(0.1)                                    # allows for chirps of information rather than a stream
 
-        linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
-        for i in range(0, linesToRead):
-            outputLabel['text'] = outbound.readline()
-    outputLabel.after(100, update)
-
-
-waitingLabel.pack()
-outputLabel.pack()
-outputLabel.after(1000, update)
-button = tk.Button(root, text='Stop', width=25, command=root.destroy)
-button.pack()
-root.mainloop()
 
 
 
