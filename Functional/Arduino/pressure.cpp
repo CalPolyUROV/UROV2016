@@ -22,7 +22,7 @@ and with help of robtillaart and ulrichard. Thanks!
 #include <SPI.h>
 
 // generate a MCKL signal pin
-const int clock = A15;
+const int clock = 45;
 int _pressure;
 int _tempTimesTen;
 
@@ -46,7 +46,7 @@ void pressureSetup() {
 
 void updatePressureSensor() 
 {
- TCCR1B = (TCCR1B & 0xF8) | 1 ; //generates the MCKL signal
+ TCCR5B = (TCCR5B & 0xF8) | 1 ; //generates the MCKL signal
  analogWrite (clock, 128) ; 
  
  resetsensor();//resets the sensor - caution: afterwards mode = SPI_MODE0!
