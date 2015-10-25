@@ -7,10 +7,10 @@ Once you read out the calibration factors you can define them in the header of a
 
 Pins:
 MS5541 sensor attached to pins 10 - 13:
-MOSI: pin 11
-MISO: pin 12
-SCK: pin 13
-MCLK: pin 9
+MOSI: pin 51
+MISO: pin 50
+SCK: pin 52
+MCLK: pin 45
 CS is not in use, but might be pin 10
 
 created August 2011
