@@ -5,10 +5,7 @@
 #include <SPI.h>
 #include "pressure.h"
 
-// TO DO -  condense debug input serial lines into one void debugInput(i); function
-// TO DO -  UPDATE PIN USAGE FROM PRESSURE.H :)
-
-//all pins used must be lised here! either as a variable to change quickly later or as a comment if it is in another file
+//all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
 int serialWritePin = 2; //this is the pin to control whether it is recieving or sending
 
@@ -16,6 +13,12 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 //
 //31, 33, 29, A0, 25, 27, 23, A1, 
 //42, 44, 40, 24, 26, 22
+//
+//////////////////////////////////
+
+///// Pins used by Pressure Sensor //////
+//
+//45, 50, 51, 52
 //
 //////////////////////////////////
 
@@ -116,6 +119,25 @@ void writeToCommand(Input i){
   //Serial.println(getTempTimesTen());
   //Serial3.println(updatePressure());
 }
+void debugInput(Input i){
+  //the following is for debugging, prints all input back out on the serial used for programming the arduino
+  
+  Serial.print("buttons: ");
+  Serial.print(i.buttons2);
+  Serial.print(" ");
+  Serial.print(i.buttons1);
+  Serial.print(" X1: ");
+  Serial.print(i.primaryX);
+  Serial.print(" Y1: ");
+  Serial.print(i.primaryY);
+  Serial.print(" X2: ");
+  Serial.print(i.secondaryX);
+  Serial.print(" Y2: ");
+  Serial.print(i.secondaryY);
+  Serial.print(" Trig: ");
+  Serial.println(i.triggers);
+
+}
 
 void loop() { 
      if (Serial3.available()) {
@@ -128,25 +150,6 @@ void loop() {
         digitalWrite(serialWritePin, LOW);
         
         processInput(i);//gives the inputs to the motors
-        
-        //the following is for debugging, prints all input back out on the serial used for programming the arduino
-        /*
-        Serial.print("buttons: ");
-        Serial.print(i.buttons2);
-        Serial.print(" ");
-        Serial.print(i.buttons1);
-        Serial.print(" X1: ");
-        Serial.print(i.primaryX);
-        Serial.print(" Y1: ");
-        Serial.print(i.primaryY);
-        Serial.print(" X2: ");
-        Serial.print(i.secondaryX);
-        Serial.print(" Y2: ");
-        Serial.print(i.secondaryY);
-        Serial.print(" Trig: ");
-        Serial.println(i.triggers);
-        */
-        
     }
 }
 
