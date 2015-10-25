@@ -22,7 +22,10 @@ and with help of robtillaart and ulrichard. Thanks!
 #include <SPI.h>
 
 // generate a MCKL signal pin
-const int clock = 9;
+const int clock = A15;
+int _pressure;
+int _tempTimesTen;
+
 
 void resetsensor() //this function keeps the sketch a little shorter
 {
@@ -41,13 +44,13 @@ void pressureSetup() {
  delay(100);
 }
 
-void updatePressure() 
+void updatePressureSensor() 
 {
  TCCR1B = (TCCR1B & 0xF8) | 1 ; //generates the MCKL signal
  analogWrite (clock, 128) ; 
-
+ 
  resetsensor();//resets the sensor - caution: afterwards mode = SPI_MODE0!
-
+ 
  //Calibration word 1
  unsigned int result1 = 0;
  unsigned int inbyte1 = 0;
@@ -60,7 +63,6 @@ void updatePressure()
  result1 = result1 | inbyte1; //combine first and second byte of word
  //Serial.print("Calibration word 1 =");
  //Serial.println(result1);
-
  resetsensor();//resets the sensor
 
  //Calibration word 2; see comments on calibration word 1
@@ -75,7 +77,6 @@ void updatePressure()
  result2 = result2 | inbyte2;
  //Serial.print("Calibration word 2 =");
  //Serial.println(result2);  
-
  resetsensor();//resets the sensor
 
  //Calibration word 3; see comments on calibration word 1
@@ -136,12 +137,10 @@ void updatePressure()
  tempMSB = tempMSB << 8; //shift first byte
  tempLSB = SPI.transfer(0x00); //send dummy byte to read second byte of value
  D2 = tempMSB | tempLSB; //combine first and second byte of value
- Serial.print("Temperature raw =");
- Serial.println(D2); //voilá!
+ //Serial.print("Temperature raw =");
+ //Serial.println(D2); //voilá!
 
  resetsensor();//resets the sensor
- String result = "";
-
  //Pressure:
  unsigned int presMSB = 0; //first byte of value
  unsigned int presLSB =0; //last byte of value
@@ -155,7 +154,8 @@ void updatePressure()
  presLSB = SPI.transfer(0x00); //send dummy byte to read second byte of value
  D1 = presMSB | presLSB; //combine first and second byte of value
  //result += "Pressure raw =";
- //result += D1;
+ Serial.println("Pressure raw ");
+ Serial.println(D1);
  //calculation of the real values by means of the calibration factors and the maths
  //in the datasheet. const MUST be long
  const long UT1 = (c5 << 3) + 10000;
@@ -164,23 +164,25 @@ void updatePressure()
  const long OFF  = c2 + (((c4 - 250) * dT) >> 12) + 10000;
  const long SENS = (c1/2) + (((c3 + 200) * dT) >> 13) + 3000;
  long PCOMP = (SENS * (D1 - OFF) >> 12) + 1000;
- float TEMPREAL = TEMP/10;      //floating point math
+ _tempTimesTen = TEMP;
 
- result += "Real Temperature in °C=";
- result += TEMPREAL;
-
- result += "Compensated pressure in mbar =";
- result += PCOMP;
-
- double depth = (PCOMP-990)/101.325;
- result += " Depth: ";
- result += depth;
+ _pressure = PCOMP;
  
  //2nd order compensation only for T > 0°C
- const long dT2 = dT - ((dT >> 7 * dT >> 7) >> 3);
- const float TEMPCOMP = (200 + (dT2*(c6+100) >>11))/10;
+ //const long dT2 = dT - ((dT >> 7 * dT >> 7) >> 3);
+ //const float TEMPCOMP = (200 + (dT2*(c6+100) >>11))/10;
  //result += "2nd order compensated temperature in °C =";
  //result += TEMPCOMP;  
 
  //delay(5000);
 }
+int getDepth(){
+  return (_pressure-990)/101.325;
+}
+int getTempTimesTen(){
+  return _tempTimesTen;
+}
+int getPressure(){
+  return _pressure;
+}
+

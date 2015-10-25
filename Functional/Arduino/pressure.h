@@ -9,6 +9,6 @@ int getPressure();
 
 int getDepth();
 
-int getTemp();
+int getTempTimesTen();
 
 #endif

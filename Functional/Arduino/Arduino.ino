@@ -102,7 +102,10 @@ void writeToCommand(Input i){
   Serial3.print("STR");
   Serial3.print("002"); //print the number of lines of input the python program can read in three digits
   Serial3.println(i.buttons1);
-  Serial3.println("Pressure");
+  Serial3.println( getPressure());
+  Serial.println(getPressure());
+  Serial.println(getTempTimesTen());
+  //Serial.println(getTempTimesTen());
   //Serial3.println(updatePressure());
 }
 
@@ -110,7 +113,7 @@ void loop() {
      if (Serial3.available()) {
         waitForStart();
         Input i = readBuffer();
-
+        updatePressureSensor();
         digitalWrite(serialWritePin, HIGH);
         writeToCommand(i); //this is where the code to write back to topside goes.
         delay(50);         //this delay allows for hardware serial to work with rs485
@@ -119,7 +122,7 @@ void loop() {
         processInput(i);//gives the inputs to the motors
         
         //the following is for debugging, prints all input back out on the serial used for programming the arduino
-        
+        /*
         Serial.print("buttons: ");
         Serial.print(i.buttons2);
         Serial.print(" ");
@@ -134,7 +137,7 @@ void loop() {
         Serial.print(i.secondaryY);
         Serial.print(" Trig: ");
         Serial.println(i.triggers);
-        
+        */
         
     }
 }
