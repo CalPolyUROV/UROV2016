@@ -5,6 +5,9 @@
 #include <SPI.h>
 #include "pressure.h"
 
+// TO DO -  condense debug input serial lines into one void debugInput(i); function
+// TO DO -  UPDATE PIN USAGE FROM PRESSURE.H :)
+
 //all pins used must be lised here! either as a variable to change quickly later or as a comment if it is in another file
 
 int serialWritePin = 2; //this is the pin to control whether it is recieving or sending
@@ -18,9 +21,14 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 
 //End of pin listings
 
+///// Timers used by Quad Motor Shields on MEGA 2560//////
+//
+// Timer0, Timer1, Timer2, Timer3, Timer4, 
+//
+//////////////////////////////////
+
 
 QuadMotorShields md;
-
 
 
 //SoftwareSerial Serial3(14, 15);
