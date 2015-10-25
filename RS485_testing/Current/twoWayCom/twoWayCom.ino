@@ -11,8 +11,15 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 
 ///// Pins used by Quad Motor Shields //////
 //
+//5,6,9,11 PWM
 //31, 33, 29, A0, 25, 27, 23, A1, 
 //42, 44, 40, 24, 26, 22
+//
+//////////////////////////////////
+
+///// Timers used by Quad Motor Shields on MEGA 2560//////
+//
+// Timer0, Timer1, Timer2, Timer3, Timer4, 
 //
 //////////////////////////////////
 

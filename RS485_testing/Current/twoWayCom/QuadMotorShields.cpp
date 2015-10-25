@@ -14,22 +14,22 @@ TODO:
 QuadMotorShields::QuadMotorShields()
 {
   //Pin map, Bottom Pololu (yellow) IGNORE COLORS THEY LIE NOW!
-  _INA1 = 31; // M1INA, orange
-  _INB1 = 33; // M1INB , Yellow
-  _EN1DIAG1 = 29; // M1EN,  Black 
-  _CS1 =A0;  //M1CS , gray 
-  _INA2 = 25;   //M2INA2,Blue
-  _INB2 = 27;   //M2INB2,Red
-  _EN2DIAG2 = 23; //M2EN, Brown 
-  _CS2 = A1; //M2CS White
+  _INA1 = 31; // M1INA
+  _INB1 = 33; // M1INB
+  _EN1DIAG1 = 29; // M1EN
+  _CS1 =A0;  //M1CS 
+  _INA2 = 25;   //M2INA2
+  _INB2 = 27;   //M2INB2
+  _EN2DIAG2 = 23; //M2EN
+  _CS2 = A1; //M2CS
 
   //Pin map, Top Pololu (pink)
-  _INA3 = 42; // M1INA, orange //ORIGINALLY 30
-  _INB3 = 44; // M1INB , Yellow //ORIGINALLY 32
-  _EN3DIAG3 = 40; // M1EN,  Black //ORIGINALLY 28
-  _INA4 = 24; //M2INA2,Blue
-  _INB4 = 26; //M2INB2,Red
-  _EN4DIAG4 = 22; //M2EN, Brown 
+  _INA3 = 42; // M1INA,     //ORIGINALLY 30
+  _INB3 = 44; // M1INB ,    //ORIGINALLY 32
+  _EN3DIAG3 = 40; // M1EN,  //ORIGINALLY 28
+  _INA4 = 24; //M2INA2
+  _INB4 = 26; //M2INB2
+  _EN4DIAG4 = 22; //M2EN
 
 }
 
