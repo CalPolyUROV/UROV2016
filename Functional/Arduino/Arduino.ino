@@ -32,15 +32,21 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 
 
 QuadMotorShields md;
-
+bool pressure = true;
+bool voltage = true;
+bool temperature = true;
+bool accel = true;
+bool depth = true;
 
 //SoftwareSerial Serial3(14, 15);
-void setup() {  
-    Serial3.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
-    Serial.begin(9600);     //it does not seem to work at lower baud rates 
-    pinMode(serialWritePin, OUTPUT);
-    digitalWrite(serialWritePin, LOW);
-    pressureSetup();
+void setup() {
+	Serial3.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
+	Serial.begin(9600);     //it does not seem to work at lower baud rates 
+	pinMode(serialWritePin, OUTPUT);
+	digitalWrite(serialWritePin, LOW);
+	if (pressure){
+		//pressureSetup();
+	}
 }
 
 //looks cleaner than the empty while loop being everywhere in the code
@@ -111,17 +117,35 @@ void processInput(Input i){
 
 void writeToCommand(Input i){
   Serial3.print("STR");
-  Serial3.print("002"); //print the number of lines of input the python program can read in three digits
-  Serial3.println(i.buttons1);
-  Serial3.println( getPressure());
-  Serial.println(getPressure());
-  Serial.println(getTempTimesTen());
-  //Serial.println(getTempTimesTen());
-  //Serial3.println(updatePressure());
+  Serial3.print("010"); //print the number of lines of input the python program can read in three digits
+  if (pressure) {
+	  Serial3.println("PSR"); //tell it the next line is Pressure
+	  Serial3.print(0);
+	  Serial3.println(" mbars fake");
+  }
+  if (voltage) {
+	  Serial3.println("VLT"); //tell it the next line is Power info
+	  Serial3.print(0);
+	  Serial3.println(" voltage fake");
+  }
+  if (temperature) {
+	  Serial3.println("TMP"); //tell it the next line is Temperature
+	  Serial3.print(0);
+	  Serial3.println(" degrees fake");
+  }
+  if (accel) {
+	  Serial3.println("ACL"); //tell it the next line is Accelerometer
+	  Serial3.print(0);
+	  Serial3.println(" whatevers fake");
+  }
+  if (depth) {
+	  Serial3.println("DPT"); //tell it the next line is Depth
+	  Serial3.print(0);
+	  Serial3.println(" feet fake");
+  }
 }
 void debugInput(Input i){
   //the following is for debugging, prints all input back out on the serial used for programming the arduino
-  
   Serial.print("buttons: ");
   Serial.print(i.buttons2);
   Serial.print(" ");
@@ -138,14 +162,14 @@ void debugInput(Input i){
   Serial.println(i.triggers);
 
 }
-
 void loop() { 
      if (Serial3.available()) {
         waitForStart();
         Input i = readBuffer();
-        updatePressureSensor();
+        //updatePressureSensor();
         digitalWrite(serialWritePin, HIGH);
         writeToCommand(i); //this is where the code to write back to topside goes.
+		Serial3.flush();
         delay(50);         //this delay allows for hardware serial to work with rs485
         digitalWrite(serialWritePin, LOW);
         

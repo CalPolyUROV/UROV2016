@@ -30,10 +30,28 @@ print "controller connected"
 
 root = tk.Tk()
 root.title("Cal Poly Control Center")
-outputLabel = tk.Label(root, fg="black", background='white')
+pressureLabel = tk.Label(root, fg="black", background='white', text="Pressure: ")
 
+pressureOut = tk.Label(root, fg="black", background="white")
+voltageLabel = tk.Label(root, fg="black", background='white', text="Voltage: ")
+voltageOut = tk.Label(root, fg="black", background="white")
+accelLabel = tk.Label(root, fg="black", background='white', text="Acceleration: ")
+accelOut = tk.Label(root, fg="black", background="white")
+tempLabel = tk.Label(root, fg="black", background='white', text="Temperature: ")
+tempOut = tk.Label(root, fg="black", background="white")
+depthLabel = tk.Label(root, fg="black", background='white', text="Depth: ")
+depthOut = tk.Label(root, fg="black", background='white')
+pressureLabel.grid(row=0, column=0)
+voltageLabel.grid(row=1, column=0)
+accelLabel.grid(row=2, column=0)
+tempLabel.grid(row=3, column=0)
+depthLabel.grid(row=4, column=0)
+pressureOut.grid(row=0, column=1)
+voltageOut.grid(row=1, column=1)
+accelOut.grid(row=2, column=1)
+tempOut.grid(row=3, column=1)
+depthOut.grid(row=4, column=1)
 def update():
-    global outputLabel
     cont.update()
     buttons1 = 0x0
     buttons2 = 0x0
@@ -61,6 +79,16 @@ def update():
     outbound.write(" ")
     counter = 10
     proceed = False
+    pressureOut['bg'] = "red"
+    voltageOut['bg'] = "red"
+    tempOut['bg'] = "red"
+    accelOut['bg'] = "red"
+    depthOut['bg'] = "red"
+    pressureLabel['bg'] = "red"
+    voltageLabel['bg'] = "red"
+    tempLabel['bg'] = "red"
+    accelLabel['bg'] = "red"
+    depthLabel['bg'] = "red"
     while True and counter > 0:
         counter -= 1
         if outbound.readable():
@@ -70,14 +98,35 @@ def update():
                         proceed = True
                         break
     if(proceed):
-
         linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
-        for i in range(0, linesToRead):
-            outputLabel['text'] = outbound.readline().rstrip()
-    outputLabel.after(100, update)
+        for i in range(0, linesToRead // 2):
+            label = outbound.readline().rstrip().lstrip()
+            if(label == "PSR"):
+                pressureOut['text'] = outbound.readline().rstrip()
+                pressureOut['bg'] = "green"
+                pressureLabel['bg'] = "green"
+            elif(label == "VLT"):
+                voltageOut['text'] = outbound.readline().rstrip()
+                voltageOut['bg'] = "green"
+                voltageLabel['bg'] = "green"
+            elif(label == "TMP"):
+                tempOut['text'] = outbound.readline().rstrip()
+                tempOut['bg'] = "green"
+                tempLabel['bg'] = "green"
+            elif(label == "ACL"):
+                accelOut['text'] = outbound.readline().rstrip()
+                accelOut['bg'] = "green"
+                accelLabel['bg'] = "green"
+            elif(label == "DPT"):
+                depthOut['text'] = outbound.readline().rstrip()
+                depthOut['bg'] = "green"
+                depthLabel['bg'] = "green"
+            else:
+                print "unknown datatype:", label
+                print "data:", outbound.readline().rstrip()
+    root.after(100, update)
 
-outputLabel.grid(row=0, column=0)
-outputLabel.after(1000, update)
+root.after(1000, update)
 button = tk.Button(root, text='Stop', width=25, command=root.destroy)
 button.grid(row=5, column=0, columnspan=2)
 root.mainloop()
