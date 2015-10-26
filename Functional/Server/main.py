@@ -98,7 +98,7 @@ def update():
                         proceed = True
                         break
     if(proceed):
-        linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
+        linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read..
         for i in range(0, linesToRead // 2):
             label = outbound.readline().rstrip().lstrip()
             if(label == "PSR"):
