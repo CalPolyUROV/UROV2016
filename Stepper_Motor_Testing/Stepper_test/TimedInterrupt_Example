@@ -1,0 +1,124 @@
+//Here is a timed interrupt example.
+//It will print 0ms, 100ms... 2400ms
+//At 0ms it sets up the timed interrupt, which will be triggered 1 second later
+//The interrupt will print "Im Interrupting hohohohohoho" and then disable itself
+////Disabling interrupt is optional; it can be made conditional too
+//After 900ms it will interrupt and print the message.
+//After 1900ms you will see that it will NOT print the message.
+//
+//Each Timer Interrupt will set the Timer Divisor of one Timer.
+////Interrupts after long periods of time (in this case 1 second) will use divisor 1024
+////Timer with 1024 Hz can also be used for the stepper motor.
+
+//Timed interrupt
+//http://www.instructables.com/id/Arduino-Timer-Interrupts/?ALLSTEPS
+//Can work on timer 0, timer 1, timer 2
+//
+//Can have variable speeds and times
+//       Can run simultaneously with other functions
+//       Can be emergency stopped
+//       Functions to be made
+//         stepperStart(speed, runtime) //Starts the motor, gives it a speed and a limited run time
+//         stepperStop()              //Stops the motor
+//                                        //Automatically called after the run time
+//                                        //Can be called as emergency stop
+//
+//Methods for implementation
+//
+//Option 1: Using analogWrite (PWM) to stepPin, single interrupt after full duration  //PROBABLY THE BETTER OPTION, SIMPLER AND INTERRUPTS ONLY ONCE 
+//  stepperStart(): Start PWM
+//  stepperStop():  Interrupt after motor has finished moving
+//  ISR(): Stops PWM. Maybe Print to console to confirm.
+//  Pros: Only interrupt once. Lower chance of interfering with other functions.
+//  Cons: PWM has limited discrete frequencies. 
+//          (It does have the frequencies we need). (e.g. 30.64Hz)
+//        PWM uses up 1 of 6 timers as long as it is running
+//  
+//Option 2: Using digitalWrite to stepPin, many interrupts after each half period
+//  stepperStart(): Initialize interrupts for every half period
+//                  Enable interrupts
+//  stepperStop():  Disable Interrupts after X counts (X half periods)
+//  ISR(): Conditionally Disables Interrupt or varies signal to simulate square wave, adds count 
+//        if(stepcount < maxstepcount) {
+//            disableinterrupt;
+//          } else {
+//            if(stepState == 1) {
+//              digitalWrite(stepPin, Low);
+//              stepState = 0;
+//            } else {
+//              digitalWrite(stepPin, High);
+//              stepState = 1;
+//            };
+//          stepcount += 1;
+//          };
+//         
+//  Pros: Can have many unique fine tuned frequencies, any division of the fastest clock
+//          (However 30.64 Hz is probably fine in option 1)
+//        Does not necesarilly need its own timer, can share with any timer of higher frequency
+//  Cons: Interrupts happen relatively frequenctly (e.g. 30.64Hz, as opposed to 3/5 Hz)
+//          (More likely to interfere with other functions?)
+//  
+//               
+int dummycount;
+
+void setup()  {
+  Serial.begin(9600);
+}
+
+/////////////////////////////////////
+////////TIMER1 INTERRUPT SETUP///////
+//To use a different number timer, change the 1's to 0,1,2,3,4,5
+void setupTimer1Interrupt() {
+  //set timer1 divisor to 1024 ; Timer1 = 30Hz
+  //set timer1 interrupt at 1Hz
+  cli();                  //stop interrupts
+  TCCR1A = 0;             // set entire TCCR1A register to 0
+  TCCR1B = 0;             // same for TCCR1B
+  TCNT1  = 0;             //initialize counter value to 0
+                          // set compare match register for 1hz increments
+  OCR1A = 15624;          // = (16*10^6) / (1*1024) - 1 (must be <65536)
+                          // = (16*10^6) / (desired interrupt freq * clock divisor) - 1  
+  TCCR1B |= (1 << WGM12); // turn on CTC mode
+  TCCR1B |= (1 << CS12) | (1 << CS10);  // Set CS12 and CS10 bits for 1024 prescaler
+  TIMSK1 |= (1 << OCIE1A);// enable timer compare interrupt
+  sei();//allow interrupts  
+}////////////////////////////////////
+/////////////////////////////////////
+
+///////////////////////////////////////
+//////////TIMER3 INTERRUPT SETUP///////
+//void setupTimer3Interrupt() {
+//  //set timer3 divisor to 1024 ; Timer3 = 30Hz
+//  //set timer3 interrupt at 1Hz
+//  cli();                  //stop interrupts
+//  TCCR3A = 0;             // set entire TCCR3A register to 0
+//  TCCR3B = 0;             // same for TCCR3B
+//  TCNT3  = 0;             //initialize counter value to 0
+//                          // set compare match register for 1hz increments
+//  OCR3A = 15624;          // = (16*10^6) / (1*1024) - 1 (must be <65536)            
+//  TCCR3B |= (1 << WGM12); // turn on CTC mode
+//  TCCR3B |= (1 << CS12) | (1 << CS10);  // Set CS12 and CS10 bits for 1024 prescaler
+//  TIMSK3 |= (1 << OCIE1A);// enable timer compare interrupt
+//  sei();//allow interrupts  
+//}////////////////////////////////////
+///////////////////////////////////////
+
+ISR(TIMER1_COMPA_vect){  //change the 0 to 1 for timer1 and 2 for timer2
+   Serial.println("Im Interrupting");
+   Serial.println("hohohohohoho");
+   TCCR1B &= ~(_BV(CS10) | _BV(CS11) | _BV(CS12));//Disable interrupt from timer1
+   
+}
+
+
+void loop()  {
+  setupTimer1Interrupt();
+
+  for (int x = 0; x < 25; x++) {
+    dummycount = x*100;
+    Serial.print(dummycount);
+    Serial.println(" ms");
+    delay(100);
+  };
+  
+}
