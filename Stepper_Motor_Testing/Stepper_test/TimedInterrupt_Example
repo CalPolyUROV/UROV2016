@@ -1,10 +1,17 @@
-//Here is a timed interrupt example.
+//Timed Interrupt For Stepper Motor
+//
+//Code is not clean yet
+//
 //It will print 0ms, 100ms... 2400ms
-//At 0ms it sets up the timed interrupt, which will be triggered 1 second later
-//The interrupt will print "Im Interrupting hohohohohoho" and then disable itself
-////Disabling interrupt is optional; it can be made conditional too
-//After 900ms it will interrupt and print the message.
-//After 1900ms you will see that it will NOT print the message.
+//It will start the motor at 0ms at 32 steps/sec
+//Motor will stop after 32 steps (64 interrupts)
+//32steps/200 = 16% revolution = 1.0053096 rads = 0.32pirads
+//
+//Stepper Motor Might be burnt out
+//
+//Current Method is Option 2 of the mentioned, 2interrupts = 1 step
+//
+//Stepper driver occupy a selectable timer.
 //
 //Each Timer Interrupt will set the Timer Divisor of one Timer.
 ////Interrupts after long periods of time (in this case 1 second) will use divisor 1024
@@ -26,7 +33,7 @@
 //Methods for implementation
 //
 //Option 1: Using analogWrite (PWM) to stepPin, single interrupt after full duration  //PROBABLY THE BETTER OPTION, SIMPLER AND INTERRUPTS ONLY ONCE 
-//  stepperStart(): Start PWM
+//  stepperStart(): Start PWM                                                         //SCRAPPED FOR NOW, PWM CANNOT SHARE
 //  stepperStop():  Interrupt after motor has finished moving
 //  ISR(): Stops PWM. Maybe Print to console to confirm.
 //  Pros: Only interrupt once. Lower chance of interfering with other functions.
@@ -34,7 +41,7 @@
 //          (It does have the frequencies we need). (e.g. 30.64Hz)
 //        PWM uses up 1 of 6 timers as long as it is running
 //  
-//Option 2: Using digitalWrite to stepPin, many interrupts after each half period
+//Option 2: Using digitalWrite to stepPin, many interrupts after each half period    //THIS METHOD IS BEING USED
 //  stepperStart(): Initialize interrupts for every half period
 //                  Enable interrupts
 //  stepperStop():  Disable Interrupts after X counts (X half periods)
@@ -60,9 +67,12 @@
 //  
 //               
 int dummycount;
-
+int pulseCount;
+int nextPWM;
 void setup()  {
   Serial.begin(9600);
+  pinMode(3, OUTPUT);
+  //pinMode(4, OUTPUT);
 }
 
 /////////////////////////////////////
@@ -76,11 +86,15 @@ void setupTimer1Interrupt() {
   TCCR1B = 0;             // same for TCCR1B
   TCNT1  = 0;             //initialize counter value to 0
                           // set compare match register for 1hz increments
-  OCR1A = 15624;          // = (16*10^6) / (1*1024) - 1 (must be <65536)
-                          // = (16*10^6) / (desired interrupt freq * clock divisor) - 1  
+  //OCR1A = 15624;          // = (16*10^6) / (1*1024) - 1 (must be <65536)
+  OCR1A = 256;                        // = (16*10^6) / (desired interrupt freq * clock divisor) - 1  
   TCCR1B |= (1 << WGM12); // turn on CTC mode
   TCCR1B |= (1 << CS12) | (1 << CS10);  // Set CS12 and CS10 bits for 1024 prescaler
   TIMSK1 |= (1 << OCIE1A);// enable timer compare interrupt
+  
+  pulseCount = 0;      
+  Serial.print("StStart");
+  
   sei();//allow interrupts  
 }////////////////////////////////////
 /////////////////////////////////////
@@ -104,16 +118,33 @@ void setupTimer1Interrupt() {
 ///////////////////////////////////////
 
 ISR(TIMER1_COMPA_vect){  //change the 0 to 1 for timer1 and 2 for timer2
-   Serial.println("Im Interrupting");
-   Serial.println("hohohohohoho");
-   TCCR1B &= ~(_BV(CS10) | _BV(CS11) | _BV(CS12));//Disable interrupt from timer1
+   //Serial.println("Im Interrupting");
+   //Serial.println("hohohohohoho");
    
+   if(nextPWM < 1){
+   digitalWrite(3,HIGH);
+   nextPWM = 1;
+   Serial.println(pulseCount);
+   } else {
+   digitalWrite(3,LOW);
+   nextPWM = 0;
+   Serial.println(nextPWM);
+   }
+   //pulseCount > 2 * steps, 1revolution = 200steps
+   pulseCount += 1;
+   //Serial.println("S");
+   if (pulseCount > 64) {  
+   TCCR1B &= ~(_BV(CS10) | _BV(CS11) | _BV(CS12));//Disable interrupt from timer1
+   digitalWrite(3,LOW);
+   Serial.println("StStop");
+   }
 }
 
 
 void loop()  {
+  //analogWrite(3, 128);
   setupTimer1Interrupt();
-
+  //digitalWrite(4,HIGH);
   for (int x = 0; x < 25; x++) {
     dummycount = x*100;
     Serial.print(dummycount);
