@@ -1,5 +1,6 @@
 void stepper1_selectPins (int stepPin,  int dirPin);    //Default 3 and 4 . Not required before using startStepper1Interrupt
-void stepper1_run(int degreesRotate, int degreesPerSecond);  //Put in distance in degrees, and speed in degrees Per Second
+void stepper1_run(int degreesRotate, int degreesPerSecond);  //Put in distance in degrees CW, and speed in degrees Per Second 
+                      //Positive degreesRotate = CW, Negative degreesRotate = CCW
 void stepper1_stop();                                        //Stops the stepper motor
 
 void stepper3_selectPins (int stepPin,  int dirPin);    //Default 5 and 6 . Not required before using startStepper1Interrupt
