@@ -1,9 +1,11 @@
 
 #include "dataStruc.h"
 #include "QuadMotorShields.h"
+#include "gyroAccelerometer.h"
 #include <SoftwareSerial.h>
 #include <SPI.h>
 #include "pressure.h"
+#include <Wire.h>
 
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
@@ -33,10 +35,10 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 
 QuadMotorShields md;
 bool pressure = true;
-bool voltage = true;
-bool temperature = true;
+bool voltage = false;
+bool temperature = false;
 bool accel = true;
-bool depth = true;
+bool depth = false;
 
 //SoftwareSerial Serial3(14, 15);
 void setup() {
@@ -46,6 +48,9 @@ void setup() {
 	digitalWrite(serialWritePin, LOW);
 	if (pressure){
 		//pressureSetup();
+	}
+	if (accel) {
+		accelSetup();
 	}
 }
 
@@ -117,7 +122,19 @@ void processInput(Input i){
 
 void writeToCommand(Input i){
   Serial3.print("STR");
-  Serial3.print("010"); //print the number of lines of input the python program can read in three digits
+  int lines = 0;
+  if (pressure) lines += 2;
+  if (voltage) lines += 2;
+  if (temperature) lines += 2;
+  if (depth) lines += 2;
+  if (voltage) lines += 2;
+  String numberOfLines = String(lines);
+  int counter = 0;
+  while ((counter + numberOfLines.length()) != 3) {
+	  //Serial3.print("0");
+	  counter++;
+  }
+  Serial3.print("007"); //print the number of lines of input the python program can read in three digits
   if (pressure) {
 	  Serial3.println("PSR"); //tell it the next line is Pressure
 	  Serial3.print(0);
@@ -135,8 +152,25 @@ void writeToCommand(Input i){
   }
   if (accel) {
 	  Serial3.println("ACL"); //tell it the next line is Accelerometer
-	  Serial3.print(0);
-	  Serial3.println(" whatevers fake");
+	  Serial3.print("Accel: X: ");
+	  Serial3.print(getAccelX());
+	  Serial3.print(" Y: ");
+	  Serial3.print(getAccelY());
+	  Serial3.print(" Z: ");
+	  Serial3.print(getAccelZ());
+	  Serial3.print("\nGyro: X: ");
+	  Serial3.print(getGyroX());
+	  Serial3.print(" Y: ");
+	  Serial3.print(getGyroY());
+	  Serial3.print(" Z: ");
+	  Serial3.print(getGyroZ());
+	  Serial3.print("\nMag: X: ");
+	  Serial3.print(getMagX());
+	  Serial3.print(" Y: ");
+	  Serial3.print(getMagY());
+	  Serial3.print(" Z: ");
+	  Serial3.print(getMagZ());
+	  Serial3.println();
   }
   if (depth) {
 	  Serial3.println("DPT"); //tell it the next line is Depth
@@ -167,6 +201,7 @@ void loop() {
         waitForStart();
         Input i = readBuffer();
         //updatePressureSensor();
+		updateAccel();
         digitalWrite(serialWritePin, HIGH);
         writeToCommand(i); //this is where the code to write back to topside goes.
 		Serial3.flush();

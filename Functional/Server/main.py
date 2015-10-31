@@ -114,7 +114,9 @@ def update():
                 tempOut['bg'] = "green"
                 tempLabel['bg'] = "green"
             elif(label == "ACL"):
-                accelOut['text'] = outbound.readline().rstrip()
+                accelOut['text'] = outbound.readline().rstrip() + '\n'
+                accelOut['text'] += outbound.readline().rstrip() + '\n'
+                accelOut['text'] += outbound.readline().rstrip()
                 accelOut['bg'] = "green"
                 accelLabel['bg'] = "green"
             elif(label == "DPT"):
