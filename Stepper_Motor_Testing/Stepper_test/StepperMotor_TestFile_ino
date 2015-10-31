@@ -194,7 +194,7 @@ void startStepper1Interrupt(int totalSteps, int stepPeriod, boolean goingCW) {
        //|=  0b00000010;
        // Set Interrupt when Compare A flag set
   stepper1_pulseCount = 0;  //This counts the number of Interrupts      
-  Serial.println("StStart");//Comment me out when done testing
+  //Serial.println("StStart");//Comment me out when done testing
   stepper1_nextPWMisHigh = true; //The Stepper1 stepPin will go high next
   sei();//allow interrupts  
 }
@@ -214,7 +214,7 @@ ISR(TIMER1_COMPA_vect){  //change the 0 to 1 for timer1 and 2 for timer2
    stepper1_pulseCount += 1;            //Counting the number of interrupts so far
    if (stepper1_pulseCount > stepper1_totalSteps) {    //If totalSteps has been reached
    stepper1_stop();
-   Serial.println("StStop");//Comment me out when done testing
+   //Serial.println("StStop");//Comment me out when done testing
    }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,52 +352,21 @@ int stepperGetStepsPS(int degreesPS) {
 
 
 
-
-
-
-
-  //void startStepper1Interrupt(int totalSteps, int stepPeriod)
-  //startStepper1Interrupt(127, 127);            //Initiates the Stepper1 Interupting Square Wave
-                                     //Starts the Timer1 Counter
-                                     //Initializes the Timer1 Interrupt Count
-                        //See Equations at top for calculating inputs.
-                        //Suggested 63 and 255 by default.
-
-
+//testing
 void loop()  {
-  
-  stepper1_run(360, 360);
+  Serial.println("Start");
+  stepper1_run(360, 360);  //CW 360d, 1rps
+  delay(2000);             
+  stepper1_run(-360, 720); //CCW 360d, 2rps
+  delay(2000);
+  stepper1_run(360, 90);   //CW 360d, 1/4 rps
   delay(1000);
-  //stepper1_stop();
-  //delay(3000);
-  //stepper1_run(-360, 360);
+  stepper1_stop();         //Cut short at about 90d
   delay(1000);
-  //void setupTimer1Interrupt(int totalSteps, int stepPeriod)
-  //startStepper1Interrupt(63, 255, true);            //Initiates the Stepper1 Interupting Square Wave
-                                     //Starts the Timer1 Counter
-                                     //Initializes the Timer1 Interrupt Count
-                        //See Equations at top for calculating inputs.
-                        //Suggested 63 and 255 by default.
+
                                      
                                      
-  //digitalWrite(4,HIGH);  //Direction must be set by yourself
-//  for (int x = 0; x < 25; x++) {
-//    dummycount = x*100;
-//    Serial.print(dummycount);
-//    Serial.println(" ms");
-//    delay(100);
-//  };
-//  
-//    //startStepper1Interrupt(127, 127, false);
-//    stepper1_run(-96, 120);
-//  
-//    for (int x = 25; x < 50; x++) {
-//    dummycount = x*100;
-//    Serial.print(dummycount);
-//    Serial.println(" ms");
-//    delay(100);
-//  };
-  
+
   
   
   
