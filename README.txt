@@ -10,6 +10,9 @@
 # Timer Frequency Charts 
 #	https://arduino-info.wikispaces.com/Arduino-PWM-Frequency
 #
+# 9DOF Tutorial
+# https://github.com/ptrbrtz/razor-9dof-ahrs/wiki/Tutorial
+#
 ##################################
 # UROV_2016 Progress
 #	October 3rd- Made working prototype of rs485 communications working on Santiago
