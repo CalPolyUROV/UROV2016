@@ -1,0 +1,16 @@
+void stepper1_selectPins (int stepPin,  int dirPin);    //Default 3 and 4 . Not required before using startStepper1Interrupt
+void startStepper1Interrupt(int totalSteps, int stepPeriod, boolean goingCW); //Use this. See below
+void stepper3_selectPins (int stepPin,  int dirPin);    //Default 5 and 6 . Required before using startStepperInterrupt
+void startStepper3Interrupt(int totalSteps, int stepPeriod, boolean goingCW); //Use this. See below
+
+//totalSteps and stepPeriod ARE NOT TRULY THE TOTAL STEPS AND STEP PERIOD
+//totalSteps = 63;  //Number of steps. 
+                                     //totalSteps = (# of rising edges * 2) - 1
+                                         //# rising edges = # of steps = # of periods = # of interrupts/2
+                                       //# of interrupts = (\totalSteps + 1).
+                                       //# of steps = # of steps / 2 = (totalSteps + 1)/2
+//stepPeriod = 255; //Number of timer1 ticks per interrupt (Period of square wave)
+                                     //stepPeriod = {(2^24)/[(timer1 divisor)(2 * Step Frequency)]} - 1
+                                       //stepPeriod = timer1 ticks - 1
+                                       //Interrupt Frequency = (2^24)/(( timer1 divisor)*(stepPeriod + 1)) 
+                                       //Step Frequency = Interrupt Frequency / 2    
