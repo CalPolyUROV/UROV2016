@@ -1,4 +1,3 @@
-//
 //For Optimization, input parameters are calculated first
 //See Equations
 //
@@ -110,9 +109,17 @@ boolean stepper3_nextPWMisHigh;
 
 int dummycount;  //DummyCount for testing
 
+//void setup()  {
+//  Serial.begin(9600);
+//  pinMode(stepper1_stepPin, OUTPUT);
+//  pinMode(stepper1_dirPin, OUTPUT);
+//}
 void stepperSetup()  {
+  
   pinMode(stepper1_stepPin, OUTPUT);
   pinMode(stepper1_dirPin, OUTPUT);
+  pinMode(stepper3_stepPin, OUTPUT);
+  pinMode(stepper3_dirPin, OUTPUT);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +130,28 @@ void stepper1_selectPins (int stepPin,  int dirPin) {
   stepper1_dirPin = dirPin;
   pinMode(stepper1_stepPin, OUTPUT);
   pinMode(stepper1_dirPin, OUTPUT);
+}
+void stepper1_run(int degreesRotate, int degreesPerSecond) {
+  
+  boolean goingCW;  //Set direction, get abs(degreesRotate)
+  if(degreesRotate < 0) {
+    goingCW = false;
+    degreesRotate *= -1;
+  } else {
+    goingCW = true;
+  }
+  
+  degreesRotate = stepperGetSteps(degreesRotate);
+  
+  degreesPerSecond = stepperGetStepsPS(degreesPerSecond);
+  
+  startStepper1Interrupt(degreesRotate, degreesPerSecond, goingCW);
+}
+void stepper1_stop(){
+   TCCR1B &= ~(_BV(CS10) | _BV(CS11) | _BV(CS12));//Disable interrupt from timer1
+     //  &= 0b11111000;  //TCCR1B(7 downto 0) <= "000"
+     //Setting Clock Select to option 0, timer no longer runs. 
+   digitalWrite(stepper1_stepPin,LOW); //Set Square wave to low, save power?
 }
 void startStepper1Interrupt(int totalSteps, int stepPeriod, boolean goingCW) {
   
@@ -186,10 +215,7 @@ ISR(TIMER1_COMPA_vect){  //change the 0 to 1 for timer1 and 2 for timer2
    
    stepper1_pulseCount += 1;            //Counting the number of interrupts so far
    if (stepper1_pulseCount > stepper1_totalSteps) {    //If totalSteps has been reached
-   TCCR1B &= ~(_BV(CS10) | _BV(CS11) | _BV(CS12));//Disable interrupt from timer1
-     //  &= 0b11111000;  //TCCR1B(7 downto 0) <= "000"
-     //Setting Clock Select to option 0, timer no longer runs. 
-   digitalWrite(stepper1_stepPin,LOW); //Set Square wave to low, save power?
+   stepper1_stop();
    Serial.println("StStop");//Comment me out when done testing
    }
 }
@@ -206,13 +232,35 @@ void stepper3_selectPins (int stepPin,  int dirPin) {
   pinMode(stepper3_stepPin, OUTPUT);
   pinMode(stepper3_dirPin, OUTPUT);
 }
+void stepper3_run (int degreesRotate, int degreesPerSecond) {
+  
+  boolean goingCW;  //Set direction, get abs(degreesRotate)
+  if(degreesRotate < 0) {
+    goingCW = false;
+    degreesRotate *= -1;
+  } else {
+    goingCW = true;
+  }
+  
+  degreesRotate = stepperGetSteps(degreesRotate);
+  
+  degreesPerSecond = stepperGetStepsPS(degreesPerSecond);
+  
+  startStepper3Interrupt(degreesRotate, degreesPerSecond, goingCW);
+}
+void stepper3_stop(){
+   TCCR3B &= ~(_BV(CS30) | _BV(CS31) | _BV(CS32));//Disable interrupt from timer3
+     //  &= 0b11111000;  //TCCR3B(7 downto 0) <= "000"
+     //Setting Clock Select to option 0, timer no longer runs. 
+   digitalWrite(stepper3_stepPin,LOW); //Set Square wave to low, save power?
+}
 //To use a different number timer, change the 3's to 0,1,2,3,4,5
 void startStepper3Interrupt(int totalSteps, int stepPeriod, boolean goingCW) {
   
   if(goingCW) {
-    digitalWrite(stepper3_dirPin, HIGH);
+    digitalWrite(stepper1_dirPin, HIGH);
   } else {
-    digitalWrite(stepper3_dirPin, LOW);
+    digitalWrite(stepper1_dirPin, LOW);
   }
   
   //set timer3 divisor to 1024 ;
@@ -267,15 +315,46 @@ ISR(TIMER3_COMPA_vect){  //change the 3 to 1 for timer1 and 2 for timer2
    
    stepper3_pulseCount += 1;            //Counting the number of interrupts so far
    if (stepper3_pulseCount > stepper3_totalSteps) {    //If totalSteps has been reached
-   TCCR3B &= ~(_BV(CS30) | _BV(CS31) | _BV(CS32));//Disable interrupt from timer1
-     //  &= 0b11111000;  //TCCR3B(7 downto 0) <= "000"
-     //Setting Clock Select to option 0, timer no longer runs. 
-   digitalWrite(stepper3_stepPin,LOW); //Set Square wave to low, save power?
-   Serial.println("StStop");//Comment me out when done testing
+   stepper3_stop();
    }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+////////////////////////////////Calculator functions/////////////////////////////////////////////
+int stepperGetSteps(int numberDegrees) {
+  numberDegrees *= 5;
+  numberDegrees = numberDegrees / 9; //# of steps = degrees * 200/360
+  numberDegrees = (numberDegrees * 2) - 1; // Now we have the raw input for startStepper1Interrupt
+                                          //totalSteps = (# of rising edges * 2) - 1
+                                          //# rising edges = # of steps = # of periods = # of interrupts/2
+                                         //# of interrupts = (\totalSteps + 1).
+                                         //# of steps = # of steps / 2 = (totalSteps + 1)/2
+  return numberDegrees;
+}
+
+int stepperGetStepsPS(int degreesPS) {
+  degreesPS *= 5;
+  degreesPS = degreesPS / 9; //stepsFrequency
+  
+  degreesPS = 8192 / degreesPS;    //WILL LOSE DATA
+  degreesPS -= 1;
+  //stepPeriod = {(2^24)/[(timer1 divisor)(2 * Step Frequency)]} - 1
+                                       //stepPeriod = timer1 ticks - 1
+                                       //Interrupt Frequency = (2^24)/(( timer1 divisor)*(stepPeriod + 1)) 
+                                       //Step Frequency = Interrupt Frequency / 2
+  return degreesPS;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 
 
 
@@ -289,8 +368,14 @@ ISR(TIMER3_COMPA_vect){  //change the 3 to 1 for timer1 and 2 for timer2
 
 //void loop()  {
 //  
+//  stepper1_run(360, 360);
+//  delay(1000);
+//  //stepper1_stop();
+//  //delay(3000);
+//  //stepper1_run(-360, 360);
+//  delay(1000);
 //  //void setupTimer1Interrupt(int totalSteps, int stepPeriod)
-//  startStepper1Interrupt(63, 255, true);            //Initiates the Stepper1 Interupting Square Wave
+//  //startStepper1Interrupt(63, 255, true);            //Initiates the Stepper1 Interupting Square Wave
 //                                     //Starts the Timer1 Counter
 //                                     //Initializes the Timer1 Interrupt Count
 //                        //See Equations at top for calculating inputs.
@@ -298,21 +383,22 @@ ISR(TIMER3_COMPA_vect){  //change the 3 to 1 for timer1 and 2 for timer2
 //                                     
 //                                     
 //  //digitalWrite(4,HIGH);  //Direction must be set by yourself
-//  for (int x = 0; x < 25; x++) {
-//    dummycount = x*100;
-//    Serial.print(dummycount);
-//    Serial.println(" ms");
-//    delay(100);
-//  };
-//  
-//    startStepper1Interrupt(127, 127, false);
-//  
-//    for (int x = 25; x < 50; x++) {
-//    dummycount = x*100;
-//    Serial.print(dummycount);
-//    Serial.println(" ms");
-//    delay(100);
-//  };
+////  for (int x = 0; x < 25; x++) {
+////    dummycount = x*100;
+////    Serial.print(dummycount);
+////    Serial.println(" ms");
+////    delay(100);
+////  };
+////  
+////    //startStepper1Interrupt(127, 127, false);
+////    stepper1_run(-96, 120);
+////  
+////    for (int x = 25; x < 50; x++) {
+////    dummycount = x*100;
+////    Serial.print(dummycount);
+////    Serial.println(" ms");
+////    delay(100);
+////  };
 //  
 //  
 //  
