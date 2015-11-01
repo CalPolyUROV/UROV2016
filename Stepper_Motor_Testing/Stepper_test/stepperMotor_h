@@ -1,3 +1,4 @@
+
 void stepper1_selectPins (int stepPin,  int dirPin);    //Default 3 and 4 . Not required before using startStepper1Interrupt
 void stepper1_run(int degreesRotate, int degreesPerSecond);  //Put in distance in degrees CW, and speed in degrees Per Second 
                       //Positive degreesRotate = CW, Negative degreesRotate = CCW
@@ -7,7 +8,29 @@ void stepper3_selectPins (int stepPin,  int dirPin);    //Default 5 and 6 . Not 
 void stepper3_run(int degreesRotate, int degreesPerSecond);  //Put in distance in degrees, and speed in degrees Per Second
 void stepper3_stop();                                        //Stops the stepper motor
 
+//Eric's To Do List:
+// 1)MicroStepping
+//      Simple Change, http://howtomechatronics.com/tutorials/arduino/how-to-control-stepper-motor-with-a4988-driver-and-arduino/
+//      3 pins (MS1, MS2, MS3) on the driver select the step resolution (full, half, quarter, eighth, sixteenth)
+//      This is require 1,2, or 3 additional pins from arduino. 0 pins = full only. 1 pins = full through half. 2 pins = full through eighth. 3 pins = full through sixteenth.
+//      There are 200 full steps in one rotation. 1.8degrees/step
+// 2)Two Steppers Simulaneously (Pinch)
+//      If these Steppers are starting and stopping together, very easy to add
+//        Option1)Wire the stepPin to both drivers, wire seperate dirPin's to each driver.
+//          This method will NOT increase the interrupt sequence time.
+//        Option2)Wire seperate stepPin to each driver, wire seperate dirPins to each driver.
+//          This method will increase the interrupt sequence time by two "digitalWrite(stepper1_stepPin,LOW)"s
+// 3)Using another Timer to Operate
+//      Simple, Change the numbers on the timer registers, make new stepperN variables.
+// 4)More Commenting (references to datasheet)
+//      
+// 5)Optimize Interrupt Sequence Time 
+//      Currently ISR takes around 6 operations. If(bool_nextPWMisHIGH), digitalWrite, nextPWMisHIGH =true/false, count +=1, if(count>maxcount)
+// 6)Optimize Memory Usage Maybe
+//      Maybe. Currently does not seem that inefficient.
 
+
+//Following Section is unnecesary
 void startStepper1Interrupt(int totalSteps, int stepPeriod, boolean goingCW); //Raw Values. Use if you want Zero rounding Error
 void startStepper3Interrupt(int totalSteps, int stepPeriod, boolean goingCW); //Raw Values. Use if you want Zero rounding Error
 
