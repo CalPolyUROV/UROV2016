@@ -36,9 +36,9 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 QuadMotorShields md;
 bool pressure = true;
 bool voltage = false;
-bool temperature = false;
-bool accel = true;
-bool depth = false;
+bool temperature = true;
+bool accel = false;
+bool depth = true;
 
 //SoftwareSerial Serial3(14, 15);
 void setup() {
@@ -47,7 +47,7 @@ void setup() {
 	pinMode(serialWritePin, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
 	if (pressure){
-		//pressureSetup();
+		pressureSetup();
 	}
 	if (accel) {
 		accelSetup();
@@ -127,18 +127,18 @@ void writeToCommand(Input i){
   if (voltage) lines += 2;
   if (temperature) lines += 2;
   if (depth) lines += 2;
-  if (voltage) lines += 2;
+  if (accel) lines += 4;
   String numberOfLines = String(lines);
   int counter = 0;
   while ((counter + numberOfLines.length()) != 3) {
-	  //Serial3.print("0");
+	  Serial3.print("0");
 	  counter++;
   }
-  Serial3.print("007"); //print the number of lines of input the python program can read in three digits
+  Serial3.print(numberOfLines); //print the number of lines of input the python program can read in three digits
   if (pressure) {
 	  Serial3.println("PSR"); //tell it the next line is Pressure
-	  Serial3.print(0);
-	  Serial3.println(" mbars fake");
+	  Serial3.print(getPressure());
+	  Serial3.println(" mbars");
   }
   if (voltage) {
 	  Serial3.println("VLT"); //tell it the next line is Power info
@@ -147,8 +147,8 @@ void writeToCommand(Input i){
   }
   if (temperature) {
 	  Serial3.println("TMP"); //tell it the next line is Temperature
-	  Serial3.print(0);
-	  Serial3.println(" degrees fake");
+	  Serial3.print(getTempTimesTen());
+	  Serial3.println(" degrees C");
   }
   if (accel) {
 	  Serial3.println("ACL"); //tell it the next line is Accelerometer
@@ -174,8 +174,8 @@ void writeToCommand(Input i){
   }
   if (depth) {
 	  Serial3.println("DPT"); //tell it the next line is Depth
-	  Serial3.print(0);
-	  Serial3.println(" feet fake");
+	  Serial3.print(getDepth());
+	  Serial3.println(" feet");
   }
 }
 void debugInput(Input i){
@@ -200,8 +200,10 @@ void loop() {
      if (Serial3.available()) {
         waitForStart();
         Input i = readBuffer();
-        //updatePressureSensor();
-		updateAccel();
+		if(pressure || depth || temperature)
+			updatePressureSensor();
+		if(accel)
+			updateAccelRaw();
         digitalWrite(serialWritePin, HIGH);
         writeToCommand(i); //this is where the code to write back to topside goes.
 		Serial3.flush();

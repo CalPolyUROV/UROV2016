@@ -24,7 +24,7 @@ and with help of robtillaart and ulrichard. Thanks!
 // generate a MCKL signal pin
 const int clock = 45;
 int _pressure;
-int _tempTimesTen;
+int _temp;
 
 
 void resetsensor() //this function keeps the sketch a little shorter
@@ -36,7 +36,7 @@ void resetsensor() //this function keeps the sketch a little shorter
 }
 
 void pressureSetup() {
- Serial.begin(9600);
+ //Serial.begin(9600);
  SPI.begin(); //see SPI library details on arduino.cc for details
  SPI.setBitOrder(MSBFIRST);
  SPI.setClockDivider(SPI_CLOCK_DIV32); //divide 16 MHz to communicate on 500 kHz
@@ -154,8 +154,8 @@ void updatePressureSensor()
  presLSB = SPI.transfer(0x00); //send dummy byte to read second byte of value
  D1 = presMSB | presLSB; //combine first and second byte of value
  //result += "Pressure raw =";
- Serial.println("Pressure raw ");
- Serial.println(D1);
+ //Serial.println("Pressure raw ");
+ //Serial.println(D1);
  //calculation of the real values by means of the calibration factors and the maths
  //in the datasheet. const MUST be long
  const long UT1 = (c5 << 3) + 10000;
@@ -164,7 +164,7 @@ void updatePressureSensor()
  const long OFF  = c2 + (((c4 - 250) * dT) >> 12) + 10000;
  const long SENS = (c1/2) + (((c3 + 200) * dT) >> 13) + 3000;
  long PCOMP = (SENS * (D1 - OFF) >> 12) + 1000;
- _tempTimesTen = TEMP;
+ _temp = TEMP/10;
 
  _pressure = PCOMP;
  
@@ -180,7 +180,7 @@ int getDepth(){
   return (_pressure-990)/101.325;
 }
 int getTempTimesTen(){
-  return _tempTimesTen;
+  return _temp;
 }
 int getPressure(){
   return _pressure;
