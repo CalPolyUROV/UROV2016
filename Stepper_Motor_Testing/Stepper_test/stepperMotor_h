@@ -1,0 +1,95 @@
+
+void stepper1_selectPins (int stepPin,  int dirPin);    //Default 3 and 4 . Not required before using startStepper1Interrupt
+void stepper1_run(int degreesRotate, int degreesPerSecond);  //Put in distance in degrees CW, and speed in degrees Per Second 
+                      //Positive degreesRotate = CW, Negative degreesRotate = CCW
+void stepper1_stop();                                        //Stops the stepper motor
+
+void stepper3_selectPins (int stepPin,  int dirPin);    //Default 5 and 6 . Not required before using startStepper1Interrupt
+void stepper3_run(int degreesRotate, int degreesPerSecond);  //Put in distance in degrees, and speed in degrees Per Second
+void stepper3_stop();                                        //Stops the stepper motor
+
+//A quick experiment of:
+//How much does the ISR slow down the other programs
+//
+//  I tested using this technique http://www.engblaze.com/faster-code-fridays-understand-division-and-speed-of-operations/
+//  Test 1: 
+//      micros() before and after body of ISR.
+//      Serial Print is one run of ISR body.
+//    Result: consistently print 12, sometimes 8
+//      ocasionally 16 because stepper1_stop
+//    ISR typical time range = 8us to 16us
+//    However, micros() has resolution of 4us
+//  Test 2:
+//      body of ISR copy pasted, 5 total bodys per ISR
+//      micros() before the first, and after the last 
+//      Serial Print is five run of ISR body
+//    Result: consistently print 36, sometimes 32
+//      ocasionally 44 because stepper1_stop 
+//    5ISR typical time range = 32us to 40us
+//    ISR typical time range = 6.4us to 8us
+//  Test 3:
+//      same as Test 2, but 10 total bodys of ISR. 
+//    Result: consistently print 68, sometimes 64.
+//      ocasionally 84 because stepper1_stop
+//    10ISR typical time range = 64us to 72us
+//    ISR typical time range = 6.4us to 7.2us
+//  Reasoning for difference between Test 1 and Test 2
+//    the measurement may have considered micros()
+//    I am not really sure what other reasons to consider
+//    Test 2 and Test 3 seem more accurate because they are averages of many trials.
+//
+//  Conclusion:
+//    Body of ISR takes around 6.4us to 8us
+//      This does not count branching to ISR and returning from ISR
+//    The following calculations assume ISR = 8us, becuase branching and returning from ISR were not included.
+//      At a realistic speed of 30degrees/second:
+//        which is 33.33 interrupts/second
+//        which is 266.67us/second spent in ISR 
+//        which is 0.0266667% of time spent in ISR when motor is running
+//      Theoretically running the stepper motor will:
+//        a)slow down other processes by 0.0266667%
+//      which can be also worded as:
+//        b)other processes will be running at 99.97333% speed
+//      These Percentages change Linearly with Motor Speed
+//      At microstepping 1/16 steps with 30 degrees/second, the numbers become
+//        a)slow down other processes by 0.426667% 
+//        b)other processes will be running at 99.57333% speed
+
+
+//Eric's To Do List:
+// 1)MicroStepping
+//      Simple Change, http://howtomechatronics.com/tutorials/arduino/how-to-control-stepper-motor-with-a4988-driver-and-arduino/
+//      3 pins (MS1, MS2, MS3) on the driver select the step resolution (full, half, quarter, eighth, sixteenth)
+//      This is require 1,2, or 3 additional pins from arduino. 0 pins = full only. 1 pins = full through half. 2 pins = full through eighth. 3 pins = full through sixteenth.
+//      There are 200 full steps in one rotation. 1.8degrees/step
+// 2)Two Steppers Simulaneously (Pinch)
+//      If these Steppers are starting and stopping together, very easy to add
+//        Option1)Wire the stepPin to both drivers, wire seperate dirPin's to each driver.
+//          This method will NOT increase the interrupt sequence time.
+//        Option2)Wire seperate stepPin to each driver, wire seperate dirPins to each driver.
+//          This method will increase the interrupt sequence time by two "digitalWrite(stepper1_stepPin,LOW)"s
+// 3)Using another Timer to Operate
+//      Simple, Change the numbers on the timer registers, make new stepperN variables.
+// 4)More Commenting (references to datasheet)
+//      
+// 5)Optimize Interrupt Sequence Time 
+//      Currently ISR takes around 6 operations. If(bool_nextPWMisHIGH), digitalWrite, nextPWMisHIGH =true/false, count +=1, if(count>maxcount)
+// 6)Optimize Memory Usage Maybe
+//      Maybe. Currently does not seem that inefficient.
+
+
+//Following Section is unnecesary
+void startStepper1Interrupt(int totalSteps, int stepPeriod, boolean goingCW); //Raw Values. Use if you want Zero rounding Error
+void startStepper3Interrupt(int totalSteps, int stepPeriod, boolean goingCW); //Raw Values. Use if you want Zero rounding Error
+
+//totalSteps and stepPeriod ARE NOT TRULY THE TOTAL STEPS AND STEP PERIOD
+//totalSteps = 63;  //Number of steps. 
+                                     //totalSteps = (# of rising edges * 2) - 1
+                                         //# rising edges = # of steps = # of periods = # of interrupts/2
+                                       //# of interrupts = (\totalSteps + 1).
+                                       //# of steps = # of steps / 2 = (totalSteps + 1)/2
+//stepPeriod = 255; //Number of timer1 ticks per interrupt (Period of square wave)
+                                     //stepPeriod = {(2^24)/[(timer1 divisor)(2 * Step Frequency)]} - 1
+                                       //stepPeriod = timer1 ticks - 1
+                                       //Interrupt Frequency = (2^24)/(( timer1 divisor)*(stepPeriod + 1)) 
+                                       //Step Frequency = Interrupt Frequency / 2    
