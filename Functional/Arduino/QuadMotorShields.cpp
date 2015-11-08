@@ -82,13 +82,13 @@ void QuadMotorShields::init()
   //
   // PWM frequency calculation
   // 16MHz / 1 (prescaler) / 2 (phase-correct) / 400 (top) = 20kHz
-  TCCR1A = 0b10100000;
-  TCCR1B = 0b00010001;
-  ICR1 = 400;
+  //TCCR1A = 0b10100000;
+  //TCCR1B = 0b00010001;
+  //ICR1 = 400;
 
-  TCCR3A = 0b10100000;
-  TCCR3B = 0b00010001;
-  ICR3 = 400;
+  //TCCR3A = 0b10100000;
+  //TCCR3B = 0b00010001;
+  //ICR3 = 400;
 
   //#endif
 }
