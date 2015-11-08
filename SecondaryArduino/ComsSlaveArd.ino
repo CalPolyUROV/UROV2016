@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 // Wire Slave Receiver
 // by Nicholas Zambetti <http://www.zambetti.com>
 
