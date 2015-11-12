@@ -21,7 +21,8 @@
 ##################################
 # UROV_2016 Progress
 #	October 3rd- Made working prototype of rs485 communications working on Santiago
-#	
+#	November 11th- Wiring diagram in Fritzing has all basic parts except DC DC converter.
+#		ESCs are represented by servos because they use PWM; 12 V power to them will be implied for now. 	
 #
 # Vector Drive!!!
 #
