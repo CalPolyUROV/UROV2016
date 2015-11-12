@@ -1,4 +1,6 @@
 
+#include "Math.h"
+#include "Accelerometer.h"
 #include "dataStruc.h"
 #include "QuadMotorShields.h"
 #include "gyroAccelerometer.h"
@@ -34,17 +36,18 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 
 
 QuadMotorShields md;
-bool pressure = true;
+bool pressure = false;
 bool voltage = false;
-bool temperature = true;
+bool temperature = false;
 bool accel = false;
-bool depth = true;
+bool depth = false;
 
 //SoftwareSerial Serial3(14, 15);
 void setup() {
 	Serial3.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
 	Serial.begin(9600);     //it does not seem to work at lower baud rates 
 	pinMode(serialWritePin, OUTPUT);
+	pinMode(13, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
 	if (pressure){
 		pressureSetup();
@@ -160,7 +163,7 @@ void writeToCommand(Input i){
 	  Serial3.print(getAccelZ());
 	  Serial3.print("\nGyro: X: ");
 	  Serial3.print(getGyroX());
-	  Serial3.print(" Y: ");
+	  Serial3.print(" Y: "); 
 	  Serial3.print(getGyroY());
 	  Serial3.print(" Z: ");
 	  Serial3.print(getGyroZ());
@@ -198,6 +201,7 @@ void debugInput(Input i){
 }
 void loop() { 
      if (Serial3.available()) {
+		 digitalWrite(13, HIGH);
         waitForStart();
         Input i = readBuffer();
 		if(pressure || depth || temperature)
