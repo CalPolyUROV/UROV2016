@@ -26,7 +26,7 @@
 #
 # Vector Drive!!!
 #
-#
+#Note: calling delay() in a constructor that is before the void setup will freeze the arduino
 #
 #
 #
