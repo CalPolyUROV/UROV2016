@@ -51,7 +51,8 @@ void Pressure::pressureSetup() {
  SPI.setBitOrder(MSBFIRST);
  SPI.setClockDivider(SPI_CLOCK_DIV32); //divide 16 MHz to communicate on 500 kHz
  pinMode(clock, OUTPUT);
- delay(100);
+ //delay(100); //Evil delay that broke the entire thing.
+               //Why would a delay break it i don't understand.
 }
 
 void Pressure::updatePressureSensor() 
