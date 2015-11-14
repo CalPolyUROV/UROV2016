@@ -61,7 +61,7 @@ void receiveEvent(int howMany) {
   WireEventCode -= 10000;
   Serial.println("ec");
   Serial.println(WireEventCode);
-  WireNextSendData = WireEventCode;
+  WireNextSendData = WireEventCode * 2;
   Serial.println(WireNextSendData);
   Serial.println("c");
 }
