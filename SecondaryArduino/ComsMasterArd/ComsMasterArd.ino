@@ -19,13 +19,15 @@ void setup() {
   Serial.begin(9600);
 }
 
-int x = 0;
+unsigned int x = 0;
 String sendData;
 String receivedString;
-int receivedInt;
+unsigned int receivedInt;
 int comsIndex;
 char tempReceive;
 void loop() {
+  Serial.println(" ");
+  Serial.println("Start");
   masterWrite();
   
   delay(250);
@@ -37,16 +39,17 @@ void loop() {
     else {
       x=0;
     }
-    Serial.println("e");
-    Serial.println(x);
   delay(250);
+  Serial.println("End");
 }
 
 
 void masterWrite(){
-  Serial.println("s");
+  Serial.print(x);
+  Serial.println("write");
   sendData = String(x+10000);
-  Serial.println(sendData);
+  Serial.print(sendData);
+  Serial.println("sent");
   Wire.beginTransmission(8); // transmit to device #8
 
   Wire.write(sendData.c_str());
