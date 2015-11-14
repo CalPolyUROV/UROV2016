@@ -45,30 +45,33 @@ void setup() {
 
 void loop() {
   delay(200);
-  Serial.println("a");
+  Serial.println(".");
 }
 
 void receiveEvent(int howMany) {
     receivedString = 0;
-    Serial.println("r");
   while (Wire.available()) { // loop through all but the last
     tempReceive = Wire.read(); // receive byte as a character
-    Serial.print(tempReceive);
+    //Serial.print(tempReceive);
     receivedString += tempReceive;
-    //Serial.print("b");
   }
   WireEventCode = receivedString.toInt();
+  Serial.print(receivedString);
+  Serial.println("rawI");
   WireEventCode -= 10000;
-  Serial.println("ec");
-  Serial.println(WireEventCode);
+  Serial.print(WireEventCode);
+  Serial.println("Instruction");
   WireNextSendData = WireEventCode * 2;
-  Serial.println(WireNextSendData);
-  Serial.println("c");
+
 }
 
 
 void requestEvent() {
+  Serial.print(WireNextSendData);
+  Serial.println("return");
   WireSendString = String(WireNextSendData+10000);
+  Serial.print(WireSendString);
+  Serial.println("rawRet");
   Wire.write(WireSendString.c_str());
 
 }
