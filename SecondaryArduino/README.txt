@@ -20,7 +20,7 @@ Master Request: Slave sends data to Master depending on EventCode
     
 Limitations:
     Event Code and Return Data limit is 0 to 20000 or so.
-        This can likely be improved by sending data for a long or something.
+        This can likely be improved by sending data for a long or unsigned or something.
     Maybe interferes with SPI, not sure.
         will make sure soon.
     
