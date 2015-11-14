@@ -22,8 +22,12 @@ Master Request: Slave sends data to Master depending on EventCode
 Limitations:
     Event Code and Return Data limit is 0 to 20000 or so.
         This can likely be improved by sending data for a long or unsigned or something.
-    Maybe interferes with SPI, not sure.
-        will make sure soon.
+  
+Problems Encountered Logs:
+    Constructors cannot call delay(###). It will freeze the arduino.
+        Resolved
+    I2C can only pass char arrays. It cannot pass ints or strings. 
+        Resolved. Lots of fun conversions, and placeholder in highest place to send an exact number of bytes.
     
 
 
