@@ -1,6 +1,7 @@
 This holds the secondary Arduino Stuff
 
-
+SerialPortDemo:
+Master Sends multiple of 765, Slave doubles it and sends it back.
 
 Two Commands for master:
 Master Write: Call a function on Slave and set what Request returns.
