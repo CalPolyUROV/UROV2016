@@ -1,3 +1,7 @@
+
+
+
+
 // Wire Slave Receiver
 // by Nicholas Zambetti <http://www.zambetti.com>
 
@@ -17,38 +21,55 @@
 //
 Pressure Pressure;
 GyroAccelerometer Gyro;
+String receivedString;
+char tempReceive;
+int WireEventCode = 2;
+int WireNextSendData;
+String WireSendString;
+char sendArray[6];
 //GyroAccelerometer  GyroAccelerometer();
 void setup() {
+  Serial.begin(9600);
   Wire.begin(8);                // join i2c bus with address #8
-  Pressure.pressureSetup();
-  Pressure.updatePressureSensor();
+
   //Gyro.accelSetup();
   //Gyro.updateAccelRaw();
   // Pressure Requests
-  Wire.onRequest(requestEventPressure); // register event
-  Wire.onRequest(requestEventDepth); // depth
-  Wire.onRequest(requestEventTemp); // temp
+  Wire.onReceive(receiveEvent); //Info is received
+  Wire.onRequest(requestEvent); //Info is Requested
+  
+  //Pressure.pressureSetup();
+  //Pressure.updatePressureSensor();
   
 }
 
 void loop() {
-  delay(100);
+  delay(200);
+  Serial.println("a");
 }
 
-// function that executes whenever data is requested by master
-// this function is registered as an event, see setup()
-void requestEventPressure() {
-  int currentPressure = Pressure.getPressure();
-  Wire.write(currentPressure); // respond with message of 6 bytes
-  // as expected by master
+void receiveEvent(int howMany) {
+    receivedString = 0;
+    Serial.println("r");
+  while (Wire.available()) { // loop through all but the last
+    tempReceive = Wire.read(); // receive byte as a character
+    Serial.print(tempReceive);
+    receivedString += tempReceive;
+    //Serial.print("b");
+  }
+  WireEventCode = receivedString.toInt();
+  WireEventCode -= 10000;
+  Serial.println("ec");
+  Serial.println(WireEventCode);
+  WireNextSendData = WireEventCode;
+  Serial.println(WireNextSendData);
+  Serial.println("c");
 }
-void requestEventDepth() {
-  int currentDepth = Pressure.getDepth();
-  Wire.write(currentDepth); // respond with message of 6 bytes
-  // as expected by master
+
+
+void requestEvent() {
+  WireSendString = String(WireNextSendData+10000);
+  Wire.write(WireSendString.c_str());
+
 }
-void requestEventTemp() {
-  int currentTemp = Pressure.getTempTimesTen();
-  Wire.write(currentTemp); // respond with message of 6 bytes
-  // as expected by master
-}
+
