@@ -28,28 +28,35 @@ char tempReceive;
 void loop() {
   Serial.println(" ");
   Serial.println("Start");
-  masterWrite();
-  
+  masterWrite(1);
   delay(250);
-  
   masterRequest();
-  
-  if(x<12000){
-    x+=765; }
-    else {
-      x=0;
-    }
+  delay(250);
+  masterWrite(2);
+  delay(250);
+  masterRequest();
+  delay(250);
+  masterWrite(3);
+  delay(250);
+  masterRequest();
+  delay(250);
+  Serial.println("End");
+//  if(x<12000){
+//    x+=765; }
+//    else {
+//      x=0;
+//    }
   delay(250);
   Serial.println("End");
 }
 
 
-void masterWrite(){
-  Serial.print(x);
+void masterWrite(int WireEventCode){
+  Serial.print(WireEventCode);
   Serial.println("write");
-  sendData = String(x+10000);
-  Serial.print(sendData);
-  Serial.println("sent");
+  sendData = String(WireEventCode+10000);
+  //Serial.print(sendData);
+  //Serial.println("sent");
   Wire.beginTransmission(8); // transmit to device #8
 
   Wire.write(sendData.c_str());
@@ -57,7 +64,7 @@ void masterWrite(){
   Wire.endTransmission();    // stop transmitting
 }
 
-void masterRequest(){
+int masterRequest(){
   Serial.println("req");
   receivedString = 0;
   Wire.requestFrom(8,5);
@@ -66,10 +73,11 @@ void masterRequest(){
     receivedString += tempReceive;
     
   }
-  Serial.print(receivedString);
-  Serial.println("raw");
+  //Serial.print(receivedString);
+  //Serial.println("raw");
   receivedInt = receivedString.toInt();
   receivedInt -= 10000;
+  
   Serial.print(receivedInt);
   Serial.println("fin");
 }
