@@ -40,6 +40,10 @@ void loop() {
   delay(250);
   masterRequest();
   delay(250);
+  masterWrite(4);
+  delay(250);
+  masterRequest();
+  delay(250);
   Serial.println("End");
 //  if(x<12000){
 //    x+=765; }
