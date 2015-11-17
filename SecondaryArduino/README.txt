@@ -60,4 +60,8 @@ Stuff:
       Giving AnalogWrite 10 frequency of 32kHz
 3) Accelerometer (Nov7)
     I have not looked to see if any pins need updating yet
+    
+    
+    
+    
 
