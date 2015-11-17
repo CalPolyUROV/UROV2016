@@ -1,7 +1,8 @@
 This holds the secondary Arduino Stuff
 
 SerialPortDemo:
-Master Sends multiple of 765, Slave doubles it and sends it back.
+Master sends various writes and commands and requests to Slave.
+Includes commands for pressure(1), temp10(2), depth(3), 1234dummy(default)
 
 Two Commands for master:
 Master Write: Call a function on Slave and set what Request returns.
