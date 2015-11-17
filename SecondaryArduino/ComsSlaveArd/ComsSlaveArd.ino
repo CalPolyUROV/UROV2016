@@ -62,9 +62,29 @@ void receiveEvent(int howMany) {
   Serial.print(WireEventCode);
   Serial.println("Instruction");
   WireNextSendData = WireEventCode * 2;
-
+  
+  WireNextSendData = WireCallEvent(WireEventCode);
 }
 
+int WireCallEvent (int EventCode){
+  switch(EventCode) {
+    case 1:
+      Pressure.updatePressureSensor();
+      return Pressure.getPressure();
+      break;
+    case 2:
+      Pressure.updatePressureSensor();
+      return Pressure.getTempTimesTen();
+      break;
+    case 3:
+      Pressure.updatePressureSensor();
+      return Pressure.getDepth();
+    default:
+      return 1234;
+    break;
+  }
+  
+}
 
 void requestEvent() {
   Serial.print(WireNextSendData);
