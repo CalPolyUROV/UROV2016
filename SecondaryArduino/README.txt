@@ -64,4 +64,19 @@ Stuff:
     
     
     
-
+successful test Serial Port
+Start
+1write
+req
+14701fin
+2write
+req
+293fin
+3write
+req
+135fin
+4write
+req
+1030fin
+End
+End
