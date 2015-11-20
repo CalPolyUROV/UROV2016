@@ -68,6 +68,8 @@
 #define TO_RAD(x) (x * 0.01745329252)  // *pi/180
 #define TO_DEG(x) (x * 57.2957795131)  // *180/pi
 
+#define OUTPUT__DATA_INTERVAL 20  // in milliseconds
+
 class Accelerometer
 {
  protected:
@@ -111,7 +113,14 @@ class Accelerometer
    void Drift_correction();
    void Matrix_update();
    void Euler_angles();
-
+   void Compass_Heading();
+   void Read_Gyro(); // Read gyroscope
+   void Read_Accel(); // Read accelerometer
+   void Read_Magn(); // Read magnetometer 
+   void I2C_Init();
+   void read_sensors();
+   void Accel_Init();
+   void Gyro_Init();
  public:
 	 Accelerometer();
 	 void Update();
