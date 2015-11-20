@@ -1,5 +1,37 @@
 This holds the secondary Arduino Stuff
 
+SerialPortDemo:
+Master sends various writes and commands and requests to Slave.
+Includes commands for pressure(1), temp10(2), depth(3), 1234dummy(default)
+
+Two Commands for master:
+Master Write: Call a function on Slave and set what Request returns.
+    Takes 5 digit int, adds 10000(placeholder 1) converts to string and then array of characters.
+    Sends array of characters one at a time.
+        Slave receives array of characters, appends to a wiped string. Converts string to int and subtracts 10000.
+        Stored as 5 digit int, EventCode.
+            Depending on EventCode, Slave calls a function (updatePressure, runMotorMaybe?, callibrateSomething)
+Master Request: Slave sends data to Master depending on EventCode
+    Sends request to slave for 5 bytes of data.
+        Slave decides what to data to send from most EventCode (Most Recent Input). 
+            (If most recent = update Pressure, send Pressure)
+        Slave takes data to be sent (int), adds 10000(placeholder 1) converts to string and then array of characters.
+        Slave sends array of characters one at a time.
+    Master Receives 5 characters, appends to a wiped string. Converts string to int and subtracts 10000.
+    The int is the final Received Data.
+    
+Limitations:
+    Event Code and Return Data limit is 0 to 20000 or so.
+        This can likely be improved by sending data for a long or unsigned or something.
+  
+Problems Encountered Logs:
+    Constructors cannot call delay(###). It will freeze the arduino.
+        Resolved
+    I2C can only pass char arrays. It cannot pass ints or strings. 
+        Resolved. Lots of fun conversions, and placeholder in highest place to send an exact number of bytes.
+    
+
+
 
 
 Stuff:
@@ -28,4 +60,23 @@ Stuff:
       Giving AnalogWrite 10 frequency of 32kHz
 3) Accelerometer (Nov7)
     I have not looked to see if any pins need updating yet
-
+    
+    
+    
+    
+successful test Serial Port
+Start
+1write
+req
+14701fin
+2write
+req
+293fin
+3write
+req
+135fin
+4write
+req
+1030fin
+End
+End
