@@ -35,7 +35,7 @@ int ComsMasterArd::getSlaveData(){
   }
   receivedInt = receivedString.toInt();
   receivedInt -= 10000;
-  
+  return receivedInt;
 //  Serial.print(receivedInt);
 //  Serial.println("fin");
 }
