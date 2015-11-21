@@ -52,7 +52,7 @@ void loop() {
 }
 
 void receiveEvent(int howMany) {
-  receivedString = 0;//Clear recieved string
+  receivedString = "";//Clear recieved string
     
   WireDataType = Wire.read(); //Take 1 char, data type.
   while (Wire.available()) { 
