@@ -15,7 +15,7 @@ void ComsMasterArd::ComsMasterSetup(){
 void ComsMasterArd::sendSlaveCmd(int WireEventCode){
 //  Serial.print(WireEventCode);
 //  Serial.println("write");
-  sendData = String(WireEventCode+10000);
+ sendData = 'a' + String(WireEventCode);
 
   Wire.beginTransmission(8); // transmit to device #8
 
@@ -27,14 +27,15 @@ void ComsMasterArd::sendSlaveCmd(int WireEventCode){
 int ComsMasterArd::getSlaveData(){
 //  Serial.println("req");
   receivedString = 0;
-  Wire.requestFrom(8,5);
+  Wire.requestFrom(8,6);
+  indicator = Wire.read();
   while (Wire.available()) {
     tempReceive = Wire.read();
     receivedString += tempReceive;
     
   }
   receivedInt = receivedString.toInt();
-  receivedInt -= 10000;
+  //receivedInt -= 10000;
   return receivedInt;
 //  Serial.print(receivedInt);
 //  Serial.println("fin");

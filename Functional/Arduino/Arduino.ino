@@ -191,9 +191,9 @@ void loop() {
         waitForStart();
         Input i = readBuffer();
 		if(pressure || depth || temperature)
-			updatePressureSensor();
+			updatePressureSensor();        //To be Replaced with I2C command
 		if(accel)
-			updateAccelRaw();
+			updateAccelRaw();              //To be Replaced with with I2C command
         digitalWrite(serialWritePin, HIGH);
         writeToCommand(i); //this is where the code to write back to topside goes.
 		Serial3.flush();

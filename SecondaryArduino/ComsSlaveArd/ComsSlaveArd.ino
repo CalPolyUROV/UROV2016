@@ -27,7 +27,9 @@ unsigned int WireEventCode = 2;
 unsigned int WireNextSendData;
 String WireSendString;
 char sendArray[6];
-//GyroAccelerometer  GyroAccelerometer();
+char WireDataType;
+
+
 void setup() {
   Serial.begin(9600);
   Wire.begin(8);                // join i2c bus with address #8
@@ -44,21 +46,24 @@ void setup() {
 }
 
 void loop() {
-  delay(200);
+  delay(500);
+  Pressure.updatePressureSensor();
   Serial.println(".");
 }
 
 void receiveEvent(int howMany) {
-    receivedString = 0;
-  while (Wire.available()) { // loop through all but the last
-    tempReceive = Wire.read(); // receive byte as a character
-    //Serial.print(tempReceive);
+  receivedString = 0;//Clear recieved string
+    
+  WireDataType = Wire.read(); //Take 1 char, data type.
+  while (Wire.available()) { 
+    tempReceive = Wire.read(); //Receive 5 chars, data
     receivedString += tempReceive;
   }
   WireEventCode = receivedString.toInt();
-  Serial.print(receivedString);
-  Serial.println("rawI");
-  WireEventCode -= 10000;
+  //Serial.print(receivedString);
+  //Serial.println("rawI");
+  //WireEventCode -= 10000;
+  Serial.print(WireDataType);//debug print
   Serial.print(WireEventCode);
   Serial.println("Instruction");
   WireNextSendData = WireEventCode * 2;
@@ -69,18 +74,18 @@ void receiveEvent(int howMany) {
 int WireCallEvent (int EventCode){
   switch(EventCode) {
     case 1:
-      Pressure.updatePressureSensor();
+      //Pressure.updatePressureSensor();
       return Pressure.getPressure();
       break;
     case 2:
-      Pressure.updatePressureSensor();
+      //Pressure.updatePressureSensor();
       return Pressure.getTempTimesTen();
       break;
     case 3:
-      Pressure.updatePressureSensor();
+      //Pressure.updatePressureSensor();
       return Pressure.getDepth();
     default:
-      return 1234;
+      return 1030;
     break;
   }
   
@@ -89,10 +94,11 @@ int WireCallEvent (int EventCode){
 void requestEvent() {
   Serial.print(WireNextSendData);
   Serial.println("return");
-  WireSendString = String(WireNextSendData+10000);
-  Serial.print(WireSendString);
-  Serial.println("rawRet");
+  WireSendString = 'g' + String(WireNextSendData);
+  //Serial.print(WireSendString);
+  //Serial.println("rawRet");
   Wire.write(WireSendString.c_str());
 
 }
+
 

@@ -1,23 +1,21 @@
-#ifndef COMSMASTERARD_H
-#define COMSMASTERARD_H
-#define GET_TEMP 1
-#define GET_PRES 2
-#define GET_DEPT 3
+#ifndef COMSMASTER_H
+#define COMSMASTER_H
 
 
 class ComsMasterArd
 {
   public:
     ComsMasterArd();
-    void ComsMasterSetup();
-    
-    void sendSlaveCmd(int WireEventC);
-    int getSlaveData();
+
+    int masterRequest();
+    void masterWrite(int WireEventCode);
    private:
     
-    char tempReceive;
+    String sendData;
+    String receivedString;
     unsigned int receivedInt;
-    
+    //int comsIndex;
+    char tempReceive;
 };
 
 
