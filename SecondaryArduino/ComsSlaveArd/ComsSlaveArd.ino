@@ -23,15 +23,18 @@ Pressure Pressure;
 GyroAccelerometer Gyro;
 String receivedString;
 char tempReceive;
-unsigned int WireEventCode = 2;
+unsigned int WireEventCode;
 unsigned int WireNextSendData;
 String WireSendString;
-char sendArray[6];
-char WireDataType;
+int ParameterStack;
 
+//I2c only sends char arrays. Therefore a data type char is included in index 0 of the array.
+//It tells what kind of data was sent.
+//It also serves as a buffer. 
+char WireMosiType; //Holds Mosi Data Type: c_ommand or p_arameter
+char WireMisoType; //Holds Miso Data Type: n_ull or i_nt or s_tring
 
 void setup() {
-  Serial.begin(9600);
   Wire.begin(8);                // join i2c bus with address #8
 
   //Gyro.accelSetup();
@@ -40,63 +43,57 @@ void setup() {
   Wire.onReceive(receiveEvent); //Info is received
   Wire.onRequest(requestEvent); //Info is Requested
   
-  //Pressure.pressureSetup();
-  //Pressure.updatePressureSensor();
-  
 }
 
 void loop() {
   delay(500);
   Pressure.updatePressureSensor();
-  Serial.println(".");
 }
 
 void receiveEvent(int howMany) {
   receivedString = "";//Clear recieved string
-    
-  WireDataType = Wire.read(); //Take 1 char, data type.
-  while (Wire.available()) { 
-    tempReceive = Wire.read(); //Receive 5 chars, data
-    receivedString += tempReceive;
-  }
-  WireEventCode = receivedString.toInt();
-  //Serial.print(receivedString);
-  //Serial.println("rawI");
-  //WireEventCode -= 10000;
-  Serial.print(WireDataType);//debug print
-  Serial.print(WireEventCode);
-  Serial.println("Instruction");
-  WireNextSendData = WireEventCode * 2;
   
-  WireNextSendData = WireCallEvent(WireEventCode);
+  if(Wire.available()){  
+    WireMosiType = Wire.read(); //Take 1 char, data type.
+      while (Wire.available()) { 
+        tempReceive = Wire.read(); //Receive 5 chars, data
+        receivedString += tempReceive;
+    }
+  }
+  
+  WireEventCode = receivedString.toInt(); //Turn received into an int
+  if(WireMosiType = 'c'){                 //treat as command if command type
+    WireNextSendData = WireCallEvent(WireEventCode);
+  } else if(WireMosiType = 'p' {          //store as parameter if param type
+    ParameterStack = WireEventCode;
+  }
 }
+
 
 int WireCallEvent (int EventCode){
   switch(EventCode) {
     case 1:
-      //Pressure.updatePressureSensor();
-      return Pressure.getPressure();
+      WireMisoType = 'i'; //misoType is kinda pointless, its just a buffer so the right number of chars are returned on i2c. 
+                          //I can't think of any way to use it either; when master makes a request it already knows what it should be recieving.
+      return Pressure.getTempTimesTen();  //Its not temp times ten anymore, its just temp. to be changed.
       break;
     case 2:
-      //Pressure.updatePressureSensor();
-      return Pressure.getTempTimesTen();
+      WireMisoType = 'i';
+      return Pressure.getPressure();
       break;
     case 3:
-      //Pressure.updatePressureSensor();
+      WireMisoType = 'i';
       return Pressure.getDepth();
     default:
-      return 1030;
+      WireMisoType = 'n';
+      return 1337;        //You'll know something is wrong if you see this 1337
     break;
   }
   
 }
 
 void requestEvent() {
-  Serial.print(WireNextSendData);
-  Serial.println("return");
-  WireSendString = 'g' + String(WireNextSendData);
-  //Serial.print(WireSendString);
-  //Serial.println("rawRet");
+  WireSendString = WireMisoType + String(WireNextSendData); //padding the string with the misoType
   Wire.write(WireSendString.c_str());
 
 }

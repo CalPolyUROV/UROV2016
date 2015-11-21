@@ -12,11 +12,13 @@ class ComsMasterArd
     ComsMasterArd();
     
     void sendSlaveCmd(int WireEventC);
+    void sendSlavePrm(int WireParam);
+    void sendInt(int data);
     int getSlaveData();
    private:
-    
+    char mosiType;
+    char misoType;
     char tempReceive;
-    char indicator;
     unsigned int receivedInt;
     
 };
