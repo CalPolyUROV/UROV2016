@@ -2,13 +2,14 @@
 #include "Math.h"
 #include "Accelerometer.h"
 #include "dataStruc.h"
-#include "QuadMotorShields.h"
+//#include "QuadMotorShields.h"
 #include "gyroAccelerometer.h"
 #include <SoftwareSerial.h>
 #include <SPI.h>
-#include "pressure.h"
+//#include "pressure.h"
 #include <Wire.h>
-#include "VectorMotors.h"
+#include "ComsMasterArd.h"
+
 
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
@@ -35,8 +36,8 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 //
 //////////////////////////////////
 
-
-QuadMotorShields md;
+ComsMasterArd coms;
+//QuadMotorShields md;//Not being used anymore
 bool pressure = false;
 bool voltage = false;
 bool temperature = false;
@@ -106,7 +107,22 @@ Input readBuffer() {
         return input;
 }
 void processInput(Input i){
-  setMotors(i.primatryX, i.primaryY, i.triggers, i.secondaryX);
+  int forward = i.primaryY;
+  int right = i.primaryX;
+  
+  md.setM1Speed(forward/2 + right/2);
+  md.setM2Speed(forward/2 - right/2);
+  if(i.buttons1 & 0x2){
+    md.setM3Speed(100);
+    md.setM4Speed(100);
+  }
+  else if(i.buttons1 & 0x1){
+    md.setM3Speed(-100);
+    md.setM4Speed(-100);
+  } else {
+    md.setM3Speed(0);
+    md.setM4Speed(0);
+  }
 }
 
 void writeToCommand(Input i){
@@ -126,7 +142,8 @@ void writeToCommand(Input i){
   Serial3.print(numberOfLines); //print the number of lines of input the python program can read in three digits
   if (pressure) {
 	  Serial3.println("PSR"); //tell it the next line is Pressure
-	  Serial3.print(getPressure());
+          coms.sendSlaveCmd(GET_PRES);
+	  Serial3.print(coms.getSlaveData());
 	  Serial3.println(" mbars");
   }
   if (voltage) {
@@ -136,7 +153,8 @@ void writeToCommand(Input i){
   }
   if (temperature) {
 	  Serial3.println("TMP"); //tell it the next line is Temperature
-	  Serial3.print(getTempTimesTen());
+          coms.sendSlaveCmd(GET_TEMP);
+	  Serial3.print(coms.getSlaveData());
 	  Serial3.println(" degrees C");
   }
   if (accel) {
@@ -163,7 +181,8 @@ void writeToCommand(Input i){
   }
   if (depth) {
 	  Serial3.println("DPT"); //tell it the next line is Depth
-	  Serial3.print(getDepth());
+          coms.sendSlaveCmd(GET_DEPT);
+	  Serial3.print(coms.getSlaveData());
 	  Serial3.println(" feet");
   }
 }
