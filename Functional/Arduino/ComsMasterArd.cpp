@@ -1,3 +1,4 @@
+#include "arduino.h"
 #include "ComsMasterArd.h"
 
     String sendData;
@@ -24,7 +25,7 @@ void ComsMasterArd::sendSlaveCmd(int WireEventCode){
 
 int ComsMasterArd::getSlaveData(){
 //  Serial.println("req");
-  receivedString = 0;
+  receivedString = "";
   Wire.requestFrom(8,6);
   if ( Wire.available()){
     indicator = Wire.read();

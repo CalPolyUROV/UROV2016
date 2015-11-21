@@ -1,5 +1,6 @@
 #ifndef COMSMASTERARD_H
 #define COMSMASTERARD_H
+#include <Wire.h>
 #define GET_TEMP 1
 #define GET_PRES 2
 #define GET_DEPT 3

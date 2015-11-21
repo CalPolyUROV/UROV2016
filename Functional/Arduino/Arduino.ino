@@ -9,6 +9,7 @@
 //#include "pressure.h"
 #include <Wire.h>
 #include "ComsMasterArd.h"
+#include "VectorMotors.h"
 
 
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
@@ -51,12 +52,6 @@ void setup() {
 	pinMode(serialWritePin, OUTPUT);
 	pinMode(13, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
-	if (pressure){
-		pressureSetup();
-	}
-	if (accel) {
-		accelSetup();
-	}
 }
 
 //looks cleaner than the empty while loop being everywhere in the code
@@ -127,7 +122,7 @@ void writeToCommand(Input i){
   Serial3.print(numberOfLines); //print the number of lines of input the python program can read in three digits
   if (pressure) {
 	  Serial3.println("PSR"); //tell it the next line is Pressure
-          coms.sendSlaveCmd(GET_PRES);
+    coms.sendSlaveCmd(GET_PRES);
 	  Serial3.print(coms.getSlaveData());
 	  Serial3.println(" mbars");
   }
@@ -138,7 +133,7 @@ void writeToCommand(Input i){
   }
   if (temperature) {
 	  Serial3.println("TMP"); //tell it the next line is Temperature
-          coms.sendSlaveCmd(GET_TEMP);
+    coms.sendSlaveCmd(GET_TEMP);
 	  Serial3.print(coms.getSlaveData());
 	  Serial3.println(" degrees C");
   }
@@ -166,7 +161,7 @@ void writeToCommand(Input i){
   }
   if (depth) {
 	  Serial3.println("DPT"); //tell it the next line is Depth
-          coms.sendSlaveCmd(GET_DEPT);
+    coms.sendSlaveCmd(GET_DEPT);
 	  Serial3.print(coms.getSlaveData());
 	  Serial3.println(" feet");
   }
@@ -194,10 +189,6 @@ void loop() {
 		 digitalWrite(13, HIGH);
         waitForStart();
         Input i = readBuffer();
-		if(pressure || depth || temperature)
-			updatePressureSensor();        //To be Replaced with I2C command
-		if(accel)
-			updateAccelRaw();              //To be Replaced with with I2C command
         digitalWrite(serialWritePin, HIGH);
         writeToCommand(i); //this is where the code to write back to topside goes.
 		Serial3.flush();
