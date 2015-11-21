@@ -1,4 +1,4 @@
-
+#include <Servo.h>
 #include "Math.h"
 #include "Accelerometer.h"
 #include "dataStruc.h"
@@ -107,22 +107,7 @@ Input readBuffer() {
         return input;
 }
 void processInput(Input i){
-  int forward = i.primaryY;
-  int right = i.primaryX;
-  
-  md.setM1Speed(forward/2 + right/2);
-  md.setM2Speed(forward/2 - right/2);
-  if(i.buttons1 & 0x2){
-    md.setM3Speed(100);
-    md.setM4Speed(100);
-  }
-  else if(i.buttons1 & 0x1){
-    md.setM3Speed(-100);
-    md.setM4Speed(-100);
-  } else {
-    md.setM3Speed(0);
-    md.setM4Speed(0);
-  }
+  setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX);
 }
 
 void writeToCommand(Input i){
