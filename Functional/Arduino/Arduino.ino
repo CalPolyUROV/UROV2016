@@ -8,6 +8,7 @@
 #include <SPI.h>
 #include "pressure.h"
 #include <Wire.h>
+#include "VectorMotors.h"
 
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
@@ -105,22 +106,7 @@ Input readBuffer() {
         return input;
 }
 void processInput(Input i){
-  int forward = i.primaryY;
-  int right = i.primaryX;
-  
-  md.setM1Speed(forward/2 + right/2);
-  md.setM2Speed(forward/2 - right/2);
-  if(i.buttons1 & 0x2){
-    md.setM3Speed(100);
-    md.setM4Speed(100);
-  }
-  else if(i.buttons1 & 0x1){
-    md.setM3Speed(-100);
-    md.setM4Speed(-100);
-  } else {
-    md.setM3Speed(0);
-    md.setM4Speed(0);
-  }
+  setMotors(i.primatryX, i.primaryY, i.triggers, i.secondaryX);
 }
 
 void writeToCommand(Input i){
