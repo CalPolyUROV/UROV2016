@@ -103,6 +103,10 @@ Input readBuffer() {
 }
 void processInput(Input i){
   setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX);
+  if(i.buttons1 )
+  {
+   digitalWrite(13, HIGH);
+  }
 }
 
 void writeToCommand(Input i){
