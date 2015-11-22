@@ -39,11 +39,11 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 
 ComsMasterArd coms;
 //QuadMotorShields md;//Not being used anymore
-bool pressure = false;
+bool pressure = true;
 bool voltage = false;
-bool temperature = false;
+bool temperature = true;
 bool accel = false;
-bool depth = false;
+bool depth = true;
 
 //SoftwareSerial Serial3(14, 15);
 void setup() {
@@ -52,6 +52,7 @@ void setup() {
 	pinMode(serialWritePin, OUTPUT);
 	pinMode(13, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
+  motorSetup();
 }
 
 //looks cleaner than the empty while loop being everywhere in the code
@@ -102,6 +103,11 @@ Input readBuffer() {
         return input;
 }
 void processInput(Input i){
+  if(i.buttons1){
+    digitalWrite(13, HIGH);
+  } else {
+    digitalWrite(13, LOW);
+  }
   setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX);
 }
 
@@ -190,6 +196,7 @@ void loop() {
         waitForStart();
         Input i = readBuffer();
         digitalWrite(serialWritePin, HIGH);
+        debugInput(i);
         writeToCommand(i); //this is where the code to write back to topside goes.
 		Serial3.flush();
         delay(50);         //this delay allows for hardware serial to work with rs485
