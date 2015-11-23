@@ -10,7 +10,7 @@
 #include <Wire.h>
 #include "ComsMasterArd.h"
 #include "VectorMotors.h"
-
+#include "cameras.h"
 
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
@@ -52,7 +52,7 @@ void setup() {
 	pinMode(serialWritePin, OUTPUT);
 	pinMode(13, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
-  motorSetup();
+        motorSetup();
 }
 
 //looks cleaner than the empty while loop being everywhere in the code
@@ -103,16 +103,12 @@ Input readBuffer() {
         return input;
 }
 void processInput(Input i){
-  if(i.buttons1){
-    digitalWrite(13, HIGH);
-  } else {
-    digitalWrite(13, LOW);
-  }
+  
+    if(i.buttons1){digitalWrite(13, HIGH);}
+    else {digitalWrite(13, LOW);}
+    
+  setCameras(i.buttons1);
   setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX);
-  if(i.buttons1 )
-  {
-   digitalWrite(13, HIGH);
-  }
 }
 
 void writeToCommand(Input i){
@@ -196,7 +192,7 @@ void debugInput(Input i){
 }
 void loop() { 
      if (Serial3.available()) {
-		 digitalWrite(13, HIGH);
+		 //digitalWrite(13, HIGH);
         waitForStart();
         Input i = readBuffer();
         digitalWrite(serialWritePin, HIGH);
