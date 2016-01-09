@@ -1,5 +1,8 @@
 import Tkinter as tk
 
+import pygame
+from pygame.locals import *
+
 import serial
 import serial.tools.list_ports
 
