@@ -15,7 +15,7 @@ __author__ = 'johna'
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 500))
-pygame.display.set_caption('UROV GUI')
+pygame.display.set_caption("Cal Poly Control Center")
 
 background = pygame.Surface(screen.get_size())
 background = background.convert()

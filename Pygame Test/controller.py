@@ -53,13 +53,13 @@ foundController = False
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 500))
-pygame.display.set_caption('UROV GUI')
+pygame.display.set_caption("Cal Poly Control Center")
 
 background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill((250, 250, 250))
 
-writeonscreen = "looking for controller, press A to chose the controller"
+writeonscreen = "Looking for controller, press A to chose the controller"
 
 font = pygame.font.Font(None, 50)
 text = font.render(writeonscreen, 1, (10, 10, 10))
