@@ -3,6 +3,10 @@ import sys
 import serial
 from sys import platform
 
+import pygame
+from pygame.locals import *
+import time
+
 
 def serial_ports():
     """ Lists serial port names
@@ -34,12 +38,51 @@ def serial_ports():
     return result
 
 
-def find_port(ports):
+def find_port(ports,background, screen):
     print "Possible ports: ",
+
+    writeonscreen = "Possible ports: "
+    font = pygame.font.Font(None, 50)
+    text = font.render(writeonscreen, 1, (10, 10, 10))
+    textpos = text.get_rect()
+    textpos.centerx = background.get_rect().centerx -200
+    textpos.centery = background.get_rect().centery
+    background.blit(text, textpos)
+
+    screen.blit(background, (0, 0))
+
+    pygame.display.flip()
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            return
+
     if platform == "linux" or platform == "linux2":
         for p in ports:
+            writeonscreen = str(p)
+            font = pygame.font.Font(None, 50)
+            text = font.render(writeonscreen, 1, (10, 10, 10))
+            textpos = text.get_rect()
+            textpos.centerx = background.get_rect().centerx -100
+            textpos.centery = background.get_rect().centery
+            background.blit(text, textpos)
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+
             print p, " ",
             if "USB" in p:
+
+                writeonscreen = "Connected To: " + str(p)
+                font = pygame.font.Font(None, 50)
+                text = font.render(writeonscreen, 1, (10, 10, 10))
+                textpos = text.get_rect()
+                textpos.centerx = background.get_rect().centerx - 50
+                textpos.centery = background.get_rect().centery
+                background.blit(text, textpos)
+                screen.blit(background, (0, 0))
+                pygame.display.flip()
+
                 print "Connected To: ", p
                 return p
     elif platform == "darwin":
@@ -47,6 +90,17 @@ def find_port(ports):
     elif platform == "win32":
         p = ""
         for p in ports:
+
+            writeonscreen = str(p)
+            font = pygame.font.Font(None, 50)
+            text = font.render(writeonscreen, 1, (10, 10, 10))
+            textpos = text.get_rect()
+            textpos.centerx = background.get_rect().centerx -100
+            textpos.centery = background.get_rect().centery
+            background.blit(text, textpos)
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+
             print p
         return p
 

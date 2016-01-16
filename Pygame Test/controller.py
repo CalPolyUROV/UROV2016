@@ -3,7 +3,9 @@ __author__ = 'johnathan'
 from sfml.window import Joystick
 from sys import platform
 
-
+import pygame
+from pygame.locals import *
+import time
 
 
 deadZone = 15
@@ -48,8 +50,42 @@ if platform == "linux" or platform == "linux2":
 #loop to find the correct controller
 joystick = 0;
 foundController = False
-print "looking for controller, press A to chose the controller"
+
+pygame.init()
+screen = pygame.display.set_mode((1000, 500))
+pygame.display.set_caption('UROV GUI')
+
+background = pygame.Surface(screen.get_size())
+background = background.convert()
+background.fill((250, 250, 250))
+
+writeonscreen = "looking for controller, press A to chose the controller"
+
+font = pygame.font.Font(None, 50)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = background.get_rect().centerx
+textpos.centery = background.get_rect().centery
+background.blit(text, textpos)
+
+screen.blit(background, (0, 0))
+
+pygame.display.flip()
+
+def GUIrun():
+    background.blit(text, textpos)
+
+    screen.blit(background, (0, 0))
+
+    pygame.display.flip()
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            return
+
 while not foundController:
+    GUIrun()
     for i in range(0,5):
         Joystick.update()
         if Joystick.is_connected(i):
@@ -58,8 +94,35 @@ while not foundController:
                 foundController = True
                 joystick = i
 
-print "found controller ", i
-print "buttons: ", Joystick.get_button_count(i)
+writeonscreen = "Found controller " + str(i)
+background.fill((250, 250, 250))
+font = pygame.font.Font(None, 50)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = background.get_rect().centerx
+textpos.centery = background.get_rect().centery
+
+background.blit(text, textpos)
+
+screen.blit(background, (0, 0))
+
+pygame.display.flip()
+
+writeonscreen = "Buttons: " + str(Joystick.get_button_count(i))
+font = pygame.font.Font(None, 50)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = background.get_rect().centerx
+textpos.centery = background.get_rect().centery + 50
+
+background.blit(text, textpos)
+
+screen.blit(background, (0, 0))
+
+pygame.display.flip()
+
+time.sleep(2)
+
 # used inside the class, not necessary to call from outside this class, use the other calls
 def getAxis(joyStickNumber, axis):
     size = maxValue - minValue

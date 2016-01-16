@@ -1,18 +1,39 @@
-import Tkinter as tk
 
-import pygame
-from pygame.locals import *
+import Tkinter as tk
 
 import serial
 import serial.tools.list_ports
+
+import pygame
+from pygame.locals import *
+import time
 
 import controller as cont
 import serial_finder
 
 __author__ = 'johna'
 
+pygame.init()
+screen = pygame.display.set_mode((1000, 500))
+pygame.display.set_caption('UROV GUI')
+
+background = pygame.Surface(screen.get_size())
+background = background.convert()
+background.fill((250, 250, 250))
+
 ports = serial_finder.serial_ports()
-port = serial_finder.find_port(ports)
+port = serial_finder.find_port(ports, background, screen)
+
+writeonscreen = "Using: " +str(port)
+font = pygame.font.Font(None, 50)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = background.get_rect().centerx + 150
+textpos.centery = background.get_rect().centery
+background.blit(text, textpos)
+screen.blit(background, (0, 0))
+pygame.display.flip()
+
 print "Using: ", port
 outbound = serial.Serial(
     port=port,
