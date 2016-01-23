@@ -14,7 +14,7 @@ import serial_finder
 __author__ = 'johna'
 
 pygame.init()
-screen = pygame.display.set_mode((1000, 500))
+screen = pygame.display.set_mode((400, 300))
 pygame.display.set_caption("Cal Poly Control Center")
 
 background = pygame.Surface(screen.get_size())
@@ -25,11 +25,11 @@ ports = serial_finder.serial_ports()
 port = serial_finder.find_port(ports, background, screen)
 
 writeonscreen = "Using: " +str(port)
-font = pygame.font.Font(None, 50)
+font = pygame.font.Font(None, 25)
 text = font.render(writeonscreen, 1, (10, 10, 10))
 textpos = text.get_rect()
-textpos.centerx = background.get_rect().centerx + 150
-textpos.centery = background.get_rect().centery
+textpos.centerx = 64
+textpos.centery = 30
 background.blit(text, textpos)
 screen.blit(background, (0, 0))
 pygame.display.flip()
@@ -47,10 +47,51 @@ outbound = serial.Serial(
 cont.update()
 if not cont.isConnected():
     print "connect the controller"
+
+    writeonscreen = "controller connected"
+    font = pygame.font.Font(None, 25)
+    text = font.render(writeonscreen, 0, (255, 255, 255))
+    textpos = text.get_rect()
+    textpos.centerx = 98
+    textpos.centery = 50
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+
+    writeonscreen = "connect the controller"
+    font = pygame.font.Font(None, 25)
+    text = font.render(writeonscreen, 0, (255, 10, 10))
+    textpos = text.get_rect()
+    textpos.centerx = 105
+    textpos.centery = 50
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+
 cont.update()
 while not cont.isConnected():
     cont.update()
 print "controller connected"
+
+writeonscreen = "connect the controller"
+font = pygame.font.Font(None, 25)
+text = font.render(writeonscreen, 0, (255, 255, 255))
+textpos = text.get_rect()
+textpos.centerx = 105
+textpos.centery = 50
+background.blit(text, textpos)
+screen.blit(background, (0, 0))
+pygame.display.flip()
+
+writeonscreen = "controller connected"
+font = pygame.font.Font(None, 25)
+text = font.render(writeonscreen, 1, (10, 125, 10))
+textpos = text.get_rect()
+textpos.centerx = 98
+textpos.centery = 50
+background.blit(text, textpos)
+screen.blit(background, (0, 0))
+pygame.display.flip()
 
 root = tk.Tk()
 root.title("Cal Poly Control Center")
@@ -75,7 +116,95 @@ voltageOut.grid(row=1, column=1)
 accelOut.grid(row=2, column=1)
 tempOut.grid(row=3, column=1)
 depthOut.grid(row=4, column=1)
-def update():
+
+
+writeonscreen = "Pressure:"
+font = pygame.font.Font(None, 25)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = 45
+textpos.centery = 90
+background.blit(text, textpos)
+screen.blit(background, (0, 0))
+pygame.display.flip()
+
+writeonscreen = "Voltage:"
+font = pygame.font.Font(None, 25)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = 40
+textpos.centery = 110
+background.blit(text, textpos)
+screen.blit(background, (0, 0))
+pygame.display.flip()
+
+writeonscreen = "Temperature:"
+font = pygame.font.Font(None, 25)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = 64
+textpos.centery = 130
+background.blit(text, textpos)
+screen.blit(background, (0, 0))
+pygame.display.flip()
+
+writeonscreen = "Acceleration:"
+font = pygame.font.Font(None, 25)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = 64
+textpos.centery = 150
+background.blit(text, textpos)
+screen.blit(background, (0, 0))
+pygame.display.flip()
+
+writeonscreen = "Depth:"
+font = pygame.font.Font(None, 25)
+text = font.render(writeonscreen, 1, (10, 10, 10))
+textpos = text.get_rect()
+textpos.centerx = 35
+textpos.centery = 170
+background.blit(text, textpos)
+screen.blit(background, (0, 0))
+pygame.display.flip()
+
+def textwrite(Positionx, Positiony, Text):
+
+    writeonscreen = Text
+    font = pygame.font.Font(None, 25)
+    text = font.render(writeonscreen, 0, (10, 10, 10))
+    textpos = text.get_rect()
+    textpos.centerx = Positionx
+    textpos.centery = Positiony
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+
+def textwrite(Positionx, Positiony, Text, r, g, b):
+
+    writeonscreen = Text
+    font = pygame.font.Font(None, 25)
+    text = font.render(writeonscreen, 0, (r, g, b))
+    textpos = text.get_rect()
+    textpos.centerx = Positionx
+    textpos.centery = Positiony
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+
+def textdelete(Positionx, Positiony, Text):
+
+    writeonscreen = Text
+    font = pygame.font.Font(None, 25)
+    text = font.render(writeonscreen, 0, (255, 255, 255))
+    textpos = text.get_rect()
+    textpos.centerx = Positionx
+    textpos.centery = Positiony
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+
+def update(background, screen):
     cont.update()
     buttons1 = 0x0
     buttons2 = 0x0
@@ -113,6 +242,19 @@ def update():
     tempLabel['bg'] = "red"
     accelLabel['bg'] = "red"
     depthLabel['bg'] = "red"
+
+    #background.fill((255, 255, 255), Rect(125,80,140,120))
+    #screen.blit(background, (0, 0))
+    #pygame.display.flip()
+
+    #textdelete(180, 90, str(outbound.readline().rstrip()))
+
+    #textdelete(150 ,90, "None")
+    #textdelete(150 ,110, "None")
+    #textdelete(150 ,130, "None")
+    #textdelete(150 ,150, "None")
+    #textdelete(150 ,170, "None")
+
     while True and counter > 0:
         counter -= 1
         if outbound.readable():
@@ -126,33 +268,65 @@ def update():
         for i in range(0, linesToRead // 2):
             label = outbound.readline().rstrip().lstrip()
             if(label == "PSR"):
-                pressureOut['text'] = outbound.readline().rstrip()
+                #pressureOut['text'] = outbound.readline().rstrip()
                 pressureOut['bg'] = "green"
                 pressureLabel['bg'] = "green"
+
+                textwrite(180, 90, str(outbound.readline().rstrip()), 10, 125, 10)
+
             elif(label == "VLT"):
-                voltageOut['text'] = outbound.readline().rstrip()
+                #voltageOut['text'] = outbound.readline().rstrip()
                 voltageOut['bg'] = "green"
                 voltageLabel['bg'] = "green"
+
+                textwrite(180, 110, str(outbound.readline().rstrip()), 10, 125, 10)
+
             elif(label == "TMP"):
-                tempOut['text'] = outbound.readline().rstrip()
+                #tempOut['text'] = outbound.readline().rstrip()
                 tempOut['bg'] = "green"
                 tempLabel['bg'] = "green"
+
+                textwrite(180, 130, str(outbound.readline().rstrip()), 10, 125, 10)
+
             elif(label == "ACL"):
-                accelOut['text'] = outbound.readline().rstrip() + '\n'
-                accelOut['text'] += outbound.readline().rstrip() + '\n'
-                accelOut['text'] += outbound.readline().rstrip()
+                #accelOut['text'] = outbound.readline().rstrip() + '\n'
+                #ccelOut['text'] += outbound.readline().rstrip() + '\n'
+                #accelOut['text'] += outbound.readline().rstrip()
                 accelOut['bg'] = "green"
                 accelLabel['bg'] = "green"
+
+                writeonscreen = str(outbound.readline().rstrip()) + " "
+                writeonscreen += str(outbound.readline().rstrip()) + " "
+                writeonscreen += str(outbound.readline().rstrip())
+                textwrite(180, 150, writeonscreen, 10, 125, 10)
+
             elif(label == "DPT"):
-                depthOut['text'] = outbound.readline().rstrip()
+                #depthOut['text'] = outbound.readline().rstrip()
                 depthOut['bg'] = "green"
                 depthLabel['bg'] = "green"
+
+                depth = str(outbound.readline().rstrip())
+
+                textwrite(180, 170, depth, 10, 125, 10)
+
             else:
                 print "unknown datatype:", label
                 print "data:", outbound.readline().rstrip()
-    root.after(100, update)
 
-root.after(1000, update)
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    return
+
+    time.sleep(0.5)
+
+    background.fill((255, 255, 255), Rect(125,80,120,100))
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+
+    root.after(1, update(background, screen))
+
+root.after(1000, update(background, screen))
 button = tk.Button(root, text='Stop', width=25, command=root.destroy)
 button.grid(row=5, column=0, columnspan=2)
 root.mainloop()

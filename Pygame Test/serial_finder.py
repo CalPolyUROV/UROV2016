@@ -42,11 +42,11 @@ def find_port(ports,background, screen):
     print "Possible ports: ",
 
     writeonscreen = "Possible ports: "
-    font = pygame.font.Font(None, 50)
+    font = pygame.font.Font(None, 25)
     text = font.render(writeonscreen, 1, (10, 10, 10))
     textpos = text.get_rect()
-    textpos.centerx = background.get_rect().centerx -200
-    textpos.centery = background.get_rect().centery
+    textpos.centerx = 75
+    textpos.centery = 10
     background.blit(text, textpos)
 
     screen.blit(background, (0, 0))
@@ -64,8 +64,8 @@ def find_port(ports,background, screen):
             font = pygame.font.Font(None, 50)
             text = font.render(writeonscreen, 1, (10, 10, 10))
             textpos = text.get_rect()
-            textpos.centerx = background.get_rect().centerx -100
-            textpos.centery = background.get_rect().centery
+            textpos.centerx = 175
+            textpos.centery = 10
             background.blit(text, textpos)
             screen.blit(background, (0, 0))
             pygame.display.flip()
@@ -92,11 +92,11 @@ def find_port(ports,background, screen):
         for p in ports:
 
             writeonscreen = str(p)
-            font = pygame.font.Font(None, 50)
+            font = pygame.font.Font(None, 25)
             text = font.render(writeonscreen, 1, (10, 10, 10))
             textpos = text.get_rect()
-            textpos.centerx = background.get_rect().centerx -100
-            textpos.centery = background.get_rect().centery
+            textpos.centerx = 165
+            textpos.centery = 10
             background.blit(text, textpos)
             screen.blit(background, (0, 0))
             pygame.display.flip()
