@@ -1,4 +1,7 @@
 #include "arduino.h"
+//
+#define MOTORACCELERATIONMAX 20
+//20 motor speed unit things per interval (maybe change to dv/dt later)
 
 ///////////connecting the ESC to the arduino (switch the pin to the one in use)
 /*
@@ -20,6 +23,13 @@ int _m3;
 int _m4;
 int _m5 = 10;
 int _m6;
+//limiting variable
+int currentMotor1speed = 0;
+int currentMotor2speed = 0;
+int currentMotor3speed = 0;
+int currentMotor4speed = 0;
+int currentZspeed = 0;
+//
 
 Servo motor1;
 Servo motor2;
@@ -133,12 +143,34 @@ void setMotors(int X,int Y,int Z,int R)
   motor3speed = (motor1speedX + motor1speedY) / 2;
   motor4speed = (motor1speedX + motor1speedY) / 2;
 
-  motor_1(motor1speed); // write motorspeeds
-  motor_2(motor2speed);
-  motor_3(motor3speed);
-  motor_4(motor4speed);
-  motor_5(Z);
-  motor_6(Z);
+
+  
+  currentMotor1speed = brownOutPrevent(currentMotor1speed, motor1speed);
+  currentMotor2speed = brownOutPrevent(currentMotor2speed, motor2speed);
+  currentMotor3speed = brownOutPrevent(currentMotor3speed, motor3speed);
+  currentMotor4speed = brownOutPrevent(currentMotor4speed, motor4speed);
+  currentZspeed = brownOutPrevent(currentZspeed, Z);
+
+//limiting code end
+
+  motor_1(currentMotor1speed); // write motorspeeds
+  motor_2(currentMotor2speed);
+  motor_3(currentMotor3speed);
+  motor_4(currentMotor4speed);
+  motor_5(currentZspeed);
+  motor_6(currentZspeed);
 }
+
+int brownOutPrevent(int currentSpeed, int targetSpeed){   //Comments use 20 for MOTORACCELERATIONMAX
+  //adding change limiting code here
+  if((targetSpeed - currentSpeed)> MOTORACCELERATIONMAX){   //If target is over 20 above, only increase by 20
+    return currentSpeed + MOTORACCELERATIONMAX; 
+  } else if(((currentSpeed - targetSpeed)> MOTORACCELERATIONMAX){ //Else, If target is over 20 below, only decrease by 20
+    return currentSpeed - MOTORACCELERATIONMAX;
+  } else {
+    return targetSpeed; //Else, it is okay to set to target
+  }
+}
+
 
 
