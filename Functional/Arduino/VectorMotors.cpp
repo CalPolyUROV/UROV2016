@@ -38,6 +38,8 @@ Servo motor4;
 Servo motor5;
 Servo motor6;//the "servo" the pin will be connected to
 
+int brownOutPrevent(int currentSpeed, int targetSpeed);
+
 //////////////////////////////////////////////////////////////////////////attach ESCs to pins and set current to 0 Amps
 
 void motorSetup() 
@@ -165,9 +167,10 @@ int brownOutPrevent(int currentSpeed, int targetSpeed){   //Comments use 20 for 
   //adding change limiting code here
   if((targetSpeed - currentSpeed)> MOTORACCELERATIONMAX){   //If target is over 20 above, only increase by 20
     return currentSpeed + MOTORACCELERATIONMAX; 
-  } else if(((currentSpeed - targetSpeed)> MOTORACCELERATIONMAX){ //Else, If target is over 20 below, only decrease by 20
+  } else if((currentSpeed - targetSpeed)> MOTORACCELERATIONMAX){ //Else, If target is over 20 below, only decrease by 20
     return currentSpeed - MOTORACCELERATIONMAX;
-  } else {
+  } 
+  else {
     return targetSpeed; //Else, it is okay to set to target
   }
 }
