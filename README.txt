@@ -39,3 +39,8 @@
 #         Therefore speed change is limited to SmallAmount/MinimumTimeMargin
 #   Send CurrentState to Motor
 #
+### Brownout reality Jan23/2016
+# 1) check if indivitual motor change is above a constant, now 20.
+# 2) if the step is too high, only increment the motor speed by the constant (now 20)
+#
+#
