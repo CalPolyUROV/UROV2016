@@ -40,7 +40,7 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 ComsMasterArd coms;
 //QuadMotorShields md;//Not being used anymore
 bool pressure = true;
-bool voltage = false;
+bool voltage = true;
 bool temperature = true;
 bool accel = false;
 bool depth = true;
@@ -134,8 +134,8 @@ void writeToCommand(Input i){
   }
   if (voltage) {
 	  Serial3.println("VLT"); //tell it the next line is Power info
-	  Serial3.print(0);
-	  Serial3.println(" voltage fake");
+	  Serial3.print( (((float)(analogRead(A1))*(5.0/1023.0))-2.5)   /.066 );
+	  Serial3.println(" amps");
   }
   if (temperature) {
 	  Serial3.println("TMP"); //tell it the next line is Temperature
