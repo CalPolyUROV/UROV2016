@@ -43,7 +43,7 @@ def find_port(ports,background, screen):
 
     writeonscreen = "Possible ports: "
     font = pygame.font.Font(None, 25)
-    text = font.render(writeonscreen, 1, (10, 10, 10))
+    text = font.render(writeonscreen, 0, (10, 10, 10))
     textpos = text.get_rect()
     textpos.centerx = 75
     textpos.centery = 10
@@ -62,7 +62,7 @@ def find_port(ports,background, screen):
         for p in ports:
             writeonscreen = str(p)
             font = pygame.font.Font(None, 50)
-            text = font.render(writeonscreen, 1, (10, 10, 10))
+            text = font.render(writeonscreen, 0, (10, 10, 10))
             textpos = text.get_rect()
             textpos.centerx = 175
             textpos.centery = 10
@@ -75,7 +75,7 @@ def find_port(ports,background, screen):
 
                 writeonscreen = "Connected To: " + str(p)
                 font = pygame.font.Font(None, 50)
-                text = font.render(writeonscreen, 1, (10, 10, 10))
+                text = font.render(writeonscreen, 0, (10, 10, 10))
                 textpos = text.get_rect()
                 textpos.centerx = background.get_rect().centerx - 50
                 textpos.centery = background.get_rect().centery
@@ -93,7 +93,7 @@ def find_port(ports,background, screen):
 
             writeonscreen = str(p)
             font = pygame.font.Font(None, 25)
-            text = font.render(writeonscreen, 1, (10, 10, 10))
+            text = font.render(writeonscreen, 0, (10, 10, 10))
             textpos = text.get_rect()
             textpos.centerx = 165
             textpos.centery = 10

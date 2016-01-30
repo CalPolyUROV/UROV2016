@@ -31,7 +31,6 @@ def textWrite(Positionx, Positiony, Text):
     textpos.centery = Positiony
     background.blit(text, textpos)
     screen.blit(background, (0, 0))
-    pygame.display.flip()
 
 def textwrite(Positionx, Positiony, Text, r, g, b):
 
@@ -43,7 +42,6 @@ def textwrite(Positionx, Positiony, Text, r, g, b):
     textpos.centery = Positiony
     background.blit(text, textpos)
     screen.blit(background, (0, 0))
-    #pygame.display.flip()
 
 def textdelete(Positionx, Positiony, Text):
 
@@ -72,100 +70,25 @@ cont.update()
 if not cont.isConnected():
     print "connect the controller"
 
-    writeonscreen = "controller connected"
-    font = pygame.font.Font(None, 25)
-    text = font.render(writeonscreen, 0, (255, 255, 255))
-    textpos = text.get_rect()
-    textpos.centerx = 98
-    textpos.centery = 50
-    background.blit(text, textpos)
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
-
-    writeonscreen = "connect the controller"
-    font = pygame.font.Font(None, 25)
-    text = font.render(writeonscreen, 0, (255, 10, 10))
-    textpos = text.get_rect()
-    textpos.centerx = 105
-    textpos.centery = 50
-    background.blit(text, textpos)
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
+    textdelete(98, 50, "controller connected")
+    textwrite(105, 50, "connect the controller", 255, 10, 10)
+    pygame.display.update()
 
 cont.update()
 while not cont.isConnected():
     cont.update()
 print "controller connected"
 
-writeonscreen = "connect the controller"
-font = pygame.font.Font(None, 25)
-text = font.render(writeonscreen, 0, (255, 255, 255))
-textpos = text.get_rect()
-textpos.centerx = 105
-textpos.centery = 50
-background.blit(text, textpos)
-screen.blit(background, (0, 0))
-pygame.display.flip()
+textdelete(105, 50, "connect the controller")
+textwrite(98, 50, "controller connected", 10, 125, 10)
 
-writeonscreen = "controller connected"
-font = pygame.font.Font(None, 25)
-text = font.render(writeonscreen, 1, (10, 125, 10))
-textpos = text.get_rect()
-textpos.centerx = 98
-textpos.centery = 50
-background.blit(text, textpos)
-screen.blit(background, (0, 0))
-pygame.display.flip()
+textWrite(45, 90, "Pressure:")
+textWrite(40, 110, "Current:")
+textWrite(64, 130, "Temperature:")
+textWrite(64, 150, "Acceleration:")
+textWrite(35, 170, "Depth:")
 
-writeonscreen = "Pressure:"
-font = pygame.font.Font(None, 25)
-text = font.render(writeonscreen, 1, (10, 10, 10))
-textpos = text.get_rect()
-textpos.centerx = 45
-textpos.centery = 90
-background.blit(text, textpos)
-screen.blit(background, (0, 0))
-pygame.display.flip()
-
-writeonscreen = "Current:"
-font = pygame.font.Font(None, 25)
-text = font.render(writeonscreen, 1, (10, 10, 10))
-textpos = text.get_rect()
-textpos.centerx = 40
-textpos.centery = 110
-background.blit(text, textpos)
-screen.blit(background, (0, 0))
-pygame.display.flip()
-
-writeonscreen = "Temperature:"
-font = pygame.font.Font(None, 25)
-text = font.render(writeonscreen, 1, (10, 10, 10))
-textpos = text.get_rect()
-textpos.centerx = 64
-textpos.centery = 130
-background.blit(text, textpos)
-screen.blit(background, (0, 0))
-pygame.display.flip()
-
-writeonscreen = "Acceleration:"
-font = pygame.font.Font(None, 25)
-text = font.render(writeonscreen, 1, (10, 10, 10))
-textpos = text.get_rect()
-textpos.centerx = 64
-textpos.centery = 150
-background.blit(text, textpos)
-screen.blit(background, (0, 0))
-pygame.display.flip()
-
-writeonscreen = "Depth:"
-font = pygame.font.Font(None, 25)
-text = font.render(writeonscreen, 1, (10, 10, 10))
-textpos = text.get_rect()
-textpos.centerx = 35
-textpos.centery = 170
-background.blit(text, textpos)
-screen.blit(background, (0, 0))
-pygame.display.flip()
+pygame.display.update()
 
 pressure = 0.0
 current = 0.0
