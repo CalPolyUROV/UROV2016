@@ -28,11 +28,19 @@
 #
 #Note: calling delay() in a constructor that is before the void setup will freeze the arduino
 #
+###BrownOut Ideas Jan16/2016 Sat, Two Ideas
+#1)Use a Fractional Constant, with largest slope for x y z r
+#   Possibly logrithmic
+#2)Have CurrentState of Motor and Input
+#   Compare, if difference too high
+#     Check Time since last change of CurrentState
+#       If too time too low, don't change
+#       If passed minimum time margin, change CurrentState by a small amount
+#         Therefore speed change is limited to SmallAmount/MinimumTimeMargin
+#   Send CurrentState to Motor
 #
-#
-#
-#
-#
-#
+### Brownout reality Jan23/2016
+# 1) check if indivitual motor change is above a constant, now 20.
+# 2) if the step is too high, only increment the motor speed by the constant (now 20)
 #
 #
