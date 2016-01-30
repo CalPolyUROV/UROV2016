@@ -82,12 +82,6 @@ print "controller connected"
 textdelete(105, 50, "connect the controller")
 textwrite(98, 50, "controller connected", 10, 125, 10)
 
-textWrite(45, 90, "Pressure:")
-textWrite(40, 110, "Current:")
-textWrite(64, 130, "Temperature:")
-textWrite(64, 150, "Acceleration:")
-textWrite(35, 170, "Depth:")
-
 pygame.display.update()
 
 pressure = 0.0
@@ -96,7 +90,24 @@ temperature = 0.0
 accel = 0.0
 depth = 0.0
 
-def update(background, screen, pressure, current, temperature, accel, depth):
+while True:
+
+    if not cont.isConnected():
+
+        textdelete(98, 50, "controller connected")
+        textwrite(105, 50, "connect the controller", 255, 10, 10)
+
+    if cont.isConnected():
+
+        textdelete(105, 50, "connect the controller")
+        textwrite(98, 50, "controller connected", 10, 125, 10)
+
+    textWrite(45, 90, "Pressure:")
+    textWrite(40, 110, "Current:")
+    textWrite(64, 130, "Temperature:")
+    textWrite(64, 150, "Acceleration:")
+    textWrite(35, 170, "Depth:")
+
     cont.update()
     buttons1 = 0x0
     buttons2 = 0x0
@@ -108,20 +119,24 @@ def update(background, screen, pressure, current, temperature, accel, depth):
                 buttons1 += cont.getValueForButton(i)
             else:
                 buttons2 += cont.getValueForButton(i) >> 8
+    try:
+        outbound.write("STR")                               #  sends a signal to tell that this is the start of data
+        outbound.write(chr(buttons1))                       # writes the buttons first
+        outbound.write(chr(buttons2))
+        outbound.write(str(int(cont.getPrimaryX())))        # casts the floats to ints, then to strings for simple parsing
+        outbound.write(" ")
+        outbound.write(str(int(cont.getPrimaryY())))
+        outbound.write(" ")
+        outbound.write(str(int(cont.getSecondaryX())))
+        outbound.write(" ")
+        outbound.write(str(int(cont.getSecondaryY())))
+        outbound.write(" ")
+        outbound.write(str(int(cont.getTriggers())))
+        outbound.write(" ")
 
-    outbound.write("STR")                               #  sends a signal to tell that this is the start of data
-    outbound.write(chr(buttons1))                       # writes the buttons first
-    outbound.write(chr(buttons2))
-    outbound.write(str(int(cont.getPrimaryX())))        # casts the floats to ints, then to strings for simple parsing
-    outbound.write(" ")
-    outbound.write(str(int(cont.getPrimaryY())))
-    outbound.write(" ")
-    outbound.write(str(int(cont.getSecondaryX())))
-    outbound.write(" ")
-    outbound.write(str(int(cont.getSecondaryY())))
-    outbound.write(" ")
-    outbound.write(str(int(cont.getTriggers())))
-    outbound.write(" ")
+    except:
+        pass
+
     counter = 10
     proceed = False
 
@@ -131,64 +146,61 @@ def update(background, screen, pressure, current, temperature, accel, depth):
     textwrite(200, 150, str(accel), 255, 10, 10)
     textwrite(200, 170, str(depth), 255, 10, 10)
 
+    try:
+        while True and counter > 0:
+            counter -= 1
+            if outbound.readable():
+                if 'S' == outbound.read(1):
+                    if 'T' == outbound.read(1):
+                        if 'R' == outbound.read(1):
+                            proceed = True
+                            break
+        if(proceed):
+            linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
+            for i in range(0, linesToRead // 2):
+                label = outbound.readline().rstrip().lstrip()
+                if(label == "PSR"):
 
-    while True and counter > 0:
-        counter -= 1
-        if outbound.readable():
-            if 'S' == outbound.read(1):
-                if 'T' == outbound.read(1):
-                    if 'R' == outbound.read(1):
-                        proceed = True
-                        break
-    if(proceed):
-        linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
-        for i in range(0, linesToRead // 2):
-            label = outbound.readline().rstrip().lstrip()
-            if(label == "PSR"):
+                    textdelete(200, 90, str(pressure))
+                    pressure = outbound.readline().rstrip()
+                    textwrite(200, 90, str(pressure), 10, 125, 10)
 
-                textdelete(200, 90, str(pressure))
-                pressure = outbound.readline().rstrip()
-                textwrite(200, 90, str(pressure), 10, 125, 10)
+                elif(label == "VLT"):
+                    textdelete(200, 110, str(current))
+                    current = outbound.readline().rstrip()
+                    textwrite(200, 110, str(current), 10, 125, 10)
 
-            elif(label == "VLT"):
-                textdelete(200, 110, str(current))
-                current = outbound.readline().rstrip()
-                textwrite(200, 110, str(current), 10, 125, 10)
+                elif(label == "TMP"):
+                    textdelete(200, 130, str(temperature))
+                    temperature = outbound.readline().rstrip()
+                    textwrite(200, 130, str(temperature), 10, 125, 10)
 
-            elif(label == "TMP"):
-                textdelete(200, 130, str(temperature))
-                temperature = outbound.readline().rstrip()
-                textwrite(200, 130, str(temperature), 10, 125, 10)
+                elif(label == "ACL"):
+                    textdelete(200, 150, str(accel))
+                    accel = str(outbound.readline().rstrip()) + " "
+                    accel += str(outbound.readline().rstrip()) + " "
+                    accel += str(outbound.readline().rstrip())
+                    textwrite(200, 150, accel, 10, 125, 10)
 
-            elif(label == "ACL"):
-                textdelete(200, 150, str(accel))
-                accel = str(outbound.readline().rstrip()) + " "
-                accel += str(outbound.readline().rstrip()) + " "
-                accel += str(outbound.readline().rstrip())
-                textwrite(200, 150, accel, 10, 125, 10)
+                elif(label == "DPT"):
+                    textdelete(200,170, str(depth))
+                    depth = str(outbound.readline().rstrip())
+                    textwrite(200, 170, depth, 10, 125, 10)
 
-            elif(label == "DPT"):
-                textdelete(200,170, str(depth))
-                depth = str(outbound.readline().rstrip())
-                textwrite(200, 170, depth, 10, 125, 10)
-
-            else:
-                print "unknown datatype:", label
-                print "data:", outbound.readline().rstrip()
-
+                else:
+                    print "unknown datatype:", label
+                    print "data:", outbound.readline().rstrip()
+    except:
+        pass
 
     pygame.display.update()
     time.sleep(0.03)
-    background.fill((255, 255, 255), Rect(125,80,140,100))
-    screen.blit(background, (0, 0))
+    #background.fill((255, 255, 255), Rect(125,80,140,100))
+    #screen.blit(background, (0, 0))
 
     for event in pygame.event.get():
         if event.type == QUIT:
             quit()
-            return
-
-while True:
-    update(background,screen, pressure, current, temperature, accel, depth)
 
 
 
