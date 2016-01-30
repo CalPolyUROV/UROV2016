@@ -93,12 +93,10 @@ depth = 0.0
 while True:
 
     if not cont.isConnected():
-
         textdelete(98, 50, "controller connected")
         textwrite(105, 50, "connect the controller", 255, 10, 10)
 
     if cont.isConnected():
-
         textdelete(105, 50, "connect the controller")
         textwrite(98, 50, "controller connected", 10, 125, 10)
 
