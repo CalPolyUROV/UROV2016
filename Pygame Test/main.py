@@ -1,15 +1,61 @@
-import Tkinter as tk
-
 import serial
 import serial.tools.list_ports
+
+import pygame
+from pygame.locals import *
+import time
 
 import controller as cont
 import serial_finder
 
 __author__ = 'johna'
 
+pygame.init()
+screen = pygame.display.set_mode((1000, 500))
+pygame.display.set_caption("Cal Poly Control Center")
+
+background = pygame.Surface(screen.get_size())
+background = background.convert()
+background.fill((250, 250, 250))
+
 ports = serial_finder.serial_ports()
-port = serial_finder.find_port(ports)
+port = serial_finder.find_port(ports, background, screen)
+
+def textWrite(Positionx, Positiony, Text):
+
+    writeonscreen = Text
+    font = pygame.font.Font(None, 25)
+    text = font.render(writeonscreen, 0, (10, 10, 10))
+    textpos = text.get_rect()
+    textpos.centerx = Positionx
+    textpos.centery = Positiony
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+
+def textwrite(Positionx, Positiony, Text, r, g, b):
+
+    writeonscreen = Text
+    font = pygame.font.Font(None, 25)
+    text = font.render(writeonscreen, 0, (r, g, b))
+    textpos = text.get_rect()
+    textpos.centerx = Positionx
+    textpos.centery = Positiony
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+
+def textdelete(Positionx, Positiony, Text):
+
+    writeonscreen = Text
+    font = pygame.font.Font(None, 25)
+    text = font.render(writeonscreen, 0, (255, 255, 255))
+    textpos = text.get_rect()
+    textpos.centerx = Positionx
+    textpos.centery = Positiony
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+
+textWrite(64, 30, "Using: " + str(port))
+
 print "Using: ", port
 outbound = serial.Serial(
     port=port,
@@ -23,35 +69,43 @@ outbound = serial.Serial(
 cont.update()
 if not cont.isConnected():
     print "connect the controller"
+
+    textdelete(98, 50, "controller connected")
+    textwrite(105, 50, "connect the controller", 255, 10, 10)
+    pygame.display.update()
+
 cont.update()
 while not cont.isConnected():
     cont.update()
 print "controller connected"
 
-root = tk.Tk()
-root.title("Cal Poly Control Center")
-pressureLabel = tk.Label(root, fg="black", background='white', text="Pressure: ")
+textdelete(105, 50, "connect the controller")
+textwrite(98, 50, "controller connected", 10, 125, 10)
 
-pressureOut = tk.Label(root, fg="black", background="white")
-voltageLabel = tk.Label(root, fg="black", background='white', text="Voltage: ")
-voltageOut = tk.Label(root, fg="black", background="white")
-accelLabel = tk.Label(root, fg="black", background='white', text="Acceleration: ")
-accelOut = tk.Label(root, fg="black", background="white")
-tempLabel = tk.Label(root, fg="black", background='white', text="Temperature: ")
-tempOut = tk.Label(root, fg="black", background="white")
-depthLabel = tk.Label(root, fg="black", background='white', text="Depth: ")
-depthOut = tk.Label(root, fg="black", background='white')
-pressureLabel.grid(row=0, column=0)
-voltageLabel.grid(row=1, column=0)
-accelLabel.grid(row=2, column=0)
-tempLabel.grid(row=3, column=0)
-depthLabel.grid(row=4, column=0)
-pressureOut.grid(row=0, column=1)
-voltageOut.grid(row=1, column=1)
-accelOut.grid(row=2, column=1)
-tempOut.grid(row=3, column=1)
-depthOut.grid(row=4, column=1)
-def update():
+pygame.display.update()
+
+pressure = 0.0
+current = 0.0
+temperature = 0.0
+accel = 0.0
+depth = 0.0
+
+while True:
+
+    if not cont.isConnected():
+        textdelete(98, 50, "controller connected")
+        textwrite(105, 50, "connect the controller", 255, 10, 10)
+
+    if cont.isConnected():
+        textdelete(105, 50, "connect the controller")
+        textwrite(98, 50, "controller connected", 10, 125, 10)
+
+    textWrite(45, 90, "Pressure:")
+    textWrite(40, 110, "Current:")
+    textWrite(64, 130, "Temperature:")
+    textWrite(64, 150, "Acceleration:")
+    textWrite(35, 170, "Depth:")
+
     cont.update()
     buttons1 = 0x0
     buttons2 = 0x0
@@ -63,75 +117,88 @@ def update():
                 buttons1 += cont.getValueForButton(i)
             else:
                 buttons2 += cont.getValueForButton(i) >> 8
+    try:
+        outbound.write("STR")                               #  sends a signal to tell that this is the start of data
+        outbound.write(chr(buttons1))                       # writes the buttons first
+        outbound.write(chr(buttons2))
+        outbound.write(str(int(cont.getPrimaryX())))        # casts the floats to ints, then to strings for simple parsing
+        outbound.write(" ")
+        outbound.write(str(int(cont.getPrimaryY())))
+        outbound.write(" ")
+        outbound.write(str(int(cont.getSecondaryX())))
+        outbound.write(" ")
+        outbound.write(str(int(cont.getSecondaryY())))
+        outbound.write(" ")
+        outbound.write(str(int(cont.getTriggers())))
+        outbound.write(" ")
 
-    outbound.write("STR")                               #  sends a signal to tell that this is the start of data
-    outbound.write(chr(buttons1))                       # writes the buttons first
-    outbound.write(chr(buttons2))
-    outbound.write(str(int(cont.getPrimaryX())))        # casts the floats to ints, then to strings for simple parsing
-    outbound.write(" ")
-    outbound.write(str(int(cont.getPrimaryY())))
-    outbound.write(" ")
-    outbound.write(str(int(cont.getSecondaryX())))
-    outbound.write(" ")
-    outbound.write(str(int(cont.getSecondaryY())))
-    outbound.write(" ")
-    outbound.write(str(int(cont.getTriggers())))
-    outbound.write(" ")
+    except:
+        pass
+
     counter = 10
     proceed = False
-    pressureOut['bg'] = "red"
-    voltageOut['bg'] = "red"
-    tempOut['bg'] = "red"
-    accelOut['bg'] = "red"
-    depthOut['bg'] = "red"
-    pressureLabel['bg'] = "red"
-    voltageLabel['bg'] = "red"
-    tempLabel['bg'] = "red"
-    accelLabel['bg'] = "red"
-    depthLabel['bg'] = "red"
-    while True and counter > 0:
-        counter -= 1
-        if outbound.readable():
-            if 'S' == outbound.read(1):
-                if 'T' == outbound.read(1):
-                    if 'R' == outbound.read(1):
-                        proceed = True
-                        break
-    if(proceed):
-        linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
-        for i in range(0, linesToRead // 2):
-            label = outbound.readline().rstrip().lstrip()
-            if(label == "PSR"):
-                pressureOut['text'] = outbound.readline().rstrip()
-                pressureOut['bg'] = "green"
-                pressureLabel['bg'] = "green"
-            elif(label == "VLT"):
-                voltageOut['text'] = outbound.readline().rstrip()
-                voltageOut['bg'] = "green"
-                voltageLabel['bg'] = "green"
-            elif(label == "TMP"):
-                tempOut['text'] = outbound.readline().rstrip()
-                tempOut['bg'] = "green"
-                tempLabel['bg'] = "green"
-            elif(label == "ACL"):
-                accelOut['text'] = outbound.readline().rstrip() + '\n'
-                accelOut['text'] += outbound.readline().rstrip() + '\n'
-                accelOut['text'] += outbound.readline().rstrip()
-                accelOut['bg'] = "green"
-                accelLabel['bg'] = "green"
-            elif(label == "DPT"):
-                depthOut['text'] = outbound.readline().rstrip()
-                depthOut['bg'] = "green"
-                depthLabel['bg'] = "green"
-            else:
-                print "unknown datatype:", label
-                print "data:", outbound.readline().rstrip()
-    root.after(100, update)
 
-root.after(1000, update)
-button = tk.Button(root, text='Stop', width=25, command=root.destroy)
-button.grid(row=5, column=0, columnspan=2)
-root.mainloop()
+    textwrite(200, 90, str(pressure), 255, 10, 10)
+    textwrite(200, 110, str(current), 255, 10, 10)
+    textwrite(200, 130, str(temperature), 255, 10, 10)
+    textwrite(200, 150, str(accel), 255, 10, 10)
+    textwrite(200, 170, str(depth), 255, 10, 10)
+
+    try:
+        while True and counter > 0:
+            counter -= 1
+            if outbound.readable():
+                if 'S' == outbound.read(1):
+                    if 'T' == outbound.read(1):
+                        if 'R' == outbound.read(1):
+                            proceed = True
+                            break
+        if(proceed):
+            linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
+            for i in range(0, linesToRead // 2):
+                label = outbound.readline().rstrip().lstrip()
+                if(label == "PSR"):
+
+                    textdelete(200, 90, str(pressure))
+                    pressure = outbound.readline().rstrip()
+                    textwrite(200, 90, str(pressure), 10, 125, 10)
+
+                elif(label == "VLT"):
+                    textdelete(200, 110, str(current))
+                    current = outbound.readline().rstrip()
+                    textwrite(200, 110, str(current), 10, 125, 10)
+
+                elif(label == "TMP"):
+                    textdelete(200, 130, str(temperature))
+                    temperature = outbound.readline().rstrip()
+                    textwrite(200, 130, str(temperature), 10, 125, 10)
+
+                elif(label == "ACL"):
+                    textdelete(200, 150, str(accel))
+                    accel = str(outbound.readline().rstrip()) + " "
+                    accel += str(outbound.readline().rstrip()) + " "
+                    accel += str(outbound.readline().rstrip())
+                    textwrite(200, 150, accel, 10, 125, 10)
+
+                elif(label == "DPT"):
+                    textdelete(200,170, str(depth))
+                    depth = str(outbound.readline().rstrip())
+                    textwrite(200, 170, depth, 10, 125, 10)
+
+                else:
+                    print "unknown datatype:", label
+                    print "data:", outbound.readline().rstrip()
+    except:
+        pass
+
+    pygame.display.update()
+    time.sleep(0.03)
+    #background.fill((255, 255, 255), Rect(125,80,140,100))
+    #screen.blit(background, (0, 0))
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            quit()
 
 
 
