@@ -104,7 +104,7 @@ while True:
     textWrite(40, 110, "Current:")
     textWrite(64, 130, "Temperature:")
     textWrite(64, 150, "Acceleration:")
-    textWrite(35, 170, "Depth:")
+    textWrite(34, 170, "Depth:")
 
     cont.update()
     buttons1 = 0x0
@@ -153,12 +153,12 @@ while True:
                         if 'R' == outbound.read(1):
                             proceed = True
                             break
+
         if(proceed):
             linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
             for i in range(0, linesToRead // 2):
                 label = outbound.readline().rstrip().lstrip()
                 if(label == "PSR"):
-
                     textdelete(200, 90, str(pressure))
                     pressure = outbound.readline().rstrip()
                     textwrite(200, 90, str(pressure), 10, 125, 10)
@@ -193,12 +193,7 @@ while True:
 
     pygame.display.update()
     time.sleep(0.03)
-    #background.fill((255, 255, 255), Rect(125,80,140,100))
-    #screen.blit(background, (0, 0))
 
     for event in pygame.event.get():
         if event.type == QUIT:
             quit()
-
-
-
