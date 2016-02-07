@@ -104,10 +104,12 @@ Input readBuffer() {
 }
 void processInput(Input i){
   
-    if(i.buttons1){digitalWrite(13, HIGH);}
-    else {digitalWrite(13, LOW);}
+    if((CHECK_BIT(i.buttons1, 2))){digitalWrite(13, HIGH);}
+        else {digitalWrite(13, LOW);}
+    if((CHECK_BIT(i.buttons1, 2))){digitalWrite(24, HIGH);}
+        else {digitalWrite(24, LOW);}
     
-  setCameras(i.buttons1);
+  //setCameras(i.buttons1);
   setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX);
 }
 
