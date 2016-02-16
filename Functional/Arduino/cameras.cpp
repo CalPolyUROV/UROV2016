@@ -1,5 +1,5 @@
 #include "arduino.h"
-
+#include <Wire.h>
 #include <Servo.h>
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 #define NUM_CAMERAS 2
@@ -17,9 +17,11 @@ void setCameras(unsigned char buttons)
         //digitalWrite(13, HIGH);
         currentCamera++;
         if(currentCamera==NUM_CAMERAS) {currentCamera = 0;}
-        digitalWrite(22,CHECK_BIT(currentCamera, 0));
-        digitalWrite(24,CHECK_BIT(currentCamera, 1));
-        digitalWrite(26,CHECK_BIT(currentCamera, 2)); 
+        digitalWrite(22,(CHECK_BIT(buttons, 2)));
+        digitalWrite(24,(CHECK_BIT(~(buttons), 2)));
+        //digitalWrite(22,CHECK_BIT(currentCamera, 0));
+        //digitalWrite(24,CHECK_BIT(currentCamera, 1));
+        //digitalWrite(26,CHECK_BIT(currentCamera, 2)); 
        
        /*
         if(currentCamera==0)
