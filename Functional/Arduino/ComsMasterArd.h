@@ -4,6 +4,9 @@
 #define GET_TEMP 1
 #define GET_PRES 2
 #define GET_DEPT 3
+#define GET_YAW  4
+#define GET_PCH 5
+#define GET_ROL 6
 
 
 class ComsMasterArd

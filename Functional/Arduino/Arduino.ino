@@ -44,7 +44,7 @@ bool voltage = true;
 bool temperature = true;
 bool accel = false;
 bool depth = true;
-
+bool ypr = true;
 //SoftwareSerial Serial3(14, 15);
 void setup() {
 	Serial3.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
@@ -146,6 +146,19 @@ void writeToCommand(Input i){
     coms.sendSlaveCmd(GET_TEMP);
 	  Serial3.print(coms.getSlaveData());
 	  Serial3.println(" degrees C");
+  }
+  if (ypr) {
+    Serial3.println("YPR"); //tell it the next line is Temperature
+    coms.sendSlaveCmd(GET_YAW);
+    Serial3.print(" YAW: ");
+    Serial3.print(coms.getSlaveData());
+    coms.sendSlaveCmd(GET_PCH);
+    Serial3.print(" PCH: ");
+    Serial3.print(coms.getSlaveData());
+    coms.sendSlaveCmd(GET_ROL);
+    Serial3.print(" ROL: ");
+    Serial3.print(coms.getSlaveData());
+    Serial3.println();
   }
   if (accel) {
 	  Serial3.println("ACL"); //tell it the next line is Accelerometer
