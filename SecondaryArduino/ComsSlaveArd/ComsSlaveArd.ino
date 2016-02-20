@@ -438,7 +438,7 @@ void setup() {
 }
 
 void loop() {
-  delay(150);
+  delay(20);
   Pressure.updatePressureSensor();
   //yprGet();
   //Serial.println(yaw);
@@ -490,7 +490,7 @@ int WireCallEvent (int EventCode){
       break;
     case 6:
       WireMisoType = 'f';
-      return pchDEG;
+      return rolDEG;
       break;
     default:
       WireMisoType = 'n';
