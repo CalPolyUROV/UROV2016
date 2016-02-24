@@ -17,12 +17,12 @@
 #include <Servo.h>
 
 //motor pins
-int _m1 = 8;
-int _m2 = 9;
-int _m3;
-int _m4;
-int _m5 = 10;
-int _m6;
+int _m1 = 3;
+int _m2 = 4;
+int _m3 = 5;
+int _m4 = 6;
+int _m5 = 7;
+int _m6 = 8;
 //limiting variable
 int currentMotor1speed = 0;
 int currentMotor2speed = 0;
@@ -140,10 +140,10 @@ void setMotors(int X,int Y,int Z,int R)
   motor3speedR = R * -1;
   motor4speedR = R;
 
-  motor1speed = (motor1speedX + motor1speedY) / 2; // add and divide to get motor speeds (no rotation included yet)
-  motor2speed = (motor1speedX + motor1speedY) / 2;
-  motor3speed = (motor1speedX + motor1speedY) / 2;
-  motor4speed = (motor1speedX + motor1speedY) / 2;
+  motor1speed = Z;//(motor1speedX + motor1speedY) / 2; // add and divide to get motor speeds (no rotation included yet)
+  motor2speed = Z;//(motor1speedX + motor1speedY) / 2;
+  motor3speed = Z;//(motor1speedX + motor1speedY) / 2;
+  motor4speed = Z;//(motor1speedX + motor1speedY) / 2;
 
 
   
