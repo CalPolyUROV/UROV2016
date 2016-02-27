@@ -81,6 +81,10 @@ depth = 0.0
 pitchangle = 0
 rotateangle = 0
 ypr = 0.0
+yprraw = 0.0
+pr = 0
+rr =0
+yr =0
 
 while True:
 
@@ -98,6 +102,7 @@ while True:
     textWrite(64, 150, "Acceleration:")
     textWrite(34, 170, "Depth:")
     textWrite(25, 190, "YPR:")
+    textWrite(40, 210, "YPRraw:")
 
     cont.update()
     buttons1 = 0x0
@@ -138,6 +143,7 @@ while True:
     textwrite(200, 150, str(accel), 255, 10, 10)
     textwrite(200, 170, str(depth), 255, 10, 10)
     textwrite(200, 190, str(ypr), 255, 10, 10)
+    textwrite(200, 210, str(yprraw), 255, 10, 10)
 
     try:
         while True and counter > 0:
@@ -182,12 +188,15 @@ while True:
 
                 elif(label == "YAW"):
                     yaw = outbound.readline().rstrip()
+                    yawr = int(yaw) - yr
                     got = 'T'
                 elif(label == "PCH"):
                     pch = outbound.readline().rstrip()
+                    pchr = int(pch) -pr
                     got = got + 'T'
                 elif(label == "ROL"):
                     rol = outbound.readline().rstrip()
+                    rolr = int(rol) -rr
                     got = got + 'T'
                 else:
                     print "unknown datatype:", label
@@ -198,13 +207,24 @@ while True:
 
     if got == 'TTT':
         textdelete(200,190, str(ypr))
-        ypr = 'Y:' + str(yaw) + ' P:' + str(pch) + ' R:' + str(rol)
+        textdelete(200,210, str(yprraw))
+        yprraw = 'Y:' + str(yaw) + ' P:' + str(pch) + ' R:' + str(rol)
+        ypr = 'Y:' + str(yawr) + ' P:' + str(pchr) + ' R:' + str(rolr)
         textwrite(200, 190, ypr, 10, 125, 10)
+        textwrite(200, 210, yprraw, 10, 125, 10)
+
+    for event in pygame.event.get(pygame.KEYDOWN):
+        if event.type == pygame.KEYDOWN:
+            if event.key == K_r:
+                yr = int(yaw)
+                pr = int(pch)
+                rr = int(rol)
+    print pr
 
     try:
         img1pos = img1.get_rect()
         img1pos.centerx = 750
-        img1pos.centery = 250 + (int(pch) * 5)
+        img1pos.centery = 250 + ((int(pchr)) * 5)
         background.blit(img1, img1pos)
 
         img2pos = img2.get_rect()
@@ -212,7 +232,7 @@ while True:
         img2pos.centery = 250
         background.blit(img2, img2pos)
 
-        img4 = pygame.transform.rotate(img3, -int(rol))
+        img4 = pygame.transform.rotate(img3, -int(rolr))
         img4pos = img4.get_rect()
         img4pos.centerx = 750
         img4pos.centery = 264
