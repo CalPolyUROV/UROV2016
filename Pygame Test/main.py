@@ -54,6 +54,10 @@ def textdelete(Positionx, Positiony, Text):
     background.blit(text, textpos)
     screen.blit(background, (0, 0))
 
+img1 = pygame.image.load('ArtificialHorizon.png')
+img2 = pygame.image.load("ArtificialHorizonOverlay.png")
+img3 = pygame.image.load("ArtificialHorizonMarker.png").convert_alpha()
+
 textWrite(64, 30, "Using: " + str(port))
 
 print "Using: ", port
@@ -66,21 +70,6 @@ outbound = serial.Serial(
     timeout=0.1
 )
 
-cont.update()
-if not cont.isConnected():
-    print "connect the controller"
-
-    textdelete(98, 50, "controller connected")
-    textwrite(105, 50, "connect the controller", 255, 10, 10)
-    pygame.display.update()
-
-cont.update()
-while not cont.isConnected():
-    cont.update()
-print "controller connected"
-
-textdelete(105, 50, "connect the controller")
-textwrite(98, 50, "controller connected", 10, 125, 10)
 
 pygame.display.update()
 
@@ -89,6 +78,10 @@ current = 0.0
 temperature = 0.0
 accel = 0.0
 depth = 0.0
+pitchangle = 0
+rotateangle = 0
+ypr = 0.0
+YPR = [0, 0, 0]
 
 while True:
 
@@ -105,6 +98,7 @@ while True:
     textWrite(64, 130, "Temperature:")
     textWrite(64, 150, "Acceleration:")
     textWrite(34, 170, "Depth:")
+    textWrite(25, 190, "YPR:")
 
     cont.update()
     buttons1 = 0x0
@@ -143,6 +137,7 @@ while True:
     textwrite(200, 130, str(temperature), 255, 10, 10)
     textwrite(200, 150, str(accel), 255, 10, 10)
     textwrite(200, 170, str(depth), 255, 10, 10)
+    textwrite(200, 190, str(ypr), 255, 10, 10)
 
     try:
         while True and counter > 0:
@@ -185,11 +180,34 @@ while True:
                     depth = str(outbound.readline().rstrip())
                     textwrite(200, 170, depth, 10, 125, 10)
 
+                elif(label == "YPR"):
+                    textdelete(200,190, str(ypr))
+                    ypr = str(outbound.readline().rstrip())
+                    textwrite(200, 190, ypr, 10, 125, 10)
+
+                    pass
+
                 else:
                     print "unknown datatype:", label
                     print "data:", outbound.readline().rstrip()
     except:
         pass
+
+    img1pos = img1.get_rect()
+    img1pos.centerx = 750
+    img1pos.centery = 250 + (pitchangle * 5)
+    background.blit(img1, img1pos)
+
+    img2pos = img2.get_rect()
+    img2pos.centerx = 750
+    img2pos.centery = 250
+    background.blit(img2, img2pos)
+
+    img4 = pygame.transform.rotate(img3, rotateangle)
+    img4pos = img4.get_rect()
+    img4pos.centerx = 750
+    img4pos.centery = 264
+    background.blit(img4, img4pos)
 
     pygame.display.update()
     time.sleep(0.03)
