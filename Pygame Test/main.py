@@ -8,7 +8,7 @@ import time
 import controller as cont
 import serial_finder
 
-__author__ = 'johna'
+__author__ = 'johna, tina and luca'
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 500))
@@ -81,7 +81,6 @@ depth = 0.0
 pitchangle = 0
 rotateangle = 0
 ypr = 0.0
-YPR = [0, 0, 0]
 
 while True:
 
@@ -179,38 +178,77 @@ while True:
                     textdelete(200,170, str(depth))
                     depth = str(outbound.readline().rstrip())
                     textwrite(200, 170, depth, 10, 125, 10)
-
                 elif(label == "YPR"):
                     textdelete(200,190, str(ypr))
                     ypr = str(outbound.readline().rstrip())
                     textwrite(200, 190, ypr, 10, 125, 10)
 
-                    pass
-
+                    YPR = []
+                    angle = ''
+                    found = False
+                    ready = False
+                    count = 0
+                    try:
+                        for char in ypr:
+                            if char == ':':
+                                found = True
+                            elif found == True and char == ' ' and ready == False:
+                                ready = True
+                            elif count == len(ypr) - 1:
+                                angle = angle + char
+                                YPR.append(int(angle))
+                            elif found == True and ready == True:
+                                if char == ' ':
+                                    found = False
+                                    ready = False
+                                    YPR.append(int(angle))
+                                    angle = ''
+                                else:
+                                    angle = angle + char
+                            count += 1
+                    except:
+                        pass
+                elif(label == "YAW"):
+                    yaw = outbound.readline().rstrip()
+                    print yaw
+                    got = 'T'
+                elif(label == "PCH"):
+                    pch = outbound.readline().rstrip()
+                    got = got + 'T'
+                    print pch
+                elif(label == "ROL"):
+                    rol = outbound.readline().rstrip()
+                    print rol
+                    got = got + 'T'
                 else:
                     print "unknown datatype:", label
                     print "data:", outbound.readline().rstrip()
+
     except:
         pass
 
-    img1pos = img1.get_rect()
-    img1pos.centerx = 750
-    img1pos.centery = 250 + (pitchangle * 5)
-    background.blit(img1, img1pos)
+    try:
+        img1pos = img1.get_rect()
+        img1pos.centerx = 750
+        img1pos.centery = 250 + (int(pch) * 5)
+        background.blit(img1, img1pos)
 
-    img2pos = img2.get_rect()
-    img2pos.centerx = 750
-    img2pos.centery = 250
-    background.blit(img2, img2pos)
+        img2pos = img2.get_rect()
+        img2pos.centerx = 750
+        img2pos.centery = 250
+        background.blit(img2, img2pos)
 
-    img4 = pygame.transform.rotate(img3, rotateangle)
-    img4pos = img4.get_rect()
-    img4pos.centerx = 750
-    img4pos.centery = 264
-    background.blit(img4, img4pos)
+        img4 = pygame.transform.rotate(img3, -int(rol))
+        img4pos = img4.get_rect()
+        img4pos.centerx = 750
+        img4pos.centery = 264
+        background.blit(img4, img4pos)
+
+    except:
+        pass
 
     pygame.display.update()
-    time.sleep(0.03)
+    time.sleep(0.05)
 
     for event in pygame.event.get():
         if event.type == QUIT:
