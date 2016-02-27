@@ -1,3 +1,11 @@
+#define GET_TEMP 1
+#define GET_PRES 2
+#define GET_DEPT 3
+#define GET_YAW  4
+#define GET_PCH 5
+#define GET_ROL 6
+
+
 /***************************************************************************************************************
 * Razor AHRS Firmware v1.4.2
 * 9 Degree of Measurement Attitude and Heading Reference System
@@ -467,30 +475,30 @@ void receiveEvent(int howMany) {
 
 int WireCallEvent (int EventCode){
   switch(EventCode) {
-    case 1:
+    case GET_TEMP:
       WireMisoType = 'i'; //misoType is kinda pointless, its just a buffer so the right number of chars are returned on i2c. 
                           //I can't think of any way to use it either; when master makes a request it already knows what it should be recieving.
       return Pressure.getTempTimesTen();  //Its not temp times ten anymore, its just temp. to be changed.
       break;
-    case 2:
+    case GET_PRES:
       WireMisoType = 'i';
       return Pressure.getPressure();
       break;
-    case 3:
+    case GET_DEPT:
       WireMisoType = 'i';
       return Pressure.getDepth();
       break;
-    case 4:
+    case GET_YAW:
       WireMisoType = 'f';
-      return yawDEG;
+      return (int)yawDEG;
       break;
-    case 5:
+    case GET_PCH:
       WireMisoType = 'f';
-      return pchDEG;
+      return (int)pchDEG;
       break;
-    case 6:
+    case GET_ROL:
       WireMisoType = 'f';
-      return rolDEG;
+      return (int)rolDEG;
       break;
     default:
       WireMisoType = 'n';
