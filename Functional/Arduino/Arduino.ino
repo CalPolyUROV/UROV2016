@@ -18,7 +18,7 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 
 ///// Pins used by Quad Motor Shields //////
 //
-// 7, 6, 11, 12, 31, 33, 29, A0, 25, 27, 23, A1, 
+// 7, 6, 11, 12, 22, 24, 31, 33, 29, 25, 27, 23, A1, 
 //42, 44, 40, 24, 26, 22
 //
 //////////////////////////////////
@@ -51,6 +51,8 @@ void setup() {
 	Serial.begin(9600);     //it does not seem to work at lower baud rates 
 	pinMode(serialWritePin, OUTPUT);
 	pinMode(13, OUTPUT);
+	pinMode(22, OUTPUT);
+	pinMode(24, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
         motorSetup();
 }
@@ -104,10 +106,12 @@ Input readBuffer() {
 }
 void processInput(Input i){
   
-    if(i.buttons1){digitalWrite(13, HIGH);}
-    else {digitalWrite(13, LOW);}
+    if((CHECK_BIT(i.buttons1, 2))){digitalWrite(22, HIGH);}
+        else {digitalWrite(22, LOW);}
+    if((CHECK_BIT(i.buttons1, 2))){digitalWrite(24, LOW);}
+        else {digitalWrite(24, HIGH);}
     
-  setCameras(i.buttons1);
+  //setCameras(i.buttons1);
   setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX);
 }
 
@@ -134,7 +138,7 @@ void writeToCommand(Input i){
   }
   if (voltage) {
 	  Serial3.println("VLT"); //tell it the next line is Power info
-	  Serial3.print( (((float)(analogRead(A1))*(5.0/1023.0))-2.5)   /.066 );
+	  Serial3.print( (((float)(analogRead(A1))*(5.0/1023.0))-2.52)   /.066 );
 	  Serial3.println(" amps");
   }
   if (temperature) {
