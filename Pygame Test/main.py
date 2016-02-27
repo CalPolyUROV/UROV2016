@@ -131,6 +131,7 @@ while True:
     counter = 10
     proceed = False
 
+    got = ''
     textwrite(200, 90, str(pressure), 255, 10, 10)
     textwrite(200, 110, str(current), 255, 10, 10)
     textwrite(200, 130, str(temperature), 255, 10, 10)
@@ -178,47 +179,15 @@ while True:
                     textdelete(200,170, str(depth))
                     depth = str(outbound.readline().rstrip())
                     textwrite(200, 170, depth, 10, 125, 10)
-                elif(label == "YPR"):
-                    textdelete(200,190, str(ypr))
-                    ypr = str(outbound.readline().rstrip())
-                    textwrite(200, 190, ypr, 10, 125, 10)
 
-                    YPR = []
-                    angle = ''
-                    found = False
-                    ready = False
-                    count = 0
-                    try:
-                        for char in ypr:
-                            if char == ':':
-                                found = True
-                            elif found == True and char == ' ' and ready == False:
-                                ready = True
-                            elif count == len(ypr) - 1:
-                                angle = angle + char
-                                YPR.append(int(angle))
-                            elif found == True and ready == True:
-                                if char == ' ':
-                                    found = False
-                                    ready = False
-                                    YPR.append(int(angle))
-                                    angle = ''
-                                else:
-                                    angle = angle + char
-                            count += 1
-                    except:
-                        pass
                 elif(label == "YAW"):
                     yaw = outbound.readline().rstrip()
-                    print yaw
                     got = 'T'
                 elif(label == "PCH"):
                     pch = outbound.readline().rstrip()
                     got = got + 'T'
-                    print pch
                 elif(label == "ROL"):
                     rol = outbound.readline().rstrip()
-                    print rol
                     got = got + 'T'
                 else:
                     print "unknown datatype:", label
@@ -226,6 +195,11 @@ while True:
 
     except:
         pass
+
+    if got == 'TTT':
+        textdelete(200,190, str(ypr))
+        ypr = 'Y:' + str(yaw) + ' P:' + str(pch) + ' R:' + str(rol)
+        textwrite(200, 190, ypr, 10, 125, 10)
 
     try:
         img1pos = img1.get_rect()
@@ -248,7 +222,7 @@ while True:
         pass
 
     pygame.display.update()
-    time.sleep(0.05)
+    time.sleep(0.01)
 
     for event in pygame.event.get():
         if event.type == QUIT:
