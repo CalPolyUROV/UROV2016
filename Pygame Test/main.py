@@ -86,6 +86,13 @@ pr = 0
 rr =0
 yr =0
 
+m1 = 5.0
+m2 = 4.0
+m3 = 3.0
+m4 = 2.0
+m5 = 1.0
+m6 = 0.0
+
 while True:
 
     if not cont.isConnected():
@@ -103,6 +110,13 @@ while True:
     textWrite(34, 170, "Depth:")
     textWrite(25, 190, "YPR:")
     textWrite(40, 210, "YPRraw:")
+
+    textWrite(20, 250, "M1:")
+    textWrite(20, 270, "M2:")
+    textWrite(20, 290, "M3:")
+    textWrite(20, 310, "M4:")
+    textWrite(20, 330, "M5:")
+    textWrite(20, 350, "M6:")
 
     cont.update()
     buttons1 = 0x0
@@ -144,6 +158,20 @@ while True:
     textwrite(200, 170, str(depth), 255, 10, 10)
     textwrite(200, 190, str(ypr), 255, 10, 10)
     textwrite(200, 210, str(yprraw), 255, 10, 10)
+
+    textwrite(100, 250, str(m1), 255, 10, 10)
+    textwrite(100, 270, str(m2), 255, 10, 10)
+    textwrite(100, 290, str(m3), 255, 10, 10)
+    textwrite(100, 310, str(m4), 255, 10, 10)
+    textwrite(100, 330, str(m5), 255, 10, 10)
+    textwrite(100, 350, str(m6), 255, 10, 10)
+
+    pygame.draw.rect(background, (255, 10, 10), (150, 245, (10 * m1), 10))
+    pygame.draw.rect(background, (255, 10, 10), (150, 265, (10 * m2), 10))
+    pygame.draw.rect(background, (255, 10, 10), (150, 285, (10 * m3), 10))
+    pygame.draw.rect(background, (255, 10, 10), (150, 305, (10 * m4), 10))
+    pygame.draw.rect(background, (255, 10, 10), (150, 325, (10 * m5), 10))
+    pygame.draw.rect(background, (255, 10, 10), (150, 345, (10 * m6), 10))
 
     try:
         while True and counter > 0:
@@ -198,6 +226,17 @@ while True:
                     rol = outbound.readline().rstrip()
                     rolr = int(rol) -rr
                     got = got + 'T'
+                elif(label == "LLL"):
+                    textdelete(100, 250, str(m1))
+                    pygame.draw.rect(background, (255, 255, 255), (150, 245, (10 * m1), 10))
+                    m1 = outbound.readline()
+                    textwrite(100, 250, m1, 10, 125, 10)
+                    if m1 < 10 and m1 > 0:
+                        pygame.draw.rect(background, (10, 125, 10), (150, 245, (10 * m1), 10))
+                    elif  m1 >= 10 and m1 <= 13:
+                        pygame.draw.rect(background, (125, 125, 10), (150, 245, (10 * m1), 10))
+                    elif m1 > 13:
+                        pygame.draw.rect(background, (255, 125, 10), (150, 245, (10 * m1), 10))
                 else:
                     print "unknown datatype:", label
                     print "data:", outbound.readline().rstrip()
@@ -215,11 +254,14 @@ while True:
 
     for event in pygame.event.get(pygame.KEYDOWN):
         if event.type == pygame.KEYDOWN:
-            if event.key == K_r:
+            if event.key == K_n:
                 yr = int(yaw)
                 pr = int(pch)
                 rr = int(rol)
-    print pr
+            elif event.key == K_r:
+                yr = 0
+                pr = 0
+                rr = 0
 
     try:
         img1pos = img1.get_rect()
