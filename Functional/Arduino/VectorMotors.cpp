@@ -39,7 +39,6 @@ Servo motor5;
 Servo motor6;//the "servo" the pin will be connected to
 
 int brownOutPrevent(int currentSpeed, int targetSpeed);
-void limitMotorPower();
 //////////////////////////////////////////////////////////////////////////attach ESCs to pins and set current to 0 Amps
 
 void motorSetup() 
