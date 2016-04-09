@@ -64,7 +64,7 @@ void receiveEvent(int howMany) {
   WireEventCode = receivedString.toInt(); //Turn received into an int
   if(WireMosiType = 'c'){                 //treat as command if command type
     WireNextSendData = WireCallEvent(WireEventCode);
-  } else if(WireMosiType = 'p' {          //store as parameter if param type
+  } else if(WireMosiType = 'p') {          //store as parameter if param type
     ParameterStack = WireEventCode;
   }
 }
