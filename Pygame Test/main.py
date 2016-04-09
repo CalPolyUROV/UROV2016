@@ -284,7 +284,7 @@ while True:
         pass
 
     pygame.display.update()
-    time.sleep(0.01)
+    time.sleep(0.03)
 
     for event in pygame.event.get():
         if event.type == QUIT:
