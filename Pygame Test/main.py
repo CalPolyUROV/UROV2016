@@ -86,6 +86,21 @@ pr = 0
 rr =0
 yr =0
 
+pchr = 0
+yawr = 0
+rolr = 0
+
+pch1 = 0
+pch2 = 0
+pch3 = 0
+yaw1 = 0
+yaw2 = 0
+yaw3 = 0
+rol1 = 0
+rol2 = 0
+rol3 = 0
+
+
 m1 = 5.0
 m2 = 4.0
 m3 = 3.0
@@ -216,15 +231,21 @@ while True:
 
                 elif(label == "YAW"):
                     yaw = outbound.readline().rstrip()
-                    yawr = int(yaw) - yr
+                    yaw3 = yaw2
+                    yaw2 = yaw1
+                    yaw1 = int(yaw) - yr
                     got = 'T'
                 elif(label == "PCH"):
                     pch = outbound.readline().rstrip()
-                    pchr = int(pch) -pr
+                    pch3 = pch2
+                    pch2 = pch1
+                    pch1 = int(pch) - pr
                     got = got + 'T'
                 elif(label == "ROL"):
                     rol = outbound.readline().rstrip()
-                    rolr = int(rol) -rr
+                    rol3 = rol2
+                    rol2 = rol1
+                    rol1 = int(rol) -rr
                     got = got + 'T'
                 elif(label == "LLL"):
                     textdelete(100, 250, str(m1))
@@ -264,6 +285,11 @@ while True:
                 rr = 0
 
     try:
+
+        pchr = (pch1 + pch2 + pch3) / 3
+        yawr = (yaw1 + yaw2 + yaw3) / 3
+        rolr = (rol1 + rol2 + rol3) / 3
+
         img1pos = img1.get_rect()
         img1pos.centerx = 750
         img1pos.centery = 250 + ((int(pchr)) * 5)
