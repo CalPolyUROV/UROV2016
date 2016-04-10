@@ -127,13 +127,13 @@ void setMotors(int X,int Y,int Z,int R)
 
   motor1speedY = Y; // get directions forward backward
   motor2speedY = Y;
-  motor3speedY = Y;
-  motor4speedY = Y;
+  motor3speedY = -Y;
+  motor4speedY = -Y;
   
   motor1speedX = X; // get directions right left
   motor2speedX = X * -1;
-  motor3speedX = X * -1;
-  motor4speedX = X;
+  motor3speedX = X;
+  motor4speedX = X * -1;
 
   motor1speedR = R * -1; // get directions turning
   motor2speedR = R;
