@@ -2863,6 +2863,7 @@ Datasheet: https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf</
 <part name="J11" library="SparkFun-Connectors" deviceset="M04" device="PTH"/>
 <part name="J12" library="SparkFun-Connectors" deviceset="M02" device="PTH"/>
 <part name="PRESSURE_INTERNAL" library="SparkFun-Sensors" deviceset="MS5803-14BA" device=""/>
+<part name="J13" library="SparkFun-Connectors" deviceset="M04" device="PTH"/>
 </parts>
 <sheets>
 <sheet>
@@ -2884,9 +2885,10 @@ Datasheet: https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf</
 <instance part="J6" gate="G$1" x="-127" y="101.6" rot="R180"/>
 <instance part="J7" gate="G$1" x="-101.6" y="99.06"/>
 <instance part="J8" gate="G$1" x="-55.88" y="101.6" rot="R180"/>
-<instance part="J11" gate="G$1" x="-185.42" y="50.8"/>
+<instance part="J11" gate="G$1" x="-182.88" y="68.58"/>
 <instance part="J12" gate="G$1" x="-185.42" y="33.02"/>
 <instance part="PRESSURE_INTERNAL" gate="G$1" x="-86.36" y="55.88"/>
+<instance part="J13" gate="G$1" x="-182.88" y="50.8"/>
 </instances>
 <busses>
 </busses>
@@ -2921,12 +2923,12 @@ Datasheet: https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf</
 </net>
 <net name="B_DIP8_2" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="B"/>
 <pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="-10.16" y1="15.24" x2="-17.78" y2="15.24" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="15.24" x2="-7.62" y2="15.24" width="0.1524" layer="91"/>
-<junction x="-10.16" y="15.24"/>
 <label x="-7.62" y="15.24" size="1.778" layer="95" xref="yes"/>
+<pinref part="U$2" gate="G$1" pin="B"/>
+<wire x1="-10.16" y1="15.24" x2="-17.78" y2="15.24" width="0.1524" layer="91"/>
+<junction x="-10.16" y="15.24"/>
 </segment>
 <segment>
 <pinref part="J10" gate="G$1" pin="7"/>
@@ -3458,7 +3460,6 @@ Datasheet: https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf</
 <pinref part="J10" gate="G$1" pin="5"/>
 <wire x1="-60.96" y1="10.16" x2="-58.42" y2="10.16" width="0.1524" layer="91"/>
 <label x="-58.42" y="10.16" size="1.778" layer="95" xref="yes"/>
-<label x="-15.24" y="12.7" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="J9" gate="G$1" pin="5"/>
@@ -3472,35 +3473,99 @@ Datasheet: https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf</
 </segment>
 <segment>
 <pinref part="J11" gate="G$1" pin="2"/>
-<wire x1="-180.34" y1="50.8" x2="-177.8" y2="50.8" width="0.1524" layer="91"/>
-<label x="-177.8" y="50.8" size="1.778" layer="95" xref="yes"/>
+<wire x1="-177.8" y1="68.58" x2="-175.26" y2="68.58" width="0.1524" layer="91"/>
+<label x="-175.26" y="68.58" size="1.778" layer="95" xref="yes"/>
 </segment>
-</net>
-<net name="N$8" class="0">
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="GND"/>
+<wire x1="-88.9" y1="58.42" x2="-91.44" y2="58.42" width="0.1524" layer="91"/>
+<label x="-91.44" y="58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 <segment>
 <pinref part="U$2" gate="G$1" pin="GND"/>
 <wire x1="-17.78" y1="12.7" x2="-15.24" y2="12.7" width="0.1524" layer="91"/>
+<label x="-15.24" y="12.7" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="PS"/>
+<wire x1="-60.96" y1="68.58" x2="-58.42" y2="68.58" width="0.1524" layer="91"/>
+<label x="-58.42" y="68.58" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SCL" class="0">
 <segment>
 <pinref part="J11" gate="G$1" pin="4"/>
-<wire x1="-180.34" y1="55.88" x2="-177.8" y2="55.88" width="0.1524" layer="91"/>
-<label x="-177.8" y="55.88" size="1.778" layer="95" xref="yes"/>
+<wire x1="-177.8" y1="73.66" x2="-175.26" y2="73.66" width="0.1524" layer="91"/>
+<label x="-175.26" y="73.66" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="SCL/SCLK"/>
+<wire x1="-88.9" y1="63.5" x2="-93.98" y2="63.5" width="0.1524" layer="91"/>
+<label x="-93.98" y="63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SDA" class="0">
 <segment>
 <pinref part="J11" gate="G$1" pin="3"/>
-<wire x1="-180.34" y1="53.34" x2="-177.8" y2="53.34" width="0.1524" layer="91"/>
-<label x="-177.8" y="53.34" size="1.778" layer="95" xref="yes"/>
+<wire x1="-177.8" y1="71.12" x2="-175.26" y2="71.12" width="0.1524" layer="91"/>
+<label x="-175.26" y="71.12" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="VDD_9DOF_3.3V" class="0">
 <segment>
 <pinref part="J11" gate="G$1" pin="1"/>
-<wire x1="-180.34" y1="48.26" x2="-177.8" y2="48.26" width="0.1524" layer="91"/>
-<label x="-177.8" y="48.26" size="1.778" layer="95" xref="yes"/>
+<wire x1="-177.8" y1="66.04" x2="-175.26" y2="66.04" width="0.1524" layer="91"/>
+<label x="-175.26" y="66.04" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="MISO" class="0">
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="SDO"/>
+<wire x1="-88.9" y1="60.96" x2="-93.98" y2="60.96" width="0.1524" layer="91"/>
+<label x="-93.98" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J13" gate="G$1" pin="3"/>
+<wire x1="-177.8" y1="53.34" x2="-175.26" y2="53.34" width="0.1524" layer="91"/>
+<label x="-175.26" y="53.34" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="V3.3" class="0">
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="VDD"/>
+<wire x1="-88.9" y1="68.58" x2="-91.44" y2="68.58" width="0.1524" layer="91"/>
+<label x="-91.44" y="68.58" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="MOSI" class="0">
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="SDA/SDI"/>
+<wire x1="-88.9" y1="66.04" x2="-93.98" y2="66.04" width="0.1524" layer="91"/>
+<label x="-93.98" y="66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J13" gate="G$1" pin="4"/>
+<wire x1="-177.8" y1="55.88" x2="-175.26" y2="55.88" width="0.1524" layer="91"/>
+<label x="-175.26" y="55.88" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="SCLK" class="0">
+<segment>
+<pinref part="J13" gate="G$1" pin="2"/>
+<wire x1="-177.8" y1="50.8" x2="-175.26" y2="50.8" width="0.1524" layer="91"/>
+<label x="-175.26" y="50.8" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="SS" class="0">
+<segment>
+<pinref part="J13" gate="G$1" pin="1"/>
+<wire x1="-177.8" y1="48.26" x2="-175.26" y2="48.26" width="0.1524" layer="91"/>
+<label x="-175.26" y="48.26" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="AD/CS"/>
+<wire x1="-60.96" y1="58.42" x2="-58.42" y2="58.42" width="0.1524" layer="91"/>
+<label x="-58.42" y="58.42" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 </nets>

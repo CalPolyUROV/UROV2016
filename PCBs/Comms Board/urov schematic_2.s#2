@@ -3666,7 +3666,7 @@ Datasheet: https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf</
 <instance part="J13" gate="G$1" x="-182.88" y="50.8"/>
 <instance part="J14" gate="G$1" x="-157.48" y="33.02"/>
 <instance part="U$3" gate="G$1" x="-5.08" y="137.16"/>
-<instance part="SL1" gate="G$1" x="-40.64" y="139.7"/>
+<instance part="SL1" gate="G$1" x="-40.64" y="134.62"/>
 <instance part="SL2" gate="G$1" x="30.48" y="132.08" rot="R180"/>
 <instance part="SL3" gate="G$1" x="30.48" y="149.86" rot="R180"/>
 </instances>
