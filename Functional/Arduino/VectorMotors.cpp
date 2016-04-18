@@ -16,13 +16,13 @@
 /////////////////////////////////////////////////////////////////globals
 #include <Servo.h>
 
-//motor pins  //maybe each need different timer? not sure   //except for z, since both z motors on same speed
+//motor pins
 int _m1 = 13;
 int _m2 = 12;
-int _m3 = 10;
-int _m4 = 5;
-int _m5 = 8;
-int _m6 = 7;
+int _m3 = 11;
+int _m4 = 10;
+int _m5 = 9;
+int _m6 = 8;
 //limiting variable
 int currentMotor1speed = 0;
 int currentMotor2speed = 0;
@@ -39,6 +39,7 @@ Servo motor5;
 Servo motor6;//the "servo" the pin will be connected to
 
 int brownOutPrevent(int currentSpeed, int targetSpeed);
+
 //////////////////////////////////////////////////////////////////////////attach ESCs to pins and set current to 0 Amps
 
 void motorSetup() 
@@ -125,8 +126,8 @@ void setMotors(int X,int Y,int Z,int R)
   int motor4speed;
 
   motor1speedY = Y; // get directions forward backward
-  motor2speedY = Y;
-  motor3speedY = -Y;
+  motor2speedY = -Y;
+  motor3speedY = Y;
   motor4speedY = -Y;
   
   motor1speedX = X; // get directions right left
@@ -139,38 +140,13 @@ void setMotors(int X,int Y,int Z,int R)
   motor3speedR = R * -1;
   motor4speedR = R;
 
-  motor1speed = (motor1speedX + motor1speedY + 0.3 * motor1speedR) / 2.3; // add and divide to get motor speeds (no rotation included yet)
-  motor2speed = (motor2speedX + motor2speedY + 0.3 * motor2speedR) / 2.3;
-  motor3speed = (motor3speedX + motor3speedY + 0.3 * motor3speedR) / 2.3;
-  motor4speed = (motor4speedX + motor4speedY + 0.3 * motor4speedR) / 2.3;
+  motor1speed = (motor1speedX + motor1speedY) / 2; // add and divide to get motor speeds (no rotation included yet)
+  motor2speed = (motor1speedX + motor1speedY) / 2;
+  motor3speed = (motor1speedX + motor1speedY) / 2;
+  motor4speed = (motor1speedX + motor1speedY) / 2;
 
 
-  //Limits speeds to +-400
-  if (motor1speed >= 400){ // make sure roundoff error above doesn't affect the map function in writing the positive motorspeeds
-    motor1speed = 400;
-  } else if (motor1speed <= -400){ // make sure roundoff error above doesn't affect the map function in writing the negative motorspeeds
-    motor1speed = -400;
-  }
-
-  if (motor2speed >= 400){
-    motor2speed = 400;
-  } else if (motor2speed <= -400){
-    motor2speed = -400;
-  }
-
-  if (motor3speed >= 400){
-    motor3speed = 400;
-  } else if (motor3speed <= -400){
-    motor3speed = -400;
-  }
-
-  if (motor4speed >= 400){
-    motor4speed = 400;
-  } else if (motor4speed <= -400){
-    motor4speed = -400;
-  }
-
-
+  
   currentMotor1speed = brownOutPrevent(currentMotor1speed, motor1speed);
   currentMotor2speed = brownOutPrevent(currentMotor2speed, motor2speed);
   currentMotor3speed = brownOutPrevent(currentMotor3speed, motor3speed);
@@ -179,8 +155,8 @@ void setMotors(int X,int Y,int Z,int R)
 
 //limiting code end
 
-  motor_1(currentMotor1speed); // write motorspeeds 
-  motor_2(currentMotor2speed); // Does not limit 400? not sure
+  motor_1(currentMotor1speed); // write motorspeeds
+  motor_2(currentMotor2speed);
   motor_3(currentMotor3speed);
   motor_4(currentMotor4speed);
   motor_5(currentZspeed);
@@ -198,7 +174,6 @@ int brownOutPrevent(int currentSpeed, int targetSpeed){   //Comments use 20 for 
     return targetSpeed; //Else, it is okay to set to target
   }
 }
-
 
 
 
