@@ -16,13 +16,13 @@
 /////////////////////////////////////////////////////////////////globals
 #include <Servo.h>
 
-//motor pins
-int _m1 = 8;
-int _m2 = 9;
-int _m3;
-int _m4;
-int _m5 = 10;
-int _m6;
+//motor pins  //maybe each need different timer? not sure   //except for z, since both z motors on same speed
+int _m1 = 13;
+int _m2 = 12;
+int _m3 = 10;
+int _m4 = 5;
+int _m5 = 8;
+int _m6 = 7;
 //limiting variable
 int currentMotor1speed = 0;
 int currentMotor2speed = 0;
@@ -126,13 +126,13 @@ void setMotors(int X,int Y,int Z,int R)
 
   motor1speedY = Y; // get directions forward backward
   motor2speedY = Y;
-  motor3speedY = Y;
-  motor4speedY = Y;
+  motor3speedY = -Y;
+  motor4speedY = -Y;
   
   motor1speedX = X; // get directions right left
   motor2speedX = X * -1;
-  motor3speedX = X * -1;
-  motor4speedX = X;
+  motor3speedX = X;
+  motor4speedX = X * -1;
 
   motor1speedR = R * -1; // get directions turning
   motor2speedR = R;

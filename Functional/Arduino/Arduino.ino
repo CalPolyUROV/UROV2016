@@ -144,7 +144,8 @@ void writeToCommand(Input i){
   if (temperature) {
 	  Serial3.println("TMP"); //tell it the next line is Temperature
     coms.sendSlaveCmd(GET_TEMP);
-	  Serial3.print(coms.getSlaveData());
+	  Serial3.print((float)analogRead(A0)/(2.048)-273.15);
+	  //Serial3.print(coms.getSlaveData());
 	  Serial3.println(" degrees C");
   }
   if (accel) {
