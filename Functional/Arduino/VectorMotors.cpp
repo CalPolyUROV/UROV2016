@@ -1,5 +1,6 @@
 #include "arduino.h"
 //
+#include <wire.h>
 #define MOTORACCELERATIONMAX 20
 //20 motor speed unit things per interval (maybe change to dv/dt later)
 
@@ -91,7 +92,8 @@ void motor_4(int mspeed)
 
 void motor_5(int mspeed)
 {
-  int mspeed1 = map(mspeed,-400,400,1100,1900);
+  int mspeed1 = map(mspeed,400,-400,1100,1900);
+  //mspeed1 is reversed here
   motor5.writeMicroseconds(mspeed1);
 }
 
@@ -126,17 +128,17 @@ void setMotors(int X,int Y,int Z,int R)
   int motor4speed;
 
   motor1speedY = Y; // get directions forward backward
-  motor2speedY = -Y;
-  motor3speedY = Y;
-  motor4speedY = -Y;
+  motor2speedY = Y;
+  motor3speedY = -1*Y;
+  motor4speedY = -1*Y;
   
   motor1speedX = X; // get directions right left
-  motor2speedX = X * -1;
-  motor3speedX = X;
-  motor4speedX = X * -1;
+  motor2speedX = -1*X;
+  motor3speedX = -1*X;
+  motor4speedX = X;
 
-  motor1speedR = R * -1; // get directions turning
-  motor2speedR = R;
+  motor1speedR = R; // get directions turning
+  motor2speedR = R * -1;
   motor3speedR = R * -1;
   motor4speedR = R;
 
@@ -145,7 +147,12 @@ void setMotors(int X,int Y,int Z,int R)
   motor3speed = (motor1speedX + motor1speedY) / 2;
   motor4speed = (motor1speedX + motor1speedY) / 2;
 
-
+/*
+  motor1speed += motor1speedR;
+  motor2speed += motor2speedR;
+  motor3speed += motor3speedR;
+  motor4speed += motor4speedR;
+*/
   
   currentMotor1speed = brownOutPrevent(currentMotor1speed, motor1speed);
   currentMotor2speed = brownOutPrevent(currentMotor2speed, motor2speed);
@@ -161,6 +168,12 @@ void setMotors(int X,int Y,int Z,int R)
   motor_4(currentMotor4speed);
   motor_5(currentZspeed);
   motor_6(currentZspeed);
+  Serial.println(currentMotor1speed);
+  Serial.println(currentMotor2speed);
+  Serial.println(currentMotor3speed);
+  Serial.println(currentMotor4speed);
+  Serial.println(currentZspeed);
+  
 }
 
 int brownOutPrevent(int currentSpeed, int targetSpeed){   //Comments use 20 for MOTORACCELERATIONMAX

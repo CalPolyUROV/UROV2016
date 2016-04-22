@@ -46,7 +46,7 @@ bool accel = false;
 bool depth = true;
 bool ypr = true;
 
-bool debug = false;
+bool debug = true;
 
 int yaw;
 int pch;
