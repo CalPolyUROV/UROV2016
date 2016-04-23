@@ -1,6 +1,9 @@
 #include "arduino.h"
 //
-#define MOTORACCELERATIONMAX 20
+#include <wire.h>
+#define MOTORACCELERATIONMAX 80
+
+#define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 //20 motor speed unit things per interval (maybe change to dv/dt later)
 
 ///////////connecting the ESC to the arduino (switch the pin to the one in use)
@@ -17,12 +20,12 @@
 #include <Servo.h>
 
 //motor pins
-int _m1 = 8;
-int _m2 = 9;
-int _m3;
-int _m4;
-int _m5 = 10;
-int _m6;
+int _m1 = 13;
+int _m2 = 12;
+int _m3 = 11;
+int _m4 = 10;
+int _m5 = 9;
+int _m6 = 8;
 //limiting variable
 int currentMotor1speed = 0;
 int currentMotor2speed = 0;
@@ -30,6 +33,32 @@ int currentMotor3speed = 0;
 int currentMotor4speed = 0;
 int currentZspeed = 0;
 //
+int motor1speedX; // initialize variables (used to calculate final motorspeed)
+  int motor2speedX;
+  int motor3speedX;
+  int motor4speedX;
+  
+  int motor1speedY;
+  int motor2speedY;
+  int motor3speedY;
+  int motor4speedY;
+  
+  int motor1speedR;
+  int motor2speedR;
+  int motor3speedR;
+  int motor4speedR;
+
+  int motor1speed; // (final motorspeeds)
+  int motor2speed;
+  int motor3speed;
+  int motor4speed;
+
+
+  int a, b;
+  int A,B;
+  //int motor1transspeed, motor2transspeed, motor3transspeed, motor4transspeed;
+
+  
 
 Servo motor1;
 Servo motor2;
@@ -39,6 +68,7 @@ Servo motor5;
 Servo motor6;//the "servo" the pin will be connected to
 
 int brownOutPrevent(int currentSpeed, int targetSpeed);
+
 //////////////////////////////////////////////////////////////////////////attach ESCs to pins and set current to 0 Amps
 
 void motorSetup() 
@@ -72,105 +102,93 @@ void motor_1(int mspeed)
 
 void motor_2(int mspeed)
 {
-  int mspeed1 = map(mspeed,-400,400,1100,1900);
-  motor2.writeMicroseconds(mspeed1);
+  int mspeed2 = map(mspeed,-400,400,1100,1900);
+  motor2.writeMicroseconds(mspeed2);
 }
 
 void motor_3(int mspeed)
 {
-  int mspeed1 = map(mspeed,-400,400,1100,1900);
-  motor3.writeMicroseconds(mspeed1);
+  int mspeed3 = map(mspeed,400,-400,1100,1900);
+  motor3.writeMicroseconds(mspeed3);
 }
 
 void motor_4(int mspeed)
 {
-  int mspeed1 = map(mspeed,-400,400,1100,1900);
-  motor4.writeMicroseconds(mspeed1);
+  int mspeed4 = map(mspeed,-400,400,1100,1900);
+  motor4.writeMicroseconds(mspeed4);
 }
 
 void motor_5(int mspeed)
 {
-  int mspeed1 = map(mspeed,-400,400,1100,1900);
-  motor5.writeMicroseconds(mspeed1);
+  int mspeed5 = map(mspeed,400,-400,1100,1900);
+  //mspeed1 is reversed here
+  motor5.writeMicroseconds(mspeed5);
 }
 
 void motor_6(int mspeed)
 {
-  int mspeed1 = map(mspeed,-400,400,1100,1900);
-  motor6.writeMicroseconds(mspeed1);
+  int mspeed6 = map(mspeed,-400,400,1100,1900);
+  motor6.writeMicroseconds(mspeed6);
 }
 
 
 ///////////////////////////////////////////// allow rotation and planar movement simultaniously (takes x y z and r, then sets motorspeeds)
-void setMotors(int X,int Y,int Z,int R)
+void setMotors(int X,int Y,int Z,int R,unsigned char buttons)
 {
-  int motor1speedX; // initialize variables (used to calculate final motorspeed)
-  int motor2speedX;
-  int motor3speedX;
-  int motor4speedX;
-  
-  int motor1speedY;
-  int motor2speedY;
-  int motor3speedY;
-  int motor4speedY;
-  
-  int motor1speedR;
-  int motor2speedR;
-  int motor3speedR;
-  int motor4speedR;
+  /*
+  a = (( (-1*X*1000/707) + (Y*1000/707) ) /2);
+  b = (( (X*1000/707) + (Y*1000/707) ) /2);
 
-  int motor1speed; // (final motorspeeds)
-  int motor2speed;
-  int motor3speed;
-  int motor4speed;
+  motor1speed = b;
+  motor2speed = a;
+  motor3speed = -a;
+  motor4speed = -b;
+
+  if(motor1speed<0)motor1speed*= 1.3; 
+  if(motor2speed<0)motor2speed*= 1.3;
+  if(motor3speed<0)motor3speed*= 1.3;
+  if(motor4speed<0)motor4speed*= 1.3;
+*/
 
   motor1speedY = Y; // get directions forward backward
   motor2speedY = Y;
-  motor3speedY = Y;
+  motor3speedY = -1*Y;
   motor4speedY = Y;
   
   motor1speedX = X; // get directions right left
-  motor2speedX = X * -1;
-  motor3speedX = X * -1;
+  motor2speedX = -1*X;
+  motor3speedX = X;
   motor4speedX = X;
 
-  motor1speedR = R * -1; // get directions turning
-  motor2speedR = R;
-  motor3speedR = R * -1;
-  motor4speedR = R;
+  //motor1speedR = -1*R; // get directions turning
+  //motor2speedR = -1*R;
+  //motor3speedR = R;
+  //motor4speedR = R;
 
-  motor1speed = (motor1speedX + motor1speedY + 0.3 * motor1speedR) / 2.3; // add and divide to get motor speeds (no rotation included yet)
-  motor2speed = (motor2speedX + motor2speedY + 0.3 * motor2speedR) / 2.3;
-  motor3speed = (motor3speedX + motor3speedY + 0.3 * motor3speedR) / 2.3;
-  motor4speed = (motor4speedX + motor4speedY + 0.3 * motor4speedR) / 2.3;
+  motor1speed = (motor1speedX + motor1speedY) / 2; // add and divide to get motor speeds (no rotation included yet)
+  motor2speed = (motor2speedX + motor2speedY) / 2;
+  motor3speed = (motor3speedX + motor3speedY) / 2;
+  motor4speed = (motor4speedX + motor4speedY) / 2;
 
+  motor1speed = motor1speed + R/2;
+  motor2speed = motor2speed - R/2;
+  motor3speed = motor3speed - R/2;
+  motor4speed = motor4speed - R/2;
 
-  //Limits speeds to +-400
-  if (motor1speed >= 400){ // make sure roundoff error above doesn't affect the map function in writing the positive motorspeeds
-    motor1speed = 400;
-  } else if (motor1speed <= -400){ // make sure roundoff error above doesn't affect the map function in writing the negative motorspeeds
-    motor1speed = -400;
-  }
+  motor1speed = constrain(motor1speed,-400,400);
+  motor2speed = constrain(motor2speed,-400,400);
+  motor3speed = constrain(motor3speed,-400,400);
+  motor4speed = constrain(motor4speed,-400,400);
 
-  if (motor2speed >= 400){
-    motor2speed = 400;
-  } else if (motor2speed <= -400){
-    motor2speed = -400;
-  }
-
-  if (motor3speed >= 400){
-    motor3speed = 400;
-  } else if (motor3speed <= -400){
-    motor3speed = -400;
-  }
-
-  if (motor4speed >= 400){
-    motor4speed = 400;
-  } else if (motor4speed <= -400){
-    motor4speed = -400;
-  }
+ /*
+  motor1speed += motor1speedR;
+  motor2speed += motor2speedR;
+  motor3speed += motor3speedR;
+  motor4speed += motor4speedR;
+*/
 
 
+  
   currentMotor1speed = brownOutPrevent(currentMotor1speed, motor1speed);
   currentMotor2speed = brownOutPrevent(currentMotor2speed, motor2speed);
   currentMotor3speed = brownOutPrevent(currentMotor3speed, motor3speed);
@@ -179,12 +197,19 @@ void setMotors(int X,int Y,int Z,int R)
 
 //limiting code end
 
-  motor_1(currentMotor1speed); // write motorspeeds 
-  motor_2(currentMotor2speed); // Does not limit 400? not sure
+  motor_1(currentMotor1speed); // write motorspeeds
+  motor_2(currentMotor2speed);
   motor_3(currentMotor3speed);
   motor_4(currentMotor4speed);
   motor_5(currentZspeed);
-  motor_6(currentZspeed);
+  if(CHECK_BIT(buttons, 1)){motor_6(currentZspeed);}
+  else{motor_6(currentZspeed);}
+  Serial.println(motor1speed);
+  Serial.println(motor2speed);
+  Serial.println(motor3speed);
+  Serial.println(motor4speed);
+  Serial.println(currentZspeed);
+  
 }
 
 int brownOutPrevent(int currentSpeed, int targetSpeed){   //Comments use 20 for MOTORACCELERATIONMAX
@@ -198,7 +223,6 @@ int brownOutPrevent(int currentSpeed, int targetSpeed){   //Comments use 20 for 
     return targetSpeed; //Else, it is okay to set to target
   }
 }
-
 
 
 
