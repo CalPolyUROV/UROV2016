@@ -21,18 +21,7 @@ background.fill((250, 250, 250))
 ports = serial_finder.serial_ports()
 port = serial_finder.find_port(ports, background, screen)
 
-def textWrite(Positionx, Positiony, Text):
-
-    writeonscreen = Text
-    font = pygame.font.Font(None, 25)
-    text = font.render(writeonscreen, 0, (10, 10, 10))
-    textpos = text.get_rect()
-    textpos.centerx = Positionx
-    textpos.centery = Positiony
-    background.blit(text, textpos)
-    screen.blit(background, (0, 0))
-
-def textwrite(Positionx, Positiony, Text, r, g, b):
+def textwrite(Positionx, Positiony, Text, r = 10, g = 10 , b = 10):
 
     writeonscreen = Text
     font = pygame.font.Font(None, 25)
@@ -58,9 +47,8 @@ img1 = pygame.image.load('ArtificialHorizon.png')
 img2 = pygame.image.load("ArtificialHorizonOverlay.png")
 img3 = pygame.image.load("ArtificialHorizonMarker.png").convert_alpha()
 
-textWrite(64, 30, "Using: " + str(port))
+textwrite(64, 30, "Using: " + str(port))
 
-print "Using: ", port
 outbound = serial.Serial(
     port=port,
     baudrate=9600,
@@ -107,16 +95,9 @@ pchr = 0
 yawr = 0
 rolr = 0
 
-pch1 = 0
-pch2 = 0
-pch3 = 0
-yaw1 = 0
-yaw2 = 0
-yaw3 = 0
-rol1 = 0
-rol2 = 0
-rol3 = 0
-
+pchl = [0,0,0,0,0]
+yawl = [0,0,0,0,0]
+roll = [0,0,0,0,0]
 
 m1 = 5.0
 m2 = 4.0
@@ -135,20 +116,20 @@ while True:
         textdelete(105, 50, "connect the controller")
         textwrite(98, 50, "controller connected", 10, 125, 10)
 
-    textWrite(45, 90, "Pressure:")
-    textWrite(40, 110, "Current:")
-    textWrite(64, 130, "Temperature:")
-    textWrite(64, 150, "Acceleration:")
-    textWrite(34, 170, "Depth:")
-    textWrite(25, 190, "YPR:")
-    textWrite(40, 210, "YPRraw:")
+    textwrite(45, 90, "Pressure:")
+    textwrite(40, 110, "Current:")
+    textwrite(64, 130, "Temperature:")
+    textwrite(64, 150, "Acceleration:")
+    textwrite(34, 170, "Depth:")
+    textwrite(25, 190, "YPR:")
+    textwrite(40, 210, "YPRraw:")
 
-    textWrite(20, 250, "M1:")
-    textWrite(20, 270, "M2:")
-    textWrite(20, 290, "M3:")
-    textWrite(20, 310, "M4:")
-    textWrite(20, 330, "M5:")
-    textWrite(20, 350, "M6:")
+    textwrite(20, 250, "M1:")
+    textwrite(20, 270, "M2:")
+    textwrite(20, 290, "M3:")
+    textwrite(20, 310, "M4:")
+    textwrite(20, 330, "M5:")
+    textwrite(20, 350, "M6:")
 
     cont.update()
     buttons1 = 0x0
@@ -264,21 +245,27 @@ while True:
 
                 elif(label == "YAW"):
                     yaw = outbound.readline().rstrip()
-                    yaw3 = yaw2
-                    yaw2 = yaw1
-                    yaw1 = int(yaw) - yr
+                    index = len(yawl) -1
+                    while index > 0:
+                        yawl[index] = yawl[index - 1]
+                        index -= 1
+                    yawl[0] = int(yaw) - yr
                     got = 'T'
                 elif(label == "PCH"):
                     pch = outbound.readline().rstrip()
-                    pch3 = pch2
-                    pch2 = pch1
-                    pch1 = int(pch) - pr
+                    index = len(pchl) -1
+                    while index > 0:
+                        pchl[index] = pchl[index - 1]
+                        index -= 1
+                    pchl[0] = int(pch) - pr
                     got = got + 'T'
                 elif(label == "ROL"):
                     rol = outbound.readline().rstrip()
-                    rol3 = rol2
-                    rol2 = rol1
-                    rol1 = int(rol) -rr
+                    index = len(roll) -1
+                    while index > 0:
+                        roll[index] = roll[index - 1]
+                        index -= 1
+                    roll[0] = int(rol) -rr
                     got = got + 'T'
                 elif(label == "LLL"):
                     textdelete(100, 250, str(m1))
@@ -318,10 +305,9 @@ while True:
                 rr = 0
 
     try:
-
-        pchr = (pch1 + pch2 + pch3) / 3
-        yawr = (yaw1 + yaw2 + yaw3) / 3
-        rolr = (rol1 + rol2 + rol3) / 3
+        pchr = sum(pchl) / len(pchl)
+        yawr = sum(yawl) / len(yawl)
+        rolr = sum(roll) / len(roll)
 
         img1pos = img1.get_rect()
         img1pos.centerx = 750
