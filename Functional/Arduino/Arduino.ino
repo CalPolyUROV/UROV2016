@@ -127,7 +127,15 @@ void processInput(Input i){
   if(i.secondaryX>0){
     coms.sendSlaveCmd(START_SMCW);
   } else if (i.primaryY>0){
-    coms.sendSlaveCmd(STARTSMCCW);
+    coms.sendSlaveCmd(START_SMCCW);
+  } else if (i.triggers>0) {
+    coms.sendSlavePrm(32, SLAVEPRM0);
+    coms.sendSlavePrm(SM_CW, SLAVEPRM1);
+    coms.sendSlaveCmd(ARB_SM);
+  } else if (i.primaryX > 100) {
+    coms.sendSlavePrm(32, SLAVESTACK);
+    coms.sendSlavePrm(SM_CW, SLAVESTACK);
+    coms.sendSlaveCmd(STK_SM);
   }
 }
 

@@ -1,3 +1,6 @@
+
+#include <Wire.h>
+
 #define GET_TEMP 1
 #define GET_PRES 2
 #define GET_DEPT 3
@@ -7,6 +10,17 @@
 #define START_SMCW 7
 #define START_SMCCW 8
 #define STOP_SM 9
+#define ARB_SM 10
+#define STK_SM 11
+#define SM_CW 1
+#define SM_CCW 0
+
+#define COMMANDCHAR 'C'
+#define SLAVEPRM0 'a'
+#define SLAVEPRM1 'b'
+#define SLAVEPRM2 'c'
+#define SLAVEPRM3 'd'
+#define SLAVESTACK 's'
 
 
 //Not sure why defines didnt work in the Stepper Redo file so they are over here instead.
@@ -24,8 +38,8 @@
 
 //Use with this driver http://howtomechatronics.com/tutorials/arduino/how-to-control-stepper-motor-with-a4988-driver-and-arduino/
 
-#define SM_CW 1
-#define SM_CCW 0
+#define COMSPARAMSTACKSIZE 4
+
 
 /***************************************************************************************************************
 * Razor AHRS Firmware v1.4.2
@@ -446,7 +460,8 @@ char tempReceive;
 unsigned int WireEventCode;
 unsigned int WireNextSendData;
 String WireSendString;
-int ParameterStack;
+int ParameterStack[COMSPARAMSTACKSIZE];
+int SlaveParameters[4];
 
 //I2c only sends char arrays. Therefore a data type char is included in index 0 of the array.
 //It tells what kind of data was sent.

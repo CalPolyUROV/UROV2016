@@ -1,4 +1,4 @@
-#include "ComsSlaveMisc.h"//moving stuff out of the way?
+#include "ComsSlaveDeclares.h"//moving stuff out of the way?
 
 void setup() {
   Wire.begin(8);                // join i2c bus with address #8
@@ -35,7 +35,35 @@ void receiveEvent(int howMany) {
   if(WireMosiType = 'c'){                 //treat as command if command type
     WireNextSendData = WireCallEvent(WireEventCode);
   } else if(WireMosiType = 'p') {          //store as parameter if param type
-    ParameterStack = WireEventCode;
+    for(short i=0; i<COMSPARAMSTACKSIZE-1; i++){
+      ParameterStack[i] = ParameterStack[i+1];
+    }
+    ParameterStack[COMSPARAMSTACKSIZE-1] = WireEventCode;
+  }
+  switch(WireMosiType) {
+    case COMMANDCHAR :
+      WireNextSendData = WireCallEvent(WireEventCode);
+      break;
+    case SLAVEPRM0 :
+      SlaveParameters[0] = WireEventCode;
+      break;
+    case SLAVEPRM1 :
+      SlaveParameters[1] = WireEventCode;
+      break;
+    case SLAVEPRM2 :
+      SlaveParameters[2] = WireEventCode;
+      break;
+    case SLAVEPRM3 :
+      SlaveParameters[3] = WireEventCode;
+      break;
+    case SLAVESTACK :
+      for(short i=0; i<COMSPARAMSTACKSIZE-1; i++){
+        ParameterStack[i] = ParameterStack[i+1];
+      }
+      ParameterStack[COMSPARAMSTACKSIZE-1] = WireEventCode;
+      break;
+    default:
+      break;
   }
 }
 
@@ -80,6 +108,16 @@ int WireCallEvent (int EventCode){
     case STOP_SM:
       WireMisoType = 'n';
       stopSM();
+      return 777;
+      break;
+    case ARB_SM:
+      WireMisoType = 'n';
+      startSM(SlaveParameters[0],SlaveParameters[0]); //top of array is direction, second is number microsteps
+      return 777;
+      break;
+    case STK_SM:
+      WireMisoType = 'n';
+      startSM(ParameterStack[COMSPARAMSTACKSIZE-2],ParameterStack[COMSPARAMSTACKSIZE-1]); //top of array is direction, second is number microsteps
       return 777;
       break;
     default:

@@ -62,6 +62,7 @@ void startSM(int segtogo, int dir){
 void stopSM(){
   TIMSK2 &= 0b11111101;// disable timer compare interrupt
        //|=  0b00000010;
+  SM_segmentsToGo = 0;
   digitalWrite(SMPIN_STEP, LOW);
 }
 
@@ -78,7 +79,6 @@ void setSMDIR(int direction){
 ISR(TIMER2_COMPA_vect){ 
   SM_segmentsToGo -= 1;
   if(SM_segmentsToGo <=0){
-    SM_segmentsToGo = 0;
     stopSM();
   } 
   

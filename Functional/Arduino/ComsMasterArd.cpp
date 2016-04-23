@@ -9,13 +9,13 @@ ComsMasterArd::ComsMasterArd(){
   Wire.begin();
 }
 
-void ComsMasterArd::sendSlavePrm(int WireParam){
-  mosiType = 'p';
+void ComsMasterArd::sendSlavePrm(int WireParam, char mosi_type){
+  mosiType = mosi_type;
   sendInt(WireParam);
 }
 
 void ComsMasterArd::sendSlaveCmd(int WireEventCode){
-  mosiType = 'c';
+  mosiType = COMMANDCHAR;
   sendInt(WireEventCode);
 }
 
