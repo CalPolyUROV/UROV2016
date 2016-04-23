@@ -15,6 +15,8 @@
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
 int serialWritePin = 2; //this is the pin to control whethgeter it is recieving or sending
+// SDA, SCL to Slave arduino
+
 
 ///// Pins used by Quad Motor Shields //////
 //
@@ -111,14 +113,14 @@ Input readBuffer() {
         return input;
 }
 void processInput(Input i){
-  
+  /*
     if((CHECK_BIT(i.buttons1, 2))){digitalWrite(22, HIGH);}
         else {digitalWrite(22, LOW);}
     if((CHECK_BIT(i.buttons1, 2))){digitalWrite(24, LOW);}
         else {digitalWrite(24, HIGH);}
-    
-  //setCameras(i.buttons1);
-  setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX);
+    */
+  setCameras(i.buttons1);
+  setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX,i.buttons1);
 }
 
 void writeToCommand(Input i){
