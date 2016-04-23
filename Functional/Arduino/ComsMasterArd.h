@@ -7,7 +7,9 @@
 #define GET_YAW  4
 #define GET_PCH 5
 #define GET_ROL 6
-
+#define START_SMCW 7
+#define START_SMCCW 8
+#define STOP_SM 9
 
 class ComsMasterArd
 {

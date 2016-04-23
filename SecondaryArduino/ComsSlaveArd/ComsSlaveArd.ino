@@ -4,7 +4,28 @@
 #define GET_YAW  4
 #define GET_PCH 5
 #define GET_ROL 6
+#define START_SMCW 7
+#define START_SMCCW 8
+#define STOP_SM 9
 
+
+//Not sure why defines didnt work in the Stepper Redo file so they are over here instead.
+#define SMPIN_DIR 13
+//Connect to driver DIR pin
+
+#define SMPIN_MICRO 12
+//To driver MS1 MS2 MS3 pins (all of them!)
+
+#define SMPIN_STEP 11
+//To driver DIR pin
+//uses Timer 2
+
+//Timer 2 has default 30Hz; 30/16 steps/second; 200 steps/rotation; = 3.375 degrees/second
+
+//Use with this driver http://howtomechatronics.com/tutorials/arduino/how-to-control-stepper-motor-with-a4988-driver-and-arduino/
+
+#define SM_CW 1
+#define SM_CCW 0
 
 /***************************************************************************************************************
 * Razor AHRS Firmware v1.4.2
@@ -499,6 +520,21 @@ int WireCallEvent (int EventCode){
     case GET_ROL:
       WireMisoType = 'f';
       return (int)rolDEG;
+      break;
+    case START_SMCW:
+      WireMisoType = 'n';//no return
+      startSM(16,SM_CW);//1.8 degrees rotate CW
+      return 777;
+      break;
+    case START_SMCCW:
+      WireMisoType = 'n';//no return
+      startSM(16,SM_CCW);//1.8 degrees rotate CCW
+      return 777;
+      break;
+    case STOP_SM:
+      WireMisoType = 'n';
+      stopSM();
+      return 777;
       break;
     default:
       WireMisoType = 'n';

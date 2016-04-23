@@ -121,6 +121,14 @@ void processInput(Input i){
     */
   setCameras(i.buttons1);
   setMotors(i.primaryX, i.primaryY, i.triggers, i.secondaryX,i.buttons1);
+
+
+  //not sure what buttons free so I took these for testing
+  if(i.secondaryX>0){
+    coms.sendSlaveCmd(START_SMCW);
+  } else if (i.primaryY>0){
+    coms.sendSlaveCmd(STARTSMCCW);
+  }
 }
 
 void writeToCommand(Input i){
