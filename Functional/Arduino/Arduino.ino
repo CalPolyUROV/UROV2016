@@ -124,19 +124,20 @@ void processInput(Input i){
 
 
   //not sure what buttons free so I took these for testing
-  if(i.secondaryX>0){
+  if(CHECK_BIT(i.buttons1,0)){
     coms.sendSlaveCmd(START_SMCW);
-  } else if (i.primaryY>0){
+  } else if (CHECK_BIT(i.buttons1,1)){
     coms.sendSlaveCmd(START_SMCCW);
-  } else if (i.triggers>0) {
-    coms.sendSlavePrm(32, SLAVEPRM0);
-    coms.sendSlavePrm(SM_CW, SLAVEPRM1);
-    coms.sendSlaveCmd(ARB_SM);
-  } else if (i.primaryX > 100) {
-    coms.sendSlavePrm(32, SLAVESTACK);
-    coms.sendSlavePrm(SM_CW, SLAVESTACK);
-    coms.sendSlaveCmd(STK_SM);
   }
+//  } else if (i.triggers> 100) {
+//    coms.sendSlavePrm(32, SLAVEPRM0);
+//    coms.sendSlavePrm(SM_CW, SLAVEPRM1);
+//    coms.sendSlaveCmd(ARB_SM);
+//  } else if (i.triggers > 100) {
+//    coms.sendSlavePrm(32, SLAVESTACK);
+//    coms.sendSlavePrm(SM_CW, SLAVESTACK);
+//    coms.sendSlaveCmd(STK_SM);
+//  }
 }
 
 void writeToCommand(Input i){
@@ -189,7 +190,7 @@ void writeToCommand(Input i){
     Serial3.println(coms.getSlaveData());
 
 
-    if(debug){
+    if(1==2){
       
     coms.sendSlaveCmd(GET_YAW);
     Serial.println("YAW");

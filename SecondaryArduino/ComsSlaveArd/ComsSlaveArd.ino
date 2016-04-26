@@ -97,12 +97,12 @@ int WireCallEvent (int EventCode){
       break;
     case START_SMCW:
       WireMisoType = 'n';//no return
-      startSM(16,SM_CW);//1.8 degrees rotate CW
+      startSM(64,SM_CW);//1.8 degrees rotate CW
       return 777;
       break;
     case START_SMCCW:
       WireMisoType = 'n';//no return
-      startSM(16,SM_CCW);//1.8 degrees rotate CCW
+      startSM(64,SM_CCW);//1.8 degrees rotate CCW
       return 777;
       break;
     case STOP_SM:

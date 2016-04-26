@@ -52,7 +52,7 @@ void setupSMinterrupt(){
 void startSM(int segtogo, int dir){
   analogWrite(SMPIN_STEP, 127); //30Hz, 50% to step pin
   setSMDIR(dir); //Set direction
-  SM_segmentsToGo += segtogo;
+  SM_segmentsToGo = segtogo;
   
   TIMSK2 |= (1 << OCIE1A);// enable timer compare interrupt
        //|=  0b00000010;
