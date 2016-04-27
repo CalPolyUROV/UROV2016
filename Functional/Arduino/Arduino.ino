@@ -43,12 +43,12 @@ ComsMasterArd coms;
 //QuadMotorShields md;//Not being used anymore
 bool pressure = false;
 bool voltage = false;
-bool temperature = true;
+bool temperature = false;
 bool accel = false;
-bool depth = true;
+bool depth = false;
 bool ypr = true;
 
-bool debug = true;
+bool debug = false;
 
 int yaw;
 int pch;
@@ -58,9 +58,11 @@ void setup() {
 	Serial3.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
 	Serial.begin(9600);     //it does not seem to work at lower baud rates 
 	pinMode(serialWritePin, OUTPUT);
-	pinMode(13, OUTPUT);
-	pinMode(22, OUTPUT);
+	pinMode(13, OUTPUT); Indicator LED, also motor stuff
+	pinMode(22, OUTPUT); //22-28 evens are cameras
 	pinMode(24, OUTPUT);
+  pinMode(26, OUTPUT);
+  pinMode(28, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
         motorSetup();
 }
