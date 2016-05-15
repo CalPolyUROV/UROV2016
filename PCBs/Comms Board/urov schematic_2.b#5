@@ -605,7 +605,7 @@ design rules under a new name.</description>
 <element name="J13" library="SparkFun-Connectors" package="1X04" value="" x="44.45" y="12.7">
 <attribute name="PROD_ID" value="CONN-09696" x="44.45" y="12.7" size="1.778" layer="27" display="off"/>
 </element>
-<element name="J14" library="SparkFun-Connectors" package="1X02" value="" x="2.54" y="-12.7"/>
+<element name="J14" library="SparkFun-Connectors" package="1X02" value="" x="29.21" y="13.97" rot="R180"/>
 </elements>
 <signals>
 <signal name="N$1">
@@ -927,7 +927,7 @@ design rules under a new name.</description>
 <contactref element="PRESSURE_INTERNAL" pad="1"/>
 <contactref element="J14" pad="2"/>
 <wire x1="12.7" y1="15.24" x2="57.015" y2="29.84" width="0" layer="19" extent="1-1"/>
-<wire x1="5.08" y1="-12.7" x2="12.7" y2="15.24" width="0" layer="19" extent="1-1"/>
+<wire x1="26.67" y1="13.97" x2="12.7" y2="15.24" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SDA">
 <contactref element="J11" pad="3"/>
@@ -955,7 +955,7 @@ design rules under a new name.</description>
 <signal name="SCLK">
 <contactref element="J13" pad="2"/>
 <contactref element="J14" pad="1"/>
-<wire x1="2.54" y1="-12.7" x2="46.99" y2="12.7" width="0" layer="19" extent="1-1"/>
+<wire x1="29.21" y1="13.97" x2="46.99" y2="12.7" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SS">
 <contactref element="J13" pad="1"/>

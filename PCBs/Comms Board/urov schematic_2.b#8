@@ -342,6 +342,36 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </package>
 </packages>
 </library>
+<library name="SparkFun-Sensors">
+<description>&lt;h3&gt;SparkFun Electronics' preferred foot prints&lt;/h3&gt;
+In this library you'll find sensors- accelerometers, gyros, compasses, magnetometers, light sensors, imagers, temp sensors, etc.&lt;br&gt;&lt;br&gt;
+We've spent an enormous amount of time creating and checking these footprints and parts, but it is the end user's responsibility to ensure correctness and suitablity for a given componet or application. If you enjoy using this library, please buy one of our products at www.sparkfun.com.
+&lt;br&gt;&lt;br&gt;
+&lt;b&gt;Licensing:&lt;/b&gt; Creative Commons ShareAlike 4.0 International - https://creativecommons.org/licenses/by-sa/4.0/ 
+&lt;br&gt;&lt;br&gt;
+You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
+<packages>
+<package name="MS5803">
+<circle x="-0.889" y="1.905" radius="0.127" width="0.8128" layer="21"/>
+<wire x1="-3.2" y1="3.1" x2="3.2" y2="3.1" width="0.3048" layer="21"/>
+<wire x1="3.2" y1="-3.1" x2="-3.2" y2="-3.1" width="0.3048" layer="21"/>
+<wire x1="-3.2" y1="-3.1" x2="-3.2" y2="-2.6" width="0.3048" layer="21"/>
+<wire x1="3.2" y1="-3.1" x2="3.2" y2="-2.6" width="0.3048" layer="21"/>
+<wire x1="3.2" y1="3.1" x2="3.2" y2="2.6" width="0.3048" layer="21"/>
+<wire x1="-3.2" y1="3.1" x2="-3.2" y2="2.6" width="0.3048" layer="21"/>
+<smd name="1" x="-2.675" y="1.9" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="2" x="-2.675" y="0.65" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="3" x="-2.4" y="-0.65" dx="0.9" dy="2.8" layer="1" rot="R90"/>
+<smd name="4" x="-2.675" y="-1.9" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="5" x="2.675" y="-1.9" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="6" x="2.675" y="-0.65" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="7" x="2.675" y="0.65" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="8" x="2.675" y="1.9" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<text x="-3.302" y="3.556" size="0.8128" layer="25" font="vector" ratio="15">&gt;NAME</text>
+<text x="-3.048" y="-4.318" size="0.8128" layer="25" font="vector" ratio="15">&gt;VALUE</text>
+</package>
+</packages>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -569,6 +599,9 @@ design rules under a new name.</description>
 <attribute name="PROD_ID" value="CONN-09696" x="5.08" y="15.24" size="1.778" layer="27" display="off"/>
 </element>
 <element name="J12" library="SparkFun-Connectors" package="1X02" value="" x="2.54" y="-3.81"/>
+<element name="PRESSURE_INTERNAL" library="SparkFun-Sensors" package="MS5803" value="MS5803-14BA" x="59.69" y="27.94">
+<attribute name="PROD_ID" value="IC-12111" x="59.69" y="27.94" size="1.778" layer="27" display="off"/>
+</element>
 </elements>
 <signals>
 <signal name="N$1">
