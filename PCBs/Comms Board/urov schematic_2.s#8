@@ -2762,6 +2762,80 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 </deviceset>
 </devicesets>
 </library>
+<library name="SparkFun-Sensors">
+<description>&lt;h3&gt;SparkFun Electronics' preferred foot prints&lt;/h3&gt;
+In this library you'll find sensors- accelerometers, gyros, compasses, magnetometers, light sensors, imagers, temp sensors, etc.&lt;br&gt;&lt;br&gt;
+We've spent an enormous amount of time creating and checking these footprints and parts, but it is the end user's responsibility to ensure correctness and suitablity for a given componet or application. If you enjoy using this library, please buy one of our products at www.sparkfun.com.
+&lt;br&gt;&lt;br&gt;
+&lt;b&gt;Licensing:&lt;/b&gt; Creative Commons ShareAlike 4.0 International - https://creativecommons.org/licenses/by-sa/4.0/ 
+&lt;br&gt;&lt;br&gt;
+You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
+<packages>
+<package name="MS5803">
+<circle x="-0.889" y="1.905" radius="0.127" width="0.8128" layer="21"/>
+<wire x1="-3.2" y1="3.1" x2="3.2" y2="3.1" width="0.3048" layer="21"/>
+<wire x1="3.2" y1="-3.1" x2="-3.2" y2="-3.1" width="0.3048" layer="21"/>
+<wire x1="-3.2" y1="-3.1" x2="-3.2" y2="-2.6" width="0.3048" layer="21"/>
+<wire x1="3.2" y1="-3.1" x2="3.2" y2="-2.6" width="0.3048" layer="21"/>
+<wire x1="3.2" y1="3.1" x2="3.2" y2="2.6" width="0.3048" layer="21"/>
+<wire x1="-3.2" y1="3.1" x2="-3.2" y2="2.6" width="0.3048" layer="21"/>
+<smd name="1" x="-2.675" y="1.9" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="2" x="-2.675" y="0.65" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="3" x="-2.4" y="-0.65" dx="0.9" dy="2.8" layer="1" rot="R90"/>
+<smd name="4" x="-2.675" y="-1.9" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="5" x="2.675" y="-1.9" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="6" x="2.675" y="-0.65" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="7" x="2.675" y="0.65" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<smd name="8" x="2.675" y="1.9" dx="0.9" dy="2.25" layer="1" rot="R90"/>
+<text x="-3.302" y="3.556" size="0.8128" layer="25" font="vector" ratio="15">&gt;NAME</text>
+<text x="-3.048" y="-4.318" size="0.8128" layer="25" font="vector" ratio="15">&gt;VALUE</text>
+</package>
+</packages>
+<symbols>
+<symbol name="MS5803">
+<wire x1="0" y1="15.24" x2="22.86" y2="15.24" width="0.254" layer="94"/>
+<wire x1="22.86" y1="15.24" x2="22.86" y2="0" width="0.254" layer="94"/>
+<wire x1="22.86" y1="0" x2="0" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="0" y2="15.24" width="0.254" layer="94"/>
+<pin name="AD/CS" x="25.4" y="2.54" length="short" rot="R180"/>
+<pin name="GND" x="-2.54" y="2.54" length="short"/>
+<pin name="PS" x="25.4" y="12.7" length="short" rot="R180"/>
+<pin name="SCL/SCLK" x="-2.54" y="7.62" length="short"/>
+<pin name="SDA/SDI" x="-2.54" y="10.16" length="short"/>
+<pin name="SDO" x="-2.54" y="5.08" length="short"/>
+<pin name="VDD" x="-2.54" y="12.7" length="short"/>
+<text x="0" y="17.78" size="1.4224" layer="95" ratio="15" align="top-left">&gt;NAME</text>
+<text x="0" y="-2.54" size="1.4224" layer="96" ratio="15">&gt;VALUE</text>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="MS5803-14BA" prefix="U">
+<description>&lt;b&gt;Measurement Specialties MS5803_14BA Pressure (Depth) Sensor&lt;/b&gt;&lt;p&gt;
+Datasheet: https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf</description>
+<gates>
+<gate name="G$1" symbol="MS5803" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="MS5803">
+<connects>
+<connect gate="G$1" pin="AD/CS" pad="3"/>
+<connect gate="G$1" pin="GND" pad="2"/>
+<connect gate="G$1" pin="PS" pad="6"/>
+<connect gate="G$1" pin="SCL/SCLK" pad="1"/>
+<connect gate="G$1" pin="SDA/SDI" pad="7"/>
+<connect gate="G$1" pin="SDO" pad="8"/>
+<connect gate="G$1" pin="VDD" pad="5"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="PROD_ID" value="IC-12111" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -2788,6 +2862,12 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <part name="J8" library="SparkFun-Connectors" deviceset="M08" device=""/>
 <part name="J11" library="SparkFun-Connectors" deviceset="M04" device="PTH"/>
 <part name="J12" library="SparkFun-Connectors" deviceset="M02" device="PTH"/>
+<<<<<<< HEAD
+=======
+<part name="PRESSURE_INTERNAL" library="SparkFun-Sensors" deviceset="MS5803-14BA" device=""/>
+<part name="J13" library="SparkFun-Connectors" deviceset="M04" device="PTH"/>
+<part name="J14" library="SparkFun-Connectors" deviceset="M02" device="PTH"/>
+>>>>>>> origin/PCB_dev
 </parts>
 <sheets>
 <sheet>
@@ -2809,8 +2889,16 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <instance part="J6" gate="G$1" x="-127" y="101.6" rot="R180"/>
 <instance part="J7" gate="G$1" x="-101.6" y="99.06"/>
 <instance part="J8" gate="G$1" x="-55.88" y="101.6" rot="R180"/>
+<<<<<<< HEAD
 <instance part="J11" gate="G$1" x="-185.42" y="50.8"/>
 <instance part="J12" gate="G$1" x="-185.42" y="33.02"/>
+=======
+<instance part="J11" gate="G$1" x="-182.88" y="68.58"/>
+<instance part="J12" gate="G$1" x="-185.42" y="33.02"/>
+<instance part="PRESSURE_INTERNAL" gate="G$1" x="-68.58" y="50.8"/>
+<instance part="J13" gate="G$1" x="-182.88" y="50.8"/>
+<instance part="J14" gate="G$1" x="-157.48" y="33.02"/>
+>>>>>>> origin/PCB_dev
 </instances>
 <busses>
 </busses>
@@ -2845,12 +2933,12 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 </net>
 <net name="B_DIP8_2" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="B"/>
 <pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="-10.16" y1="15.24" x2="-17.78" y2="15.24" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="15.24" x2="-7.62" y2="15.24" width="0.1524" layer="91"/>
-<junction x="-10.16" y="15.24"/>
 <label x="-7.62" y="15.24" size="1.778" layer="95" xref="yes"/>
+<pinref part="U$2" gate="G$1" pin="B"/>
+<wire x1="-10.16" y1="15.24" x2="-17.78" y2="15.24" width="0.1524" layer="91"/>
+<junction x="-10.16" y="15.24"/>
 </segment>
 <segment>
 <pinref part="J10" gate="G$1" pin="7"/>
@@ -3382,7 +3470,6 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <pinref part="J10" gate="G$1" pin="5"/>
 <wire x1="-60.96" y1="10.16" x2="-58.42" y2="10.16" width="0.1524" layer="91"/>
 <label x="-58.42" y="10.16" size="1.778" layer="95" xref="yes"/>
-<label x="-15.24" y="12.7" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="J9" gate="G$1" pin="5"/>
@@ -3396,35 +3483,119 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 </segment>
 <segment>
 <pinref part="J11" gate="G$1" pin="2"/>
-<wire x1="-180.34" y1="50.8" x2="-177.8" y2="50.8" width="0.1524" layer="91"/>
-<label x="-177.8" y="50.8" size="1.778" layer="95" xref="yes"/>
+<wire x1="-177.8" y1="68.58" x2="-175.26" y2="68.58" width="0.1524" layer="91"/>
+<label x="-175.26" y="68.58" size="1.778" layer="95" xref="yes"/>
 </segment>
-</net>
-<net name="N$8" class="0">
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="GND"/>
+<wire x1="-71.12" y1="53.34" x2="-73.66" y2="53.34" width="0.1524" layer="91"/>
+<label x="-73.66" y="53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 <segment>
 <pinref part="U$2" gate="G$1" pin="GND"/>
 <wire x1="-17.78" y1="12.7" x2="-15.24" y2="12.7" width="0.1524" layer="91"/>
+<label x="-15.24" y="12.7" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="PS"/>
+<wire x1="-43.18" y1="63.5" x2="-40.64" y2="63.5" width="0.1524" layer="91"/>
+<label x="-40.64" y="63.5" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SCL" class="0">
 <segment>
 <pinref part="J11" gate="G$1" pin="4"/>
-<wire x1="-180.34" y1="55.88" x2="-177.8" y2="55.88" width="0.1524" layer="91"/>
-<label x="-177.8" y="55.88" size="1.778" layer="95" xref="yes"/>
+<wire x1="-177.8" y1="73.66" x2="-175.26" y2="73.66" width="0.1524" layer="91"/>
+<label x="-175.26" y="73.66" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="SCL/SCLK"/>
+<wire x1="-71.12" y1="58.42" x2="-76.2" y2="58.42" width="0.1524" layer="91"/>
+<label x="-76.2" y="58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J14" gate="G$1" pin="2"/>
+<wire x1="-149.86" y1="35.56" x2="-147.32" y2="35.56" width="0.1524" layer="91"/>
+<label x="-147.32" y="35.56" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SDA" class="0">
 <segment>
 <pinref part="J11" gate="G$1" pin="3"/>
-<wire x1="-180.34" y1="53.34" x2="-177.8" y2="53.34" width="0.1524" layer="91"/>
-<label x="-177.8" y="53.34" size="1.778" layer="95" xref="yes"/>
+<wire x1="-177.8" y1="71.12" x2="-175.26" y2="71.12" width="0.1524" layer="91"/>
+<label x="-175.26" y="71.12" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J12" gate="G$1" pin="2"/>
+<wire x1="-177.8" y1="35.56" x2="-175.26" y2="35.56" width="0.1524" layer="91"/>
+<label x="-175.26" y="35.56" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="VDD_9DOF_3.3V" class="0">
 <segment>
 <pinref part="J11" gate="G$1" pin="1"/>
-<wire x1="-180.34" y1="48.26" x2="-177.8" y2="48.26" width="0.1524" layer="91"/>
-<label x="-177.8" y="48.26" size="1.778" layer="95" xref="yes"/>
+<wire x1="-177.8" y1="66.04" x2="-175.26" y2="66.04" width="0.1524" layer="91"/>
+<label x="-175.26" y="66.04" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="MISO" class="0">
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="SDO"/>
+<wire x1="-71.12" y1="55.88" x2="-76.2" y2="55.88" width="0.1524" layer="91"/>
+<label x="-76.2" y="55.88" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J13" gate="G$1" pin="3"/>
+<wire x1="-177.8" y1="53.34" x2="-175.26" y2="53.34" width="0.1524" layer="91"/>
+<label x="-175.26" y="53.34" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="V3.3" class="0">
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="VDD"/>
+<wire x1="-71.12" y1="63.5" x2="-73.66" y2="63.5" width="0.1524" layer="91"/>
+<label x="-73.66" y="63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="MOSI" class="0">
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="SDA/SDI"/>
+<wire x1="-71.12" y1="60.96" x2="-76.2" y2="60.96" width="0.1524" layer="91"/>
+<label x="-76.2" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J13" gate="G$1" pin="4"/>
+<wire x1="-177.8" y1="55.88" x2="-175.26" y2="55.88" width="0.1524" layer="91"/>
+<label x="-175.26" y="55.88" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J12" gate="G$1" pin="1"/>
+<wire x1="-175.26" y1="33.02" x2="-177.8" y2="33.02" width="0.1524" layer="91"/>
+<label x="-175.26" y="33.02" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="SCLK" class="0">
+<segment>
+<pinref part="J13" gate="G$1" pin="2"/>
+<wire x1="-177.8" y1="50.8" x2="-175.26" y2="50.8" width="0.1524" layer="91"/>
+<label x="-175.26" y="50.8" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J14" gate="G$1" pin="1"/>
+<wire x1="-147.32" y1="33.02" x2="-149.86" y2="33.02" width="0.1524" layer="91"/>
+<label x="-147.32" y="33.02" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="SS" class="0">
+<segment>
+<pinref part="J13" gate="G$1" pin="1"/>
+<wire x1="-177.8" y1="48.26" x2="-175.26" y2="48.26" width="0.1524" layer="91"/>
+<label x="-175.26" y="48.26" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="PRESSURE_INTERNAL" gate="G$1" pin="AD/CS"/>
+<wire x1="-43.18" y1="53.34" x2="-40.64" y2="53.34" width="0.1524" layer="91"/>
+<label x="-40.64" y="53.34" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 </nets>
