@@ -1,4 +1,4 @@
-__author__ = 'johnathan'
+__author__ = 'johna, tina and luca'
 
 from sfml.window import Joystick
 from sys import platform

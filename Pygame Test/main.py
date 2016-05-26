@@ -10,18 +10,18 @@ import serial_finder
 
 __author__ = 'johna, tina and luca'
 
-pygame.init()
+pygame.init()                                           #initializes the UI
 screen = pygame.display.set_mode((1000, 500))
 pygame.display.set_caption("Cal Poly Control Center")
 
-background = pygame.Surface(screen.get_size())
+background = pygame.Surface(screen.get_size())          # Set background to white.
 background = background.convert()
 background.fill((250, 250, 250))
 
 ports = serial_finder.serial_ports()
 port = serial_finder.find_port(ports, background, screen)
 
-def textwrite(Positionx, Positiony, Text, r = 10, g = 10 , b = 10):
+def textwrite(Positionx, Positiony, Text, r = 10, g = 10 , b = 10): #Function that write on screen Strings.
 
     writeonscreen = Text
     font = pygame.font.Font(None, 25)
@@ -32,7 +32,7 @@ def textwrite(Positionx, Positiony, Text, r = 10, g = 10 , b = 10):
     background.blit(text, textpos)
     screen.blit(background, (0, 0))
 
-def textdelete(Positionx, Positiony, Text):
+def textdelete(Positionx, Positiony, Text):                 #Function that deletes strings
 
     writeonscreen = Text
     font = pygame.font.Font(None, 25)
@@ -43,7 +43,7 @@ def textdelete(Positionx, Positiony, Text):
     background.blit(text, textpos)
     screen.blit(background, (0, 0))
 
-img1 = pygame.image.load('ArtificialHorizon.png')
+img1 = pygame.image.load('ArtificialHorizon.png')                       #Loads the Artificial Horizon images.
 img2 = pygame.image.load("ArtificialHorizonOverlay.png")
 img3 = pygame.image.load("ArtificialHorizonMarker.png").convert_alpha()
 
@@ -61,10 +61,9 @@ outbound = serial.Serial(
 
 pygame.display.update()
 
-pressure = 0.0
+pressure = 0.0                  #initiates varibles.
 current = 0.0
 temperature = 0.0
-accel = 0.0
 depth = 0.0
 pitchangle = 0
 rotateangle = 0
@@ -95,9 +94,9 @@ pchr = 0
 yawr = 0
 rolr = 0
 
-pchl = [0,0,0,0,0]
-yawl = [0,0,0,0,0]
-roll = [0,0,0,0,0]
+pchl = [0,0,0,0,0,0,0,0,0,0]
+yawl = [0,0,0,0,0,0,0,0,0,0]
+roll = [0,0,0,0,0,0,0,0,0,0]
 
 m1 = 5.0
 m2 = 4.0
@@ -106,9 +105,11 @@ m4 = 2.0
 m5 = 1.0
 m6 = 0.0
 
+half_m = False
+
 while True:
 
-    if not cont.isConnected():
+    if not cont.isConnected():                                      # Updates controller and shows whether it is connected.
         textdelete(98, 50, "controller connected")
         textwrite(105, 50, "connect the controller", 255, 10, 10)
 
@@ -116,20 +117,21 @@ while True:
         textdelete(105, 50, "connect the controller")
         textwrite(98, 50, "controller connected", 10, 125, 10)
 
-    textwrite(45, 90, "Pressure:")
+    textwrite(45, 90, "Pressure:")                     #Labels in black.
     textwrite(40, 110, "Current:")
     textwrite(64, 130, "Temperature:")
-    textwrite(64, 150, "Acceleration:")
-    textwrite(34, 170, "Depth:")
-    textwrite(25, 190, "YPR:")
-    textwrite(40, 210, "YPRraw:")
+    textwrite(34, 150, "Depth:")
+    textwrite(25, 170, "YPR:")
+    textwrite(40, 190, "YPRraw:")
 
-    textwrite(20, 250, "M1:")
+    textwrite(20, 250, "M1:")                        #Motor info. Work in progress.
     textwrite(20, 270, "M2:")
     textwrite(20, 290, "M3:")
     textwrite(20, 310, "M4:")
     textwrite(20, 330, "M5:")
     textwrite(20, 350, "M6:")
+
+    textwrite(56, 390, "Half Power:")
 
     cont.update()
     buttons1 = 0x0
@@ -140,21 +142,44 @@ while True:
         if(cont.getButton(i)):
             if(cont.getValueForButton(i) <= 0xFF):
                 buttons1 += cont.getValueForButton(i)
+
             else:
                 buttons2 += cont.getValueForButton(i) >> 8
+                if buttons2 == 1:
+                    textdelete(130, 390, str(half_m))
+                    if half_m:
+                        half_m = False
+                    else:
+                        half_m = True
     try:
-        outbound.write("STR")                               #  sends a signal to tell that this is the start of data
-        outbound.write(chr(buttons1))                       # writes the buttons first
+        outbound.write("STR") #  sends a signal to tell that this is the start of data
+        outbound.write(chr(buttons1))# writes the buttons first
         outbound.write(chr(buttons2))
-        outbound.write(str(int(cont.getPrimaryX())))        # casts the floats to ints, then to strings for simple parsing
-        outbound.write(" ")
-        outbound.write(str(int(cont.getPrimaryY())))
+        #outbound.write(str(int(cont.getPrimaryX())))# casts the floats to ints, then to strings for simple parsing
+
+        if half_m:
+            outbound.write(str(int(cont.getPrimaryX()) / 2))
+            outbound.write(" ")
+            outbound.write(str(int(cont.getPrimaryY()) / 2))
+        else:
+            outbound.write(str(int(cont.getPrimaryX())))
+            outbound.write(" ")
+            outbound.write(str(int(cont.getPrimaryY())))
+
+        #outbound.write(" ")
+        #outbound.write(str(int(cont.getPrimaryY())))
         outbound.write(" ")
         outbound.write(str(int(cont.getSecondaryX())))
         outbound.write(" ")
         outbound.write(str(int(cont.getSecondaryY())))
         outbound.write(" ")
-        outbound.write(str(int(cont.getTriggers())))
+        #outbound.write(str(int(cont.getTriggers())))
+
+        if half_m:
+            outbound.write(str(int(cont.getTriggers()) / 2))
+        else:
+            outbound.write(str(int(cont.getTriggers())))
+
         outbound.write(" ")
 
     except:
@@ -163,16 +188,15 @@ while True:
     counter = 10
     proceed = False
 
-    got = ''
+    got = ''                                                            #shows in red the old data in case of lost connection.
     textwrite(200, 90, (str(pressure) + " mbars"), 255, 10, 10)
     textwrite(200, 110, (str(current) + " amps"), 255, 10, 10)
     textwrite(200, 130, (str(temperature) + " degrees C"), 255, 10, 10)
-    textwrite(200, 150, str(accel), 255, 10, 10)
-    textwrite(200, 170, (str(depth) + " feet"), 255, 10, 10)
-    textwrite(200, 190, str(ypr), 255, 10, 10)
-    textwrite(200, 210, str(yprraw), 255, 10, 10)
+    textwrite(200, 150, (str(depth) + " feet"), 255, 10, 10)
+    textwrite(200, 170, str(ypr), 255, 10, 10)
+    textwrite(200, 190, str(yprraw), 255, 10, 10)
 
-    textwrite(100, 250, str(m1), 255, 10, 10)
+    textwrite(100, 250, str(m1), 255, 10, 10)                        #motor info. Work in progress.
     textwrite(100, 270, str(m2), 255, 10, 10)
     textwrite(100, 290, str(m3), 255, 10, 10)
     textwrite(100, 310, str(m4), 255, 10, 10)
@@ -186,6 +210,7 @@ while True:
     pygame.draw.rect(background, (255, 10, 10), (150, 325, (10 * m5), 10))
     pygame.draw.rect(background, (255, 10, 10), (150, 345, (10 * m6), 10))
 
+
     try:
         while True and counter > 0:
             counter -= 1
@@ -196,11 +221,11 @@ while True:
                             proceed = True
                             break
 
-        if(proceed):
+        if(proceed):                                            # Reads the serial line.
             linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
             for i in range(0, linesToRead // 2):
                 label = outbound.readline().rstrip().lstrip()
-                if(label == "PSR"):
+                if(label == "PSR"):                                                    # Pressure Data.
                     textdelete(200, 90, str(pressure) + " mbars")
                     pr = str(outbound.readline().rstrip())
                     p3 = p2
@@ -209,7 +234,7 @@ while True:
                     pressure = round((p1 + p2 + p3)/3.0, 2)
                     textwrite(200, 90, str(pressure) + " mbars", 10, 125, 10)
 
-                elif(label == "VLT"):
+                elif(label == "VLT"):                                                   # Electric Current data.
                     textdelete(200, 110, str(current) + " amps")
                     cr = str(outbound.readline().rstrip())
                     c3 = c2
@@ -218,7 +243,7 @@ while True:
                     current = round((c1 + c2 + c3)/3.0, 2)
                     textwrite(200, 110, str(current) + " amps", 10, 125, 10)
 
-                elif(label == "TMP"):
+                elif(label == "TMP"):                                                   # Temperature Data.
                     textdelete(200, 130, str(temperature) + " degrees C")
                     tmpr = str(outbound.readline().rstrip())
                     tmp3 = tmp2
@@ -227,15 +252,8 @@ while True:
                     temperature = round((tmp1 + tmp2 + tmp3)/3.0, 2)
                     textwrite(200, 130, str(temperature) + " degrees C", 10, 125, 10)
 
-                elif(label == "ACL"):
-                    textdelete(200, 150, str(accel))
-                    accel = str(outbound.readline().rstrip()) + " "
-                    accel += str(outbound.readline().rstrip()) + " "
-                    accel += str(outbound.readline().rstrip())
-                    textwrite(200, 150, accel, 10, 125, 10)
-
-                elif(label == "DPT"):
-                    textdelete(200,170, str(depth) + " feet")
+                elif(label == "DPT"):                                                   #Depth data from the arduino.
+                    textdelete(200,150, str(depth) + " feet")
                     dr = str(outbound.readline().rstrip())
                     d3 = d2
                     d2 = d1
@@ -243,7 +261,7 @@ while True:
                     depth = round((d1 + d2 + d3)/3.0, 2)
                     textwrite(200, 170, str(depth) + " feet", 10, 125, 10)
 
-                elif(label == "YAW"):
+                elif(label == "YAW"):                                                   # Taw data from the Accelerometer
                     yaw = outbound.readline().rstrip()
                     index = len(yawl) -1
                     while index > 0:
@@ -251,7 +269,8 @@ while True:
                         index -= 1
                     yawl[0] = int(yaw) - yr
                     got = 'T'
-                elif(label == "PCH"):
+
+                elif(label == "PCH"):                                                      #Pitch data from the Accelerometer
                     pch = outbound.readline().rstrip()
                     index = len(pchl) -1
                     while index > 0:
@@ -259,7 +278,8 @@ while True:
                         index -= 1
                     pchl[0] = int(pch) - pr
                     got = got + 'T'
-                elif(label == "ROL"):
+
+                elif(label == "ROL"):                                                      # Rol data from the accelerometer
                     rol = outbound.readline().rstrip()
                     index = len(roll) -1
                     while index > 0:
@@ -267,7 +287,8 @@ while True:
                         index -= 1
                     roll[0] = int(rol) -rr
                     got = got + 'T'
-                elif(label == "LLL"):
+
+                elif(label == "LLL"):                                                       #Data from the motors. Still not fuctional
                     textdelete(100, 250, str(m1))
                     pygame.draw.rect(background, (255, 255, 255), (150, 245, (10 * m1), 10))
                     m1 = outbound.readline()
@@ -278,48 +299,80 @@ while True:
                         pygame.draw.rect(background, (125, 125, 10), (150, 245, (10 * m1), 10))
                     elif m1 > 13:
                         pygame.draw.rect(background, (255, 125, 10), (150, 245, (10 * m1), 10))
-                else:
+                else:                                                       #In case it receives weird data, it prints it out on the terminal
                     print "unknown datatype:", label
                     print "data:", outbound.readline().rstrip()
 
     except:
         pass
 
-    if got == 'TTT':
-        textdelete(200,190, str(ypr))
-        textdelete(200,210, str(yprraw))
-        yprraw = 'Y:' + str(yaw) + ' P:' + str(pch) + ' R:' + str(rol)
-        ypr = 'Y:' + str(yawr) + ' P:' + str(pchr) + ' R:' + str(rolr)
-        textwrite(200, 190, ypr, 10, 125, 10)
-        textwrite(200, 210, yprraw, 10, 125, 10)
+    try:
+        for event in pygame.event.get(pygame.KEYDOWN):
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_n:                 #Nomalizes the Artificial Horizon
+                    yr = int(yaw)
+                    pr = int(pch)
+                    rr = int(rol)
+                elif event.key == K_r:               #Sets the Artificial Horizon to the Raw data from the accelerometer.
+                    yr = 0
+                    pr = 0
+                    rr = 0
 
-    for event in pygame.event.get(pygame.KEYDOWN):
-        if event.type == pygame.KEYDOWN:
-            if event.key == K_n:
-                yr = int(yaw)
-                pr = int(pch)
-                rr = int(rol)
-            elif event.key == K_r:
-                yr = 0
-                pr = 0
-                rr = 0
+    except:
+        pass
 
     try:
-        pchr = sum(pchl) / len(pchl)
-        yawr = sum(yawl) / len(yawl)
-        rolr = sum(roll) / len(roll)
+        if abs(pchl[0] - pchl[9]) <= 5:      #Filters the noise in the pitch data.
+            max = 10
+        elif abs(pchl[0] - pchl[9]) <= 10:
+            max = 5
+        else:
+            max = 3
+        i = 0
+        pchr = 0
+        while i < max:
+            pchr = pchr + pchl[i]
+            i += 1
+        pchr = pchr / float(i)
 
-        img1pos = img1.get_rect()
+        if abs(roll[0] - roll[9]) <= 5:      #Filters the noise in the rol data.
+            max = 10
+        elif abs(roll[0] - roll[9]) <= 10:
+            max = 5
+        else:
+            max =3
+        i = 0
+        rolr = 0
+        while i < max:
+            rolr = rolr + roll[i]
+            i += 1
+        rolr = rolr / float(i)
+
+        yawr = sum(yawl) / len(yawl)            #Filters the noise in the yaw data.
+
+        if got == 'TTT':                                                       #Prints out the Accelerometer data.
+            textdelete(200,170, str(ypr))
+            textdelete(200,190, str(yprraw))
+            yprraw = 'Y:' + str(yaw) + ' P:' + str(pch) + ' R:' + str(rol)
+            ypr = 'Y:' + str(yawr) + ' P:' + str(pchr) + ' R:' + str(rolr)
+            textwrite(200, 170, ypr, 10, 125, 10)
+            textwrite(200, 190, yprraw, 10, 125, 10)
+
+    except:
+        pass
+
+    try:
+        img1pos = img1.get_rect()                  #Places down the artificial horizon background
         img1pos.centerx = 750
-        img1pos.centery = 250 + ((int(pchr)) * 5)
+        img1pos.centery = 250 + (round(pchr * 5))
         background.blit(img1, img1pos)
 
-        img2pos = img2.get_rect()
+        img2pos = img2.get_rect()                  #Places down the artificial horizon overlay
         img2pos.centerx = 750
         img2pos.centery = 250
         background.blit(img2, img2pos)
 
-        img4 = pygame.transform.rotate(img3, -int(rolr))
+        img4 = pygame.transform.rotate(img3, -round(rolr)) #Places down the artificial horizon marker
         img4pos = img4.get_rect()
         img4pos.centerx = 750
         img4pos.centery = 264
@@ -328,9 +381,11 @@ while True:
     except:
         pass
 
-    pygame.display.update()
-    sleep(0.01)
+    textwrite(130, 390, str(half_m))
 
-    for event in pygame.event.get():
+    pygame.display.update()                         #Updates display
+    sleep(0.01)                                     #Waits for 10ms
+
+    for event in pygame.event.get():                #It makes the UI quit if the X button is pressed
         if event.type == QUIT:
             quit()

@@ -5,7 +5,6 @@ from sys import platform
 
 import pygame
 from pygame.locals import *
-import time
 
 
 def serial_ports():
@@ -39,7 +38,6 @@ def serial_ports():
 
 
 def find_port(ports,background, screen):
-    print "Possible ports: ",
 
     writeonscreen = "Possible ports: "
     font = pygame.font.Font(None, 25)
@@ -70,7 +68,6 @@ def find_port(ports,background, screen):
             screen.blit(background, (0, 0))
             pygame.display.flip()
 
-            print p, " ",
             if "USB" in p:
 
                 writeonscreen = "Connected To: " + str(p)
@@ -83,7 +80,6 @@ def find_port(ports,background, screen):
                 screen.blit(background, (0, 0))
                 pygame.display.flip()
 
-                print "Connected To: ", p
                 return p
     elif platform == "darwin":
         p = ""
@@ -101,7 +97,6 @@ def find_port(ports,background, screen):
             screen.blit(background, (0, 0))
             pygame.display.flip()
 
-            print p
         return p
 
             
