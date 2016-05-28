@@ -15,7 +15,7 @@
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
 int serialWritePin = 2; //this is the pin to control whether it is recieving or sending
-//Reminder for Andrew to change PWM pin for motor 
+
 ///// Pins used by Quad Motor Shields //////
 //
 // 7, 6, 11, 12, 22, 24, 31, 33, 29, 25, 27, 23, A1, 
@@ -39,16 +39,12 @@ int serialWritePin = 2; //this is the pin to control whether it is recieving or 
 
 ComsMasterArd coms;
 //QuadMotorShields md;//Not being used anymore
-bool pressure = true;//Ready
+bool pressure = true;
 bool voltage = true;
 bool temperature = true;
 bool accel = false;
 bool depth = true;
-bool ypr = true;
 
-int yaw;
-int pch;
-int rol;
 //SoftwareSerial Serial3(14, 15);
 void setup() {
 	Serial3.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
@@ -127,7 +123,6 @@ void writeToCommand(Input i){
   if (temperature) lines += 2;
   if (depth) lines += 2;
   if (accel) lines += 4;
-  if (ypr) lines += 6;
   String numberOfLines = String(lines);
   int counter = 0;
   while ((counter + numberOfLines.length()) != 3) {
@@ -149,39 +144,9 @@ void writeToCommand(Input i){
   if (temperature) {
 	  Serial3.println("TMP"); //tell it the next line is Temperature
     coms.sendSlaveCmd(GET_TEMP);
-	  Serial3.print(coms.getSlaveData());
+	  Serial3.print((float)analogRead(A0)/(2.048)-273.15);
+	  //Serial3.print(coms.getSlaveData());
 	  Serial3.println(" degrees C");
-  }
-  if (ypr) {
-//    coms.sendSlaveCmd(GET_YAW);
-//    yaw = coms.getSlaveData();
-//    coms.sendSlaveCmd(GET_PCH);
-//    pch = coms.getSlaveData();
-//    coms.sendSlaveCmd(GET_ROL);
-//    rol = coms.getSlaveData();
-
- 
-    //Serial3.println("YPR"); //tell it the next line is Temperature
-
-    coms.sendSlaveCmd(GET_YAW);
-    Serial3.println("YAW");
-//    Serial3.println();
-//    Serial.println(yaw);
-    Serial3.print(coms.getSlaveData());
-    Serial3.println();
-//    Serial.println();
-
-    coms.sendSlaveCmd(GET_PCH);   
-    Serial3.println("PCH");
-//    Serial3.println();
-    Serial3.print(coms.getSlaveData());
-    Serial3.println();
-    
-    coms.sendSlaveCmd(GET_ROL);
-    Serial3.println("ROL");
-//    Serial3.println();
-    Serial3.print(coms.getSlaveData());
-    Serial3.println();
   }
   if (accel) {
 	  Serial3.println("ACL"); //tell it the next line is Accelerometer
@@ -236,7 +201,7 @@ void loop() {
         waitForStart();
         Input i = readBuffer();
         digitalWrite(serialWritePin, HIGH);
-        //debugInput(i); //temporarily dropped
+        debugInput(i);
         writeToCommand(i); //this is where the code to write back to topside goes.
 		Serial3.flush();
         delay(50);         //this delay allows for hardware serial to work with rs485
