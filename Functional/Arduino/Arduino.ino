@@ -142,20 +142,17 @@ void writeToCommand(Input i){
   if (pressure) {
 	  Serial3.println("PSR"); //tell it the next line is Pressure
     coms.sendSlaveCmd(GET_PRES);
-	  Serial3.print(coms.getSlaveData());
-	  Serial3.println(" mbars");
+	  Serial3.println(coms.getSlaveData());
   }
   if (voltage) {
 	  Serial3.println("VLT"); //tell it the next line is Power info
-	  Serial3.print( (((float)(analogRead(A1))*(5.0/1023.0))-2.52)   /.066 );
-	  Serial3.println(" amps");
+	  Serial3.println( (((float)(analogRead(A1))*(5.0/1023.0))-2.52)   /.066 );
   }
   if (temperature) {
 	  Serial3.println("TMP"); //tell it the next line is Temperature
     coms.sendSlaveCmd(GET_TEMP);
-	  Serial3.print((float)analogRead(A0)/(2.048)-273.15);
+	  Serial3.println((float)analogRead(A0)/(2.048)-273.15);
 	  //Serial3.print(coms.getSlaveData());
-	  Serial3.println(" degrees C");
   }
   if (ypr) {
     
@@ -192,33 +189,10 @@ void writeToCommand(Input i){
     
     }
   }
-  if (accel) {
-	  Serial3.println("ACL"); //tell it the next line is Accelerometer
-	  Serial3.print("Accel: X: ");
-	  Serial3.print(getAccelX());
-	  Serial3.print(" Y: ");
-	  Serial3.print(getAccelY());
-	  Serial3.print(" Z: ");
-	  Serial3.print(getAccelZ());
-	  Serial3.print("\nGyro: X: ");
-	  Serial3.print(getGyroX());
-	  Serial3.print(" Y: "); 
-	  Serial3.print(getGyroY());
-	  Serial3.print(" Z: ");
-	  Serial3.print(getGyroZ());
-	  Serial3.print("\nMag: X: ");
-	  Serial3.print(getMagX());
-	  Serial3.print(" Y: ");
-	  Serial3.print(getMagY());
-	  Serial3.print(" Z: ");
-	  Serial3.print(getMagZ());
-	  Serial3.println();
-  }
   if (depth) {
 	  Serial3.println("DPT"); //tell it the next line is Depth
     coms.sendSlaveCmd(GET_DEPT);
-	  Serial3.print(coms.getSlaveData());
-	  Serial3.println(" feet");
+	  Serial3.println(coms.getSlaveData());
   }
 }
 void debugInput(Input i){
