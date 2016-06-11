@@ -11,6 +11,7 @@
 #include "ComsMasterArd.h"
 #include "VectorMotors.h"
 #include "cameras.h"
+#include "currentSensing.h"
 
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
