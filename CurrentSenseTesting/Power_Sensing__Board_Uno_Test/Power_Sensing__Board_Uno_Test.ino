@@ -427,12 +427,14 @@ void menu_1_read_input()
   if(single_ended_differential == LTC1859_SINGLE_ENDED_MODE)  //read single-ended
   {
       adc_command = BUILD_COMMAND_SINGLE_ENDED[0] | uni_bipolar | range_low_high;
-      LTC1859_read(LTC1859_CS, adc_command, &adc_code);     // Throws out last reading and starts CH0 conversion
+      delay(10);             LTC1859_read(LTC1859_CS, adc_command, &adc_code);     // Throws out last reading and starts CH0 conversion
       for (x = startcount; x <= endcount; x++)
       {
             adc_command = BUILD_COMMAND_SINGLE_ENDED[x % 8] | uni_bipolar | range_low_high; // Send channel config for the NEXT conversion to take place
-            LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Read previous channel conversion (x-1) and start next one (x)
-            LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Read previous channel conversion (x-1) and start next one (x)
+            delay(10);             LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Read previous channel conversion (x-1) and start next one (x)
+            delay(10);
+            delay(10);             LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Read previous channel conversion (x-1) and start next one (x)
+            delay(10);
             Serial.print(F("  Received Code: b"));
             Serial.println(adc_code, BIN);
             
@@ -450,12 +452,14 @@ void menu_1_read_input()
   else  //read differential
   {
       adc_command = BUILD_COMMAND_DIFF[0] | uni_bipolar | range_low_high;
-      LTC1859_read(LTC1859_CS, adc_command, &adc_code);     // Throws out last reading and starts CH0 conversion
+      delay(10);             LTC1859_read(LTC1859_CS, adc_command, &adc_code);     // Throws out last reading and starts CH0 conversion
       for (x = startcount; x <= endcount; x++)
       {
             adc_command = BUILD_COMMAND_DIFF[x % 8] | uni_bipolar | range_low_high; // Send channel config for the NEXT conversion to take place
-            LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Read previous channel conversion (x-1) and start next one (x)
-            LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Read previous channel conversion (x-1) and start next one (x)
+            delay(10);             LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Read previous channel conversion (x-1) and start next one (x)
+            delay(10);
+            delay(10);             LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Read previous channel conversion (x-1) and start next one (x)
+            delay(10);
             Serial.print(F("  Received Code: b"));
             Serial.println(adc_code,BIN);
 
@@ -570,7 +574,7 @@ void menu_5_sleep()
   // Sleep Mode
   uint16_t user_command;
   uint16_t adc_code = 0;                                        // The LTC1859 code
-  LTC1859_read(LTC1859_CS, LTC1859_SLEEP_MODE, &adc_code);      // Build ADC command for sleep mode
+  delay(10);             LTC1859_read(LTC1859_CS, LTC1859_SLEEP_MODE, &adc_code);      // Build ADC command for sleep mode
 /*  
  *   
   Serial.println();
@@ -580,5 +584,5 @@ void menu_5_sleep()
   Serial.println(F("  Enter RETURN to exit Sleep Mode"));
   */
   user_command = read_int();
-  LTC1859_read(LTC1859_CS, LTC1859_NORMAL_MODE, &adc_code); // Exit Sleep Mode
+  delay(10);             LTC1859_read(LTC1859_CS, LTC1859_NORMAL_MODE, &adc_code); // Exit Sleep Mode
 }

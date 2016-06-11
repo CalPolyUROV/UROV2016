@@ -202,7 +202,7 @@ void setMotors(int X,int Y,int Z,int R,unsigned char buttons)
   motor_3(currentMotor3speed);
   motor_4(currentMotor4speed);
   motor_5(currentZspeed);
-  if(CHECK_BIT(buttons, 1)){motor_6(currentZspeed);}
+  if(CHECK_BIT(buttons, 1)){motor_6(-1*currentZspeed);}
   else{motor_6(currentZspeed);}
   Serial.println(motor1speed);
   Serial.println(motor2speed);

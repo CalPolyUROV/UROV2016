@@ -36,8 +36,8 @@ Example Code:
 Read Channel 0 in Single-Ended Unipolar mode when input is with respect to GND
 
     adc_command = LTC1859_CH0 | LTC1859_UNIPOLAR_MODE | LTC1859_LOW_GAIN_MODE | LTC1859_NORMAL_MODE;     // Single-ended, CH0, unipolar, low gain, normal mode.
-    LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Throws out last reading
-    LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Obtains the current reading and stores to adc_code variable
+    delay(10);             LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Throws out last reading
+    delay(10);             LTC1859_read(LTC1859_CS, adc_command, &adc_code);   // Obtains the current reading and stores to adc_code variable
 
     // Convert adc_code to voltage
     adc_voltage = LTC1859_unipolar_code_to_voltage(adc_code, LTC1859_lsb, LTC1859_offset_unipolar_code);
