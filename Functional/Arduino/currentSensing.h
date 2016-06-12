@@ -14,6 +14,9 @@
 
 #define CURRENTSELECT           10
 
-uint8_t ampReading(uint8_t);
+uint16_t ampReading(uint8_t);
+uint16_t *arrAmpReading(void);
+void spi_enable16(void);
+uint8_t regNumber(uint8_t);
 
 #endif

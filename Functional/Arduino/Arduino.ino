@@ -13,6 +13,12 @@
 #include "cameras.h"
 #include "currentSensing.h"
 
+#include "Adafruit_Sensor.h"
+#include "Adafruit_BNO055.h"
+#include "imumaths.h"
+
+Adafruit_BNO055 bno = Adafruit_BNO055();
+
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
 int serialWritePin = 2; //this is the pin to control whethgeter it is recieving or sending
@@ -46,14 +52,20 @@ bool pressure = false;
 bool voltage = false;
 bool temperature = true;
 bool accel = false;
-bool depth = true;
-bool ypr = true;
+bool depth = false;
+bool ypr = false;
+bool amperage = true;
 
-bool debug = true;
+bool debug = false;
 
 int yaw;
 int pch;
 int rol;
+uint16_t amperages[8] = {0};
+uint16_t* p_amperages;
+
+imu::Vector<3> euler;
+
 //SoftwareSerial Serial3(14, 15);
 void setup() {
 	Serial3.begin(9600);   //the number in here is the baud rate, it is the communication speed, this must be matched in the python
@@ -64,6 +76,7 @@ void setup() {
 	pinMode(24, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
         motorSetup();
+        if(ypr){bno.setExtCrystalUse(true);}
 }
 
 //looks cleaner than the empty while loop being everywhere in the code
@@ -133,6 +146,8 @@ void writeToCommand(Input i){
   if (depth) lines += 2;
   if (accel) lines += 4;
   if (ypr) lines += 6;
+  if (amperage) lines += 2;
+  
   String numberOfLines = String(lines);
   int counter = 0;
   while ((counter + numberOfLines.length()) != 3) {
@@ -144,36 +159,44 @@ void writeToCommand(Input i){
 	  Serial3.println("PSR"); //tell it the next line is Pressure
     coms.sendSlaveCmd(GET_PRES);
 	  Serial3.print(coms.getSlaveData());
-	  Serial3.println(" mbars");
+	  //Serial3.println(" mbars");
   }
   if (voltage) {
 	  Serial3.println("VLT"); //tell it the next line is Power info
 	  Serial3.print( (((float)(analogRead(A1))*(5.0/1023.0))-2.52)   /.066 );
-	  Serial3.println(" amps");
+	  //Serial3.println(" amps");
   }
   if (temperature) {
 	  Serial3.println("TMP"); //tell it the next line is Temperature
     coms.sendSlaveCmd(GET_TEMP);
-	  Serial3.print((float)analogRead(A0)/(2.048)-273.15);
+	  Serial3.println((float)analogRead(A0)/(2.048)-273.15);
 	  //Serial3.print(coms.getSlaveData());
-	  Serial3.println(" degrees C");
+	  //Serial3.println(" degrees C");
   }
   if (ypr) {
     
-    coms.sendSlaveCmd(GET_YAW);
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+
+    /*
+    //coms.sendSlaveCmd(GET_YAW);
+    Serial3.println("STS");
+    Serial3.println(bno.read8(BNO055_CALIB_STAT_ADDR));
+    //Serial3.println(coms.getSlaveData());
+    */
+    //coms.sendSlaveCmd(GET_YAW);
     Serial3.println("YAW");
-    Serial3.println(coms.getSlaveData());
+    Serial3.println(euler.x());
     //Serial3.println(coms.getSlaveData());
     
-    coms.sendSlaveCmd(GET_PCH);
+    //coms.sendSlaveCmd(GET_PCH);
     Serial3.println("PCH");
-    Serial3.println(coms.getSlaveData());
+    Serial3.println(euler.y());
     
-    coms.sendSlaveCmd(GET_ROL);
+    //coms.sendSlaveCmd(GET_ROL);
     Serial3.println("ROL");
-    Serial3.println(coms.getSlaveData());
+    Serial3.println(euler.z());
 
-
+/*
     if(debug){
       
     coms.sendSlaveCmd(GET_YAW);
@@ -191,35 +214,26 @@ void writeToCommand(Input i){
     Serial.println("ROL");
     Serial.println(coms.getSlaveData());
     
-    }
-  }
-  if (accel) {
-	  Serial3.println("ACL"); //tell it the next line is Accelerometer
-	  Serial3.print("Accel: X: ");
-	  Serial3.print(getAccelX());
-	  Serial3.print(" Y: ");
-	  Serial3.print(getAccelY());
-	  Serial3.print(" Z: ");
-	  Serial3.print(getAccelZ());
-	  Serial3.print("\nGyro: X: ");
-	  Serial3.print(getGyroX());
-	  Serial3.print(" Y: "); 
-	  Serial3.print(getGyroY());
-	  Serial3.print(" Z: ");
-	  Serial3.print(getGyroZ());
-	  Serial3.print("\nMag: X: ");
-	  Serial3.print(getMagX());
-	  Serial3.print(" Y: ");
-	  Serial3.print(getMagY());
-	  Serial3.print(" Z: ");
-	  Serial3.print(getMagZ());
-	  Serial3.println();
+    }*/
   }
   if (depth) {
 	  Serial3.println("DPT"); //tell it the next line is Depth
     coms.sendSlaveCmd(GET_DEPT);
 	  Serial3.print(coms.getSlaveData());
 	  Serial3.println(" feet");
+  }
+  if (amperage) {
+   Serial3.println("MOT"); //tell it the next line is Depth
+    p_amperages = arrAmpReading();
+    
+    for(uint8_t i = 0; i <7; i++)
+    {
+      Serial3.print(amperages[i]);
+      if(i!=7)Serial3.print(",");
+    }
+    
+    Serial3.println("");
+    
   }
 }
 void debugInput(Input i){
