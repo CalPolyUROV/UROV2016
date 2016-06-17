@@ -43,10 +43,10 @@ ComsMasterArd coms;
 //QuadMotorShields md;//Not being used anymore
 bool pressure = false;
 bool voltage = false;
-bool temperature = true;
+bool temperature = false;
 bool accel = false;
-bool depth = true;
-bool ypr = true;
+bool depth = false;
+bool ypr = false;
 
 bool debug = true;
 
