@@ -61,6 +61,8 @@ void setup() {
 	pinMode(13, OUTPUT);
 	pinMode(22, OUTPUT);
 	pinMode(24, OUTPUT);
+  pinMode(26, OUTPUT);
+  pinMode(28, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
         motorSetup();
 }
