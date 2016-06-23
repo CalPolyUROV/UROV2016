@@ -17,12 +17,18 @@ void setCameras(unsigned char buttons)
     if(CHECK_BIT(buttons, 2)&&debounce){
         debounce = 0;
         //digitalWrite(13, HIGH);
-        currentCamera++;
-        if(currentCamera==NUM_CAMERAS) {currentCamera = 0;}
+        currentCamera <<= 1;
+        if(currentCamera > 8) {currentCamera = 1;}
+        
+        //if(currentCamera==NUM_CAMERAS) {currentCamera = 0;}
         
         digitalWrite(22,!(CHECK_BIT(currentCamera, 0)));
+        
         digitalWrite(24,CHECK_BIT(currentCamera, 1));
+        
         digitalWrite(26,CHECK_BIT(currentCamera, 2));
+
+        digitalWrite(28,CHECK_BIT(currentCamera, 3));
        
     }
     else {
