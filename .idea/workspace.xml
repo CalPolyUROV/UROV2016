@@ -24,8 +24,18 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Pygame Test/main.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+<<<<<<< HEAD
+            <state vertical-scroll-proportion="0.35983264">
+              <caret line="252" column="48" selection-start-line="252" selection-start-column="48" selection-end-line="252" selection-end-column="48" />
+=======
+            <state vertical-scroll-proportion="0.41130298">
+              <caret line="145" column="29" selection-start-line="145" selection-start-column="29" selection-end-line="145" selection-end-column="29" />
+>>>>>>> refs/remotes/origin/master
+=======
             <state vertical-scroll-proportion="0.9010989">
               <caret line="152" column="17" selection-start-line="152" selection-start-column="17" selection-end-line="152" selection-end-column="17" />
+>>>>>>> master
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -375,7 +385,11 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32935324" sideWeight="0.50364584" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32950708" sideWeight="0.49850234" order="2" side_tool="false" content_ui="tabs" />
+=======
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32935324" sideWeight="0.49635416" order="2" side_tool="false" content_ui="tabs" />
+>>>>>>> refs/remotes/origin/master
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -596,8 +610,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Pygame Test/main.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+<<<<<<< HEAD
+        <state vertical-scroll-proportion="0.35983264">
+          <caret line="252" column="48" selection-start-line="252" selection-start-column="48" selection-end-line="252" selection-end-column="48" />
+=======
+        <state vertical-scroll-proportion="0.41130298">
+          <caret line="145" column="29" selection-start-line="145" selection-start-column="29" selection-end-line="145" selection-end-column="29" />
+>>>>>>> refs/remotes/origin/master
+=======
         <state vertical-scroll-proportion="0.9010989">
           <caret line="152" column="17" selection-start-line="152" selection-start-column="17" selection-end-line="152" selection-end-column="17" />
+>>>>>>> master
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
