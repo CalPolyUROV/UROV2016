@@ -1,9 +1,9 @@
 #include <Servo.h>
 #include "Math.h"
-#include "Accelerometer.h"
+//#include "Accelerometer.h"
 #include "dataStruc.h"
 //#include "QuadMotorShields.h"
-#include "gyroAccelerometer.h"
+//#include "gyroAccelerometer.h"
 #include <SoftwareSerial.h>
 #include <SPI.h>
 //#include "pressure.h"
@@ -17,7 +17,7 @@
 #include "Adafruit_BNO055.h"
 #include "imumaths.h"
 
-Adafruit_BNO055 bno = Adafruit_BNO055();
+//Adafruit_BNO055 bno = Adafruit_BNO055();
 
 //all pins used must be listed here! either as a variable to change quickly later or as a comment if it is in another file
 
@@ -49,12 +49,12 @@ int serialWritePin = 2; //this is the pin to control whethgeter it is recieving 
 ComsMasterArd coms;
 //QuadMotorShields md;//Not being used anymore
 bool pressure = false;
-bool voltage = false;
+bool voltage = true;
 bool temperature = true;
 bool accel = false;
 bool depth = false;
 bool ypr = false;
-bool amperage = true;
+bool amperage = false;
 
 bool debug = false;
 
@@ -76,7 +76,7 @@ void setup() {
 	pinMode(24, OUTPUT);
 	digitalWrite(serialWritePin, LOW);
         motorSetup();
-        if(ypr){bno.setExtCrystalUse(true);}
+//        if(ypr){bno.setExtCrystalUse(true);}
 }
 
 //looks cleaner than the empty while loop being everywhere in the code
@@ -175,7 +175,7 @@ void writeToCommand(Input i){
   }
   if (ypr) {
     
-    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+//    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
     /*
     //coms.sendSlaveCmd(GET_YAW);
