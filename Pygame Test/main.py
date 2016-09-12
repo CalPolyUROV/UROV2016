@@ -230,7 +230,9 @@ while True:
                             break
 
         if(proceed):                                            # Reads the serial line.
-            linesToRead = int(outbound.read(3))                 # allows for up to 999 lines to be read...
+            linesToRead = int(outbound.read(3)) # allows for up to 999 lines to be read...
+            if linesToRead >= 25:
+                linesToRead = 25
             for i in range(0, linesToRead // 2):
                 label = outbound.readline().rstrip().lstrip()
                 if(label == "PSR"):                                                    # Pressure Data.
@@ -398,7 +400,7 @@ while True:
         img2pos.centery = 250
         background.blit(img2, img2pos)
 
-        img4 = pygame.transform.rotate(img3, -round(rolr)) #Places down the artificial horizon marker
+        img4 = pygame.transform.rotate(img3, round(rolr)) #Places down the artificial horizon marker
         img4pos = img4.get_rect()
         img4pos.centerx = 750
         img4pos.centery = 264
