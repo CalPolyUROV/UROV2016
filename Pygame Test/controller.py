@@ -81,8 +81,7 @@ def GUIrun():
 
     for event in pygame.event.get():
         if event.type == QUIT:
-            pygame.quit()
-            return
+            quit()
 
 while not foundController:
     GUIrun()
